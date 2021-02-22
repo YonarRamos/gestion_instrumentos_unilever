@@ -61,6 +61,7 @@
             <v-row>
               <v-col>
                 <filtro/>
+                <v-divider></v-divider>
               </v-col>
             </v-row>
 

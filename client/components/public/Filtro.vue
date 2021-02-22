@@ -1,6 +1,6 @@
 <template>
   <v-container>
-            <v-row style="box-shadow:0px 2px 4px #888888">
+            <v-row style="background:#F9F9F9">
               <v-col cols="12" md="4">
                 <v-menu
                   ref="menu"
@@ -23,6 +23,7 @@
                       outlined
                       dense
                       color="primary"
+                      background-color="white"
                     ></v-text-field>
                   </template>
                   <v-date-picker v-model="date" no-title scrollable>
@@ -60,6 +61,7 @@
                       outlined
                       dense
                       color="primary"
+                      background-color="white"
                     ></v-text-field>
                   </template>
                   <v-date-picker v-model="date" no-title scrollable>
