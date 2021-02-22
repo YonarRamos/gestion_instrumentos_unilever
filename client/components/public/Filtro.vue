@@ -1,10 +1,7 @@
 <template>
-<container>
-  <div>
-    <v-layout row wrap mb-2>
-      
-            <v-row>
-              <v-col cols="6" sm="6" md="2" style="margin-left:60%">
+  <v-container>
+            <v-row style="box-shadow:0px 2px 4px #888888">
+              <v-col cols="12" md="4">
                 <v-menu
                   ref="menu"
                   v-model="menu"
@@ -16,13 +13,16 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      style="margin-top: 25px"
                       v-model="date"
                       label="Desde"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      hide-details
+                      outlined
+                      dense
+                      color="primary"
                     ></v-text-field>
                   </template>
                   <v-date-picker v-model="date" no-title scrollable>
@@ -36,7 +36,8 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-              <v-col cols="2" sm="2" md="2">
+
+              <v-col cols="12" md="4">
                 <v-menu
                   ref="menu"
                   v-model="menu1"
@@ -49,13 +50,16 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      style="margin-top: 25px; margin-left: 10px"
                       v-model="date"
                       label="Hasta"
-                      prepend-icon="mdi-calendar"
+                      prepend-inner-icon="mdi-calendar"
                       readonly
                       v-bind="attrs"
                       v-on="on"
+                      hide-details
+                      outlined
+                      dense
+                      color="primary"
                     ></v-text-field>
                   </template>
                   <v-date-picker v-model="date" no-title scrollable>
@@ -69,16 +73,15 @@
                   </v-date-picker>
                 </v-menu>
               </v-col>
-            </v-row>
-            <v-btn color="blue" outlined class="btn-fill">
-              <v-icon>refresh</v-icon>Filtrar
-            </v-btn>
-          </v-layout>
-        </div>
-        <v-flex> </v-flex>
 
-</container>
-  
+              <v-col cols="12" md="4" class="d-flex justify-end align-center"> 
+                <v-btn color="blue" outlined height="40">
+                    <v-icon>refresh</v-icon>
+                    Filtrar
+                </v-btn>
+              </v-col>
+            </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -113,9 +116,5 @@ export default {
 .panel-filtro {
   height: 80px;
   margin-top: 40px;
-}
-.btn-fill {
- margin-top: 35px;
- margin-right: 20px;
 }
 </style>

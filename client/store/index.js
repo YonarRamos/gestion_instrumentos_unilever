@@ -17,9 +17,9 @@ export const mutations = {
   async SET_AUTH(state, token) {
     state.auth = true;  
     Cookies.set('token', token)
-    Cookies.set('name', state.user.nombre)
+/*     Cookies.set('name', state.user.nombre)
     Cookies.set('lastname', state.user.apellido)
-    Cookies.set('rol', state.user.rol)   
+    Cookies.set('rol', state.user.rol)    */
     this.$router.push('/')
   },
   async setUser(state, payload){

@@ -1,35 +1,69 @@
 <template>
   <div class="fondo">
-    <v-container fluid >
-      <v-row>
-        <v-col cols="3">
-            <v-treeview
+    <v-container >
+    <!--             <v-treeview
               :items="items"
               activatable
               item-key="id"
               v-on:update:active="filtrarTabla"
             >
             </v-treeview>
-          
-        </v-col>
-        <v-col>
-          <div>
-          </div>
-          
+   -->
+  
+<v-row>
+  <v-col cols="3">
+      <div>
+        <v-card
+          elevation="3"
+          max-width="400"
+          class="mx-auto"
+        >
+          <v-virtual-scroll
+            :bench="benched"
+            :items="items"
+            height="530"
+            item-height="64"
+          >
+            <template v-slot:default="{ item }">
+              <v-list-item :key="item.id" class="scrollItem">
+                <v-list-item-action>
+                  <v-btn
+                    fab
+                    small
+                    depressed
+                    color="primary"
+                  >
+                    {{ item.id }}
+                  </v-btn>
+                </v-list-item-action>
+
+                <v-list-item-content @click="filtrarTabla(item.id)">
+                  <v-list-item-title>
+                    <strong> {{ item.name }}</strong>
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+
+              <v-divider></v-divider>
+            </template>
+          </v-virtual-scroll>
+        </v-card>
+      </div>
+  </v-col>
+     
+  <v-col cols="9">        
           <v-card>
-            <v-card-title>
+            <v-card-title  style="box-shadow:1px 2px 4px #888888">
               Equipos
-              <v-spacer></v-spacer>
-              <v-text-field
-                append-icon="mdi-magnify"
-                label="Buscar"
-                single-line
-                hide-details
-                @keyup.enter="getDataTable()"
-                v-model="txtBuscar"
-              ></v-text-field>
             </v-card-title>
-             <filtro/>
+
+            <v-divider></v-divider>
+            <v-row>
+              <v-col>
+                <filtro/>
+              </v-col>
+            </v-row>
+
             <v-data-table
               :headers="headers"
               :items="tableData"
@@ -37,11 +71,22 @@
               :server-items-length="totalTableItems"
               :loading="loading"
               multi-sort
-              @click:row="redirigir"
               class="elevation-1"
             >
               <template v-slot:top>
                 <v-toolbar flat>
+                  <v-text-field
+                    append-icon="mdi-magnify"
+                    label="Buscar"
+                    single-line
+                    hide-details
+                    @keyup.enter="getDataTable()"
+                    v-model="txtBuscar"
+                  ></v-text-field>
+
+                <v-spacer></v-spacer>
+
+              <!-- Modal Agregar -->
                   <v-dialog v-model="dialog" max-width="500px">
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -54,7 +99,7 @@
                         Agregar
                       </v-btn>
                     </template>
-                   
+
                     <v-card>
                       <v-card-title class="headline blue darken-4" style="color:white">
                         <span >Nuevo</span>
@@ -101,6 +146,8 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
+          <!-- Termina Modal Agregar -->
+          <!--  Modal Eliminar  -->
                   <v-dialog v-model="dialogDelete" max-width="500px">
                     <v-card>
                       <v-card-title class="headline"
@@ -122,9 +169,16 @@
                       </v-card-actions>
                     </v-card>
                   </v-dialog>
-                </v-toolbar>
-              </template>
-              <template v-slot:item.acciones="{ item }">
+         <!--  Termina Modal Eliminar -->
+            </v-toolbar>
+          </template>
+          
+              <template v-slot:[`item.tag`]={item} >
+                <nuxt-link to="/formulario" :exact="true">
+                  <v-chip class="tag">{{item.tag}}</v-chip>
+                </nuxt-link>
+              </template> 
+              <template v-slot:[`item.acciones`]="{ item }">
                 <v-icon small class="mr-2" @click="editItem(item)">
                   mdi-pencil
                 </v-icon>
@@ -132,8 +186,10 @@
               </template>
             </v-data-table>
           </v-card>
+
+
         </v-col>
-      </v-row>
+      </v-row>   
     </v-container>
   </div>
 </template>
@@ -150,6 +206,44 @@ export default {
   components:{
     Filtro
   },
+    data: () => ({
+      token: Cookies.get("token"),
+      benched: 0,
+      items: [],
+      itemsSelected: [],
+      totalTableItems: 0,
+      loading: true,
+      options: {},
+      txtBuscar: '',
+      filtroTree: undefined,
+      listRutas: [],
+      dialog: false,
+      dialogDelete: false,
+      editedIndex: -1,
+      editedItem: {
+        id: '',
+        tag: '',
+        descripcion: '',
+        sector_id: '',
+        empresa: ''
+      },
+      defaultItem: {
+        tag: '',
+        descripcion: '',
+        sector: '',
+        encargado: ''
+      },
+      headers: [
+        { text: 'Tag', align: 'start', value: 'tag' },
+        { text: 'Descripción', value: 'descripcion' },
+        { text: 'Sector', value: 'sectorName' },
+        { text: 'Estado', value: 'estadoName' },
+        { text: 'Próxima', value: 'proximaCalib' },
+        { text: 'Encargado', value: 'empresa' },
+        { text: 'Acciones', value: 'acciones', sortable: false}
+      ],
+      tableData: []
+  }),
   computed: {
     ...mapState(['dialogPassword']),
 
@@ -216,9 +310,6 @@ export default {
       this.editedItem = Object.assign({}, item)
       this.dialogDelete = true
     },
-     redirigir(){
-      this.$router.push('/Formulario');
-    },
     deleteItemConfirm() {
       this.tableData.splice(this.editedIndex, 1)
       this.closeDelete()
@@ -249,47 +340,6 @@ export default {
       this.close()
     },
   },
-  data: () => ({
-      token: Cookies.get("token"),
-      items: [],
-      itemsSelected: [],
-      totalTableItems: 0,
-      loading: true,
-      options: {},
-      txtBuscar: '',
-      filtroTree: undefined,
-      listRutas: [],
-      dialog: false,
-      dialogDelete: false,
-      editedIndex: -1,
-      editedItem: {
-        id: '',
-        tag: '',
-        descripcion: '',
-        sector_id: '',
-        empresa: ''
-      },
-      defaultItem: {
-        tag: '',
-        descripcion: '',
-        sector: '',
-        encargado: ''
-      },
-      headers: [
-        {
-          text: 'Tag',
-          align: 'start',
-          value: 'tag'
-        },
-        { text: 'Descripción', value: 'descripcion' },
-        { text: 'Sector', value: 'sectorName' },
-        { text: 'Estado', value: 'estadoName' },
-        { text: 'Próxima', value: 'proximaCalib' },
-        { text: 'Encargado', value: 'empresa' },
-        { text: 'Acciones', value: 'acciones', sortable: false}
-      ],
-      tableData: []
-  }),
   watch: {
     options: {
       handler () {
@@ -312,6 +362,19 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.scrollItem:hover{
+  background: rgb(245, 245, 245);
+  cursor: pointer;
+}
+.tag{
+  cursor: pointer;
+  color: blue;
+  background: lightblue;
+}
+.tag:hover{
+  color:white;
+  background: #1976D2;
+}
 a {
   text-decoration: none;
 }

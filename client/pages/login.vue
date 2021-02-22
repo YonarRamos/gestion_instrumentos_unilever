@@ -69,7 +69,8 @@ layout: "layoutnull",
         })
         .then(res => {
           
-          if (res.data.token) {
+          if (res.data) {
+            console.log('dataToken:', res.data)
             this.setUser(res.data.user)
             this.SET_AUTH(res.data.token)
           }
