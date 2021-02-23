@@ -223,7 +223,7 @@ class EquipoController {
       const user = await auth.getUser()
       var id = params.id
       let equipo = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').where('id', id).fetch();
-      return response.status(200).json({ menssage: 'Company', data: equipo });
+      return response.status(200).json({ menssage: 'Equipo', data: equipo });
     } catch (error) {
       console.log(error)
       if (error.name == 'InvalidJwtToken') {
