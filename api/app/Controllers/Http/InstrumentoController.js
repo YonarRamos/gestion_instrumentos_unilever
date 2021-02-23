@@ -1,23 +1,33 @@
 'use strict'
-
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with instrumentos
- */
+const Instrumento = use('App/Models/Instrumento');
+const Query = require("../../Utils/Query");
+const { validate } = use('Validator');
+const User = use('App/Models/User');
+var moment = require('moment');
+const Database = use('Database')
 class InstrumentoController {
-  /**
-   * Show a list of all instrumentos.
-   * GET instrumentos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+ 
+  async index ({ request, response, auth }) {
+    try {
+      await auth.check();
+    } catch (error) {
+      return response.status(401).json('Acceso no Autorizado')
+    }
+    try {
+      var query = Instrumento.query();
+      var {
+        page,
+        perPage,
+      } = request.all();
+      //seteo valores por defectos
+      page = page || 1
+      perPage = perPage || 10
+      let res = await Instrumento.query().paginate(page, perPage);
+      response.status(200).json({ message: 'Listado de Instrumentos', data: res })
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json({ menssage: 'Hubo un error al realizar la operación', error })
+    }
   }
 
   /**

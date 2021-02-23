@@ -3,6 +3,7 @@
 const User = use('App/Models/User');
 const Response = use('App/Models/Response');
 
+
 class UserController {
 
     async login ({ auth, request, response }) {

@@ -20,6 +20,7 @@ class Equipo extends Model {
     calibracion_tarea () {
         return this.manyThrough('App/Models/Instrumento', 'tareaCalibracion', 'instrumento_id', 'id')
       }
+      
 }
 
 module.exports = Equipo

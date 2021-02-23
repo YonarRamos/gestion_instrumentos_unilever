@@ -30,3 +30,15 @@ Route.group(() => {
 }).prefix('api/v1');
 
 
+
+//Rutas formulario 
+Route.get('/api/v1/formulario' , 'EquipoController.index');
+Route.get('/api/v1/formulario/:id' , 'EquipoController.show');
+Route.post('/api/v1/equipo', 'EquipoController.create');
+
+
+// Rutas Instrumentos
+
+Route.get('/api/v1/instrumento' , 'InstrumentoController.index');
+
+

@@ -6,44 +6,76 @@ const InstrumentoEstado = use('App/Models/InstrumentoEstado');
 const CalibracionTareaRealizada = use('App/Models/CalibracionTareaRealizada');
 const CalibracionTarea = use('App/Models/CalibracionTarea');
 const Instrumento = use('App/Models/Instrumento');
+const Query = require("../../Utils/Query");
+const { validate } = use('Validator');
 const User = use('App/Models/User');
+var moment = require('moment');
 const Database = use('Database')
 
 class EquipoController {
-  /**
-   * Show a list of all equipos.
-   * GET equipos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
-
+ 
+  async index ({ request, response, view , auth}) {
     try {
-      
-      var tableItems = await Equipo.query().with('instrumento').with('sector').fetch();
-      tableItems = tableItems.toJSON();
-      var total = tableItems.length;
-      console.log(total)
-      
-      return {tableItems, total};
-
+      await auth.check();
     } catch (error) {
-      return "Error";
+      return response.status(401).json('Acceso no Autorizado')
+    }
+    try {
+      var query = Equipo.query();
+      var {
+        page,
+        perPage,
+      } = request.all();
+      //seteo valores por defectos
+      page = page || 1
+      perPage = perPage || 10
+      let equipos = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').paginate(page, perPage);
+      response.status(200).json({ message: 'Listado de Equipos', data: equipos })
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json({ menssage: 'Hubo un error al realizar la operación', error })
     }
   }
 
+    async create({request, response , auth}){
+       
+      try {
+        const user = await auth.getUser();
+        let { tag,  descripcion, serie_requerido , sector_id , instrumento_id} = request.all();
+        
+        console.log('asdasfdsdgfdsgfd')
+        const rules = {
+          tag: 'required',
+          serie_requerido: 'required',
+          sector_id: 'required',
+          instrumento_id: 'required',
+          descripcion: 'required'
+        }
+        let validation = await validate({ serie_requerido, sector_id, instrumento_id, tag, descripcion }, rules);
+        if (validation.fails()) {
+          return response.status(404).json({ message: "Datos Insufiente" });
+        }
+        if(user.rol == 0){
+          const equipo = await Equipo.create({
+            tag,
+            serie_requerido,
+            sector_id,
+            instrumento_id,
+            descripcion,
+            created_at :  moment().format('YYYY-MM-DD HH:mm:ss'),
+            updated_at:moment().format('YYYY-MM-DD HH:mm:ss'),
+          })
 
-    /**
-   * Lista equipos para vista principal
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
+          return response.status(200).json({ message: "Equipo creado con exito!", data: equipo})
+        }else{
+          return response.status(400).json({ menssage: "Usuario sin permiso suficiente para realizar esta operacion!" })
+        }
+      } catch (error) {
+        console.log(error)
+        return response.status(400).json({ menssage: 'Hubo un error al intentar realizar la operación', error })
+      }
+    }
+
   async getEquiposTable ({ request, response, view, auth }) {
 
     //Chequea token
@@ -63,14 +95,15 @@ class EquipoController {
       var req = request.all();
 
       req.options = JSON.parse(req.options);
-      
+      console.log(req.options)
       var sortBy = req.options.sortBy;
       var sortDesc = req.options.sortDesc;
       var page = req.options.page;
       var itemsPerPage = req.options.itemsPerPage;
       var filtroTree = req.filtroTree;
       //var desde = new Date('2020-01-01'), hasta = new Date('2020-03-30')
-      var desde = null, hasta = null;
+      var desde = req.desde;
+      var hasta = req.hasta;
       var listSectores = [], auxListSectores = [];
 
       var query = Equipo.query()
@@ -163,17 +196,7 @@ class EquipoController {
   }
 
 
-  /**
-   * Render a form to be used for creating a new equipo.
-   * GET equipos/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async create ({ request, response, view }) {
-  }
+
 
   /**
    * Create/save a new equipo.
@@ -196,7 +219,22 @@ class EquipoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params, request, response, auth }) {
+    try {
+      const user = await auth.getUser()
+      var id = params.id
+      let equipo = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').where('id', id).fetch();
+      return response.status(200).json({ menssage: 'Company', data: equipo });
+    } catch (error) {
+      console.log(error)
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      return response.status(400).json({
+        menssage: 'Grupo no encontrado',
+        id
+      })
+    }
   }
 
   /**
