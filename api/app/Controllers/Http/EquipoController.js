@@ -43,7 +43,6 @@ class EquipoController {
         const user = await auth.getUser();
         let { tag,  descripcion, serie_requerido , sector_id , instrumento_id} = request.all();
         
-        console.log('asdasfdsdgfdsgfd')
         const rules = {
           tag: 'required',
           serie_requerido: 'required',
@@ -257,7 +256,32 @@ class EquipoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params: {id}, request, response , auth }) {
+    try {
+      const user = await auth.getUser()
+      const data = request.only(["tag", "serie_requerido", "sector_id", "instrumento_id", "descripcion"])
+      if (user.rol == 0) {
+        const equipo = await Equipo.find(id);
+        equipo.tag = data.tag || equipo.tag;
+        equipo.serie_requerido = data.serie_requerido || equipo.serie_requerido;
+        equipo.sector_id = data.sector_id || equipo.sector_id;
+        equipo.instrumento_id = data.instrumento_id || equipo.instrumento_id;
+        equipo.descripcion = data.descripcion || equipo.descripcion; 
+        await equipo.save();
+        response.status(200).json({ menssage: 'Equipo modificado con Exito!', data: equipo })
+      }
+      else {
+        response.status(400).json({ menssage: "Usuario sin permisos para realizar la operacion" })
+      }
+    } catch (error) {
+      console.log(error)
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      response.status(400).json({
+        menssage: "Hubo un error al realizar la operación",
+      })
+    }
   }
 
   /**
@@ -268,7 +292,28 @@ class EquipoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, request, response , auth }) {
+    const id = params.id
+    try {
+      const user = await auth.getUser()
+      if (user.rol == 0) {
+
+        const equi = await Equipo.findOrFail(id);
+        await equi.delete();
+        return response.status(200).json({ menssage: 'Equipo eliminado con Exito!' })
+      }
+    } catch (error) {
+      console.log(error)
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      response.status(404).json({
+        message: "Equipo a eliminar no encontrado",
+        id
+      });
+      return;
+    }
+
   }
 }
 

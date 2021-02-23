@@ -35,6 +35,8 @@ Route.group(() => {
 Route.get('/api/v1/formulario' , 'EquipoController.index');
 Route.get('/api/v1/formulario/:id' , 'EquipoController.show');
 Route.post('/api/v1/equipo', 'EquipoController.create');
+Route.put("api/v1/equipo/:id", "EquipoController.update");
+Route.delete("api/v1/equipo/:id", "EquipoController.destroy");
 
 
 // Rutas Instrumentos
