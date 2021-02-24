@@ -1,7 +1,7 @@
 <template>
   <div class="fondo">
     <v-container >
-    <!--             <v-treeview
+    <!--     <v-treeview
               :items="items"
               activatable
               item-key="id"
@@ -19,14 +19,13 @@
           class="mx-auto"
         >
           <v-virtual-scroll
-            :bench="benched"
             :items="items"
             height="530"
-            item-height="64"
+            item-height="50"
           >
             <template v-slot:default="{ item }">
               <v-list-item :key="item.id" class="scrollItem">
-                <v-list-item-action>
+<!--            <v-list-item-action>
                   <v-btn
                     fab
                     small
@@ -35,7 +34,7 @@
                   >
                     {{ item.id }}
                   </v-btn>
-                </v-list-item-action>
+                </v-list-item-action> -->
 
                 <v-list-item-content @click="filtrarTabla(item.id)">
                   <v-list-item-title>
@@ -86,104 +85,38 @@
                   ></v-text-field>
 
                 <v-spacer></v-spacer>
-
-              <!-- Modal Agregar -->
-                  <v-dialog v-model="dialog" max-width="500px">
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        color="primary"
-                        dark
-                        class="mb-2"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        Agregar
-                      </v-btn>
-                    </template>
-
-                    <v-card>
-                      <v-card-title class="headline blue darken-4" style="color:white">
-                        <span >Nuevo</span>
-                      </v-card-title>
-                      <v-card-text>
-                        <v-container>
-                          <v-row>
-                            <v-col cols="12" sm="6" md="4">
-                              <v-text-field
-                                v-model="editedItem.tag"
-                                label="Tag"
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="4">
-                              <v-text-field
-                                v-model="editedItem.descripcion"
-                                label="Descripción"
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="4">
-                              <v-text-field
-                                v-model="editedItem.sector"
-                                label="Sector"
-                              ></v-text-field>
-                            </v-col>
-                            <v-col cols="12" sm="6" md="4">
-                              <v-text-field
-                                v-model="editedItem.encargado"
-                                label="Encargado"
-                              ></v-text-field>
-                            </v-col>
-                          </v-row>
-                        </v-container>
-                      </v-card-text>
-
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="red darken-1" text @click="close">
-                          Cancel
-                        </v-btn>
-                        <v-btn color="green darken-1" text @click="save">
-                          Save
-                        </v-btn>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
-          <!-- Termina Modal Agregar -->
+                <agregar-equipo @click="getDataTable"/>
           <!--  Modal Eliminar  -->
-                  <v-dialog v-model="dialogDelete" max-width="500px">
-                    <v-card>
-                      <v-card-title class="headline"
-                        >Está seguro de que desea eliminar el
-                        equipo?</v-card-title
-                      >
-                      <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" text @click="closeDelete"
-                          >Cancelar</v-btn
-                        >
-                        <v-btn
-                          color="blue darken-1"
-                          text
-                          @click="deleteItemConfirm"
-                          >OK</v-btn
-                        >
-                        <v-spacer></v-spacer>
-                      </v-card-actions>
-                    </v-card>
-                  </v-dialog>
+
          <!--  Termina Modal Eliminar -->
             </v-toolbar>
           </template>
           
               <template v-slot:[`item.tag`]={item} >
-                <nuxt-link to="/formulario" :exact="true">
-                  <v-chip class="tag">{{item.tag}}</v-chip>
+                <nuxt-link  :to="`formulario/${item.id}`"  :exact="true">
+                  <v-tooltip right>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        fab
+                        small
+                        depressed
+                        class="tag"
+                        v-bind="attrs"
+                        v-on="on"
+                      >
+                        {{item.tag}}
+                      </v-btn>
+                    </template>
+                    <span>Ver Formulario</span>
+                  </v-tooltip>
                 </nuxt-link>
+
               </template> 
               <template v-slot:[`item.acciones`]="{ item }">
-                <v-icon small class="mr-2" @click="editItem(item)">
-                  mdi-pencil
-                </v-icon>
-                <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
+                <v-row>
+                  <editar-equipo :id="item.id" class="mr-2"/>
+                  <eliminar-equipo :id="item.id"/>
+                </v-row>
               </template>
             </v-data-table>
           </v-card>
@@ -202,10 +135,16 @@ import axios from '~/plugins/axios'
 import { mapMutations, mapState } from 'vuex'
 import Cookies from 'js-cookie'
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
+import EditarEquipo from "~/components/common/EditarEquipo.vue";
+import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
 export default {
   middleware: 'NOAUTH',
   components:{
-    Filtro
+    Filtro,
+    AgregarEquipo,
+    EditarEquipo,
+    EliminarEquipo,
   },
     data: () => ({
       token: Cookies.get("token"),
@@ -221,13 +160,6 @@ export default {
       dialog: false,
       dialogDelete: false,
       editedIndex: -1,
-      editedItem: {
-        id: '',
-        tag: '',
-        descripcion: '',
-        sector_id: '',
-        empresa: ''
-      },
       defaultItem: {
         tag: '',
         descripcion: '',
@@ -241,7 +173,7 @@ export default {
         { text: 'Estado', value: 'estadoName' },
         { text: 'Próxima', value: 'proximaCalib' },
         { text: 'Encargado', value: 'empresa' },
-        { text: 'Acciones', value: 'acciones', sortable: false}
+        { text: 'Acciones', value: 'acciones', sortable: false, align: 'start'}
       ],
       tableData: []
   }),
@@ -273,10 +205,7 @@ export default {
       await axios
         .get("tablaequipos", { headers: { Authorization: `Bearer ${this.token}`} , params: { options: this.options, buscar: this.txtBuscar, filtroTree: this.filtroTree } })
         .then(res => {
-
-          console.log(res)
           this.totalTableItems = res.data.total;
-
           res.data.tableItemsData.forEach(it => {
             var auxRuta = this.listRutas.find(el => el.i == it.sector_id);
 
@@ -300,12 +229,6 @@ export default {
       this.fillItems();
       this.getDataTable();
     },
-    editItem(item) {
-      this.editedIndex = this.tableData.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialog = true
-    },
-
     deleteItem(item) {
       this.editedIndex = this.tableData.indexOf(item)
       this.editedItem = Object.assign({}, item)

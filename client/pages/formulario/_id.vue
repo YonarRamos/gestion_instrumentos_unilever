@@ -8,7 +8,7 @@
                   <v-container class="py-0">
                     <v-row>
                       <v-col>
-                        <v-card-title class="pt-0"> Formulario Equipos N° </v-card-title>
+                        <v-card-title class="pt-0"> Formulario Equipos N°{{item.tag}} </v-card-title>
                         <v-card-subtitle>
                           Descripción del equipo
                         </v-card-subtitle>
@@ -18,7 +18,7 @@
                         <v-img
                           max-height="150"
                           max-width="250"
-                          src="indus.jpg"
+                          src="../indus.jpg"
                           style="border-radius: 5px;"
                         ></v-img>
                       </v-col>
@@ -41,7 +41,7 @@
                   <v-col cols="12" md="6" class="">
       
                       <v-text-field
-                        v-model="item"
+                        v-model="item.tag"
                         outlined
                         dense
                         disabled
@@ -54,7 +54,7 @@
                   <v-col cols="12" md="6" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.serie"
                           outlined
                           dense
                           disabled
@@ -67,13 +67,11 @@
                   <v-col cols="12" md="6" class="">
 
                         <v-text-field
-                          v-model="item"
+                          v-model="item.fecha_creacion"
                           prepend-inner-icon="mdi-calendar"
                           prepend-icon
                           disabled
                           readonly
-                          v-bind="attrs"
-                          v-on="on"
                           outlined
                           hide-details
                           dense
@@ -85,13 +83,11 @@
                   <v-col cols="12" md="6" class="">
 
                         <v-text-field
-                            v-model="item"
+                            v-model="item.fecha_actualizacion_equipo"
                             prepend-inner-icon="mdi-calendar"
                             prepend-icon
                             disabled
                             readonly
-                            v-bind="attrs"
-                            v-on="on"
                             outlined
                             hide-details
                             dense
@@ -127,7 +123,7 @@
                   <v-col cols="12" md="4" class="">
       
                       <v-text-field
-                        v-model="item"
+                        v-model="item.marca"
                         outlined
                         dense
                         disabled
@@ -141,7 +137,7 @@
                   <v-col cols="12" md="4" class="">
       
                       <v-text-field
-                        v-model="item"
+                        v-model="item.modelo"
                         outlined
                         dense
                         disabled
@@ -155,7 +151,7 @@
                   <v-col cols="12" md="4" class="">
       
                       <v-text-field
-                        v-model="item"
+                        v-model="item.serie_instrumento"
                         outlined
                         dense
                         disabled
@@ -168,7 +164,7 @@
                   <v-col cols="12" md="3" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.rango_de"
                           outlined
                           dense
                           disabled
@@ -181,7 +177,7 @@
                   <v-col cols="12" md="3" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.rango_a"
                           outlined
                           dense
                           disabled
@@ -194,7 +190,7 @@
                   <v-col cols="12" md="3" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.rango_de_normal"
                           outlined
                           dense
                           disabled
@@ -207,7 +203,7 @@
                   <v-col cols="12" md="3" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.rango_a_normal"
                           outlined
                           dense
                           disabled
@@ -220,7 +216,7 @@
                   <v-col cols="12" md="6" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.resolucion"
                           outlined
                           dense
                           disabled
@@ -233,7 +229,7 @@
                   <v-col cols="12" md="6" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.tolerancia"
                           outlined
                           dense
                           disabled
@@ -246,7 +242,7 @@
                   <v-col cols="12" md="4" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.tipo_instrumento"
                           outlined
                           dense
                           disabled
@@ -259,7 +255,7 @@
                   <v-col cols="12" md="4" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.unidad"
                           outlined
                           dense
                           disabled
@@ -272,7 +268,7 @@
                   <v-col cols="12" md="4" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.magnitud"
                           outlined
                           dense
                           disabled
@@ -285,7 +281,7 @@
                   <v-col cols="12" md="4" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.usuario"
                           outlined
                           dense
                           disabled
@@ -298,7 +294,7 @@
                   <v-col cols="12" md="4" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.encargado_calibracion"
                           outlined
                           dense
                           disabled
@@ -312,13 +308,11 @@
                   <v-col cols="12" md="4" class="">
 
                         <v-text-field
-                            v-model="item"
+                            v-model="item.fecha_actualizacion_instrumento"
                             prepend-inner-icon="mdi-calendar"
                             prepend-icon
                             disabled
                             readonly
-                            v-bind="attrs"
-                            v-on="on"
                             outlined
                             hide-details
                             dense
@@ -344,7 +338,7 @@
                   <v-col cols="12" md="6" class="">
       
                       <v-text-field
-                        v-model="item"
+                        v-model="item.sector"
                         outlined
                         dense
                         disabled
@@ -357,7 +351,7 @@
                   <v-col cols="12" md="6" class="">
         
                         <v-text-field
-                          v-model="item"
+                          v-model="item.planta"
                           outlined
                           dense
                           disabled
@@ -373,20 +367,94 @@
           </v-container>
 
           <v-card-actions class="d-flex justify-end">
-            <v-btn
-              color="error"
-              text
-            >
-              Descargar PDF
-            </v-btn>
+            <v-col class="d-flex justify-end">
+              <v-spacer></v-spacer>
+              <btn-pdf :equipo="item" />
+            </v-col>
           </v-card-actions>
         </v-card>
   </v-container>
 </template>
 
 <script>
+import BtnPDF from "~/components/common/btnPDF.vue";
+import axios from '~/plugins/axios';
+import Cookies from 'js-cookie';
+
 export default {
+  components:{
+    BtnPDF
+  },
   layout: 'equipo',
+  data(){
+    return{
+      paramsId:null,
+      equipo:[],
+      item:{
+        tag:"",
+        descripcion:"",
+        serie:"",
+        fecha_creacion:"",
+        fecha_actualizacion_equipo:"",
+        marca:"",
+        modelo:"",
+        serie_instrumento:"",
+        rango_de:"",
+        rango_a:"",
+        rango_de_normal:"",
+        rango_a_normal:"",
+        resolucion:"",
+        tolerancia:"",
+        tipo_instrumento:"",
+        unidad:"",
+        magnitud:"",
+        usuario:"",
+        encargado_calibracion:"",
+        fecha_actualizacion_instrumento:"",
+        sector:"",
+        planta:""
+      }
+    }
+  },
+  methods:{
+    getEquipo(){
+      try {
+        const token = Cookies.get('token');
+
+        axios.get(`formulario/${this.paramsId}`,{
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res)=>{
+        console.log(res.data.data)
+        this.item.tag = res.data.data[0].tag;
+        this.item.serie = res.data.data[0].serie_requerido;
+        this.item.fecha_creacion = res.data.data[0].created_at;
+        this.item.fecha_actualizacion_equipo = res.data.data[0].updated_at;
+        this.item.descripcion = res.data.data[0].descripcion;
+        this.item.marca = res.data.data[0].instrumento.marca;
+        this.item.modelo = res.data.data[0].instrumento.modelo;
+        this.item.serie_instrumento = res.data.data[0].instrumento.serie;
+        this.item.rango_de = res.data.data[0].instrumento.rango_de;
+        this.item.rango_a = res.data.data[0].instrumento.rango_a;
+        this.item.rango_de_normal = res.data.data[0].instrumento.rango_normal_de;
+        this.item.rango_a_normal = res.data.data[0].instrumento.rango_normal_a;
+        this.item.resolucion = res.data.data[0].instrumento.resolucion;
+        this.item.tolerancia = res.data.data[0].instrumento.tolerancia;
+        this.item.encargado_calibracion = res.data.data[0].instrumento.encargado_calibracion;
+        this.item.fecha_actualizacion_instrumento = res.data.data[0].instrumento.updated_at;
+
+        this.item.sector = res.data.data[0].sector.nombre;
+
+      })
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  },
+  created(){
+    this.paramsId = this.$route.params.id;
+    this.getEquipo();
+  },
 }
 </script>
 
