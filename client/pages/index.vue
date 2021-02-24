@@ -86,9 +86,6 @@
 
                 <v-spacer></v-spacer>
                 <agregar-equipo @click="getDataTable"/>
-          <!--  Modal Eliminar  -->
-
-         <!--  Termina Modal Eliminar -->
             </v-toolbar>
           </template>
           
@@ -114,16 +111,14 @@
               </template> 
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row>
-                  <editar-equipo :id="item.id" class="mr-2"/>
-                  <eliminar-equipo :id="item.id"/>
+                  <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
+                  <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
                 </v-row>
               </template>
             </v-data-table>
           </v-card>
-
-
         </v-col>
-      </v-row>   
+      </v-row>
     </v-container>
   </div>
 </template>
@@ -138,13 +133,14 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css'
 import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
+
 export default {
   middleware: 'NOAUTH',
   components:{
     Filtro,
     AgregarEquipo,
-    EditarEquipo,
     EliminarEquipo,
+    EditarEquipo
   },
     data: () => ({
       token: Cookies.get("token"),
@@ -152,7 +148,7 @@ export default {
       items: [],
       itemsSelected: [],
       totalTableItems: 0,
-      loading: true,
+      loading:false,
       options: {},
       txtBuscar: '',
       filtroTree: undefined,
@@ -229,16 +225,6 @@ export default {
       this.fillItems();
       this.getDataTable();
     },
-    deleteItem(item) {
-      this.editedIndex = this.tableData.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogDelete = true
-    },
-    deleteItemConfirm() {
-      this.tableData.splice(this.editedIndex, 1)
-      this.closeDelete()
-    },
-
     close() {
       this.dialog = false
       this.$nextTick(() => {

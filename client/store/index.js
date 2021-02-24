@@ -10,7 +10,8 @@ export const state = () => ({
   },
   dialogPassword: false,
   ots:[],
-  auth: false
+  auth: false,
+  dialogLoading: false
 });
 
 export const mutations = {
@@ -47,6 +48,9 @@ export const mutations = {
     Cookies.remove('lastname')
     Cookies.remove('rol')   
     location.reload();
+  },
+  toggleLoading(state, payload){
+    state.dialogLoading = payload;
   }
 
 };
