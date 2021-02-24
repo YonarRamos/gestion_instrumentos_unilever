@@ -18,6 +18,10 @@
           max-width="400"
           class="mx-auto"
         >
+        <div class="overline ml-3">
+          Filtrar por sector:
+        </div>
+        <v-divider></v-divider>
           <v-virtual-scroll
             :items="items"
             height="530"
@@ -25,17 +29,6 @@
           >
             <template v-slot:default="{ item }">
               <v-list-item :key="item.id" class="scrollItem">
-<!--            <v-list-item-action>
-                  <v-btn
-                    fab
-                    small
-                    depressed
-                    color="primary"
-                  >
-                    {{ item.id }}
-                  </v-btn>
-                </v-list-item-action> -->
-
                 <v-list-item-content @click="filtrarTabla(item.id)">
                   <v-list-item-title>
                     <strong> {{ item.name }}</strong>
@@ -85,6 +78,9 @@
                   ></v-text-field>
 
                 <v-spacer></v-spacer>
+                <v-btn text color="error" @click="limpiarFiltros" class="mr-3 mb-2">
+                  Limpiar Filtros
+                </v-btn>
                 <agregar-equipo @click="getDataTable"/>
             </v-toolbar>
           </template>
@@ -225,6 +221,11 @@ export default {
       this.fillItems();
       this.getDataTable();
     },
+    async limpiarFiltros () {
+      this.filtroTree = undefined;
+      /* this.fillItems(); */
+      this.getDataTable();
+    },
     close() {
       this.dialog = false
       this.$nextTick(() => {
@@ -272,6 +273,10 @@ export default {
 </script>
 
 <style lang="css" scoped>
+.limpiar:hover{
+  color:lightcoral;
+  font-weight:600;
+}
 .scrollItem:hover{
   background: rgb(245, 245, 245);
   cursor: pointer;

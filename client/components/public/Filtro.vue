@@ -77,9 +77,9 @@
               </v-col>
 
               <v-col cols="12" md="4" class="d-flex justify-end align-center"> 
-                <v-btn color="blue" outlined height="40">
+                <v-btn color="grey darken-1" outlined height="40">
                     <v-icon>refresh</v-icon>
-                    Filtrar
+                    Aplicar Filtro
                 </v-btn>
               </v-col>
             </v-row>
