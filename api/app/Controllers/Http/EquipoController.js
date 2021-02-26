@@ -42,7 +42,7 @@ class EquipoController {
       .with('calibracion_tarea.tipo').paginate(page, perPage);
       equipos = equipos.toJSON();
      // console.log(equipos)
-      let arraEquipos = equipos.data.map(item =>{
+     /* let arraEquipos = equipos.data.map(item =>{
         return{
           "id": item.id,
           "tag": item.tag,
@@ -78,7 +78,9 @@ class EquipoController {
         }
       })
       let resp = await Promise.all(arraEquipos);
-      response.status(200).json({ message: 'Listado de Equipos', data: resp })
+       equipos.data = resp.with('calibracion_tarea')*/
+      let data = {...equipos.data}
+      response.status(200).json({ message: 'Listado de Equipos', data: data })
     } catch (error) {
       console.log(error)
       return response.status(400).json({ menssage: 'Hubo un error al realizar la operación', error })
@@ -286,7 +288,9 @@ class EquipoController {
       equipos = equipos.toJSON();
       //console.log(equipos)
       let arraEquipos = equipos.map(item =>{
-        return{
+        return {'detalleEquipos':{
+
+        
           "id": item.id,
           "tag": item.tag,
           "fecha_creacion_equipo": item.created_at,
@@ -313,12 +317,19 @@ class EquipoController {
           "instrumento_update": item.instrumento.updated_at,
           "instrumento_creado_usuario": item.instrumento.encargado.nombre,
           "instrumento_encargado_calibracion": item.instrumento.encargado.empresa,
-          "calibracion_tarea_id": item.calibracion_tarea[0].id,
-          "calibracion_tarea_tipo": item.calibracion_tarea[0].tipo.nombre,
-          "calibracion_tarea_frecuencia": item.calibracion_tarea[0].frecuencia,
-          "calibracion_tarea_ult_efectuada": item.calibracion_tarea[0].ult_efectuado,
-          "calibracion_tarea_proxima": item.calibracion_tarea[0].proxima,
+         
+        },'calibracion': item.calibracion_tarea.map(e=>{
+        return{
+          "calibracion_tarea_id": e.id,
+          "calibracion_tarea_tipo": e.tipo.nombre,
+          "calibracion_tarea_frecuencia": e.frecuencia,
+          "calibracion_tarea_ult_efectuada": e.ult_efectuado,
+          "calibracion_tarea_proxima": e.proxima,
         }
+        })  
+        
+       
+      }
       })
       let resp = await Promise.all(arraEquipos);
       //let equipo = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').where('id', id).fetch();
