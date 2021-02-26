@@ -14,9 +14,9 @@ class Equipo extends Model {
     }
 
     instrumento () {
-        return this.hasOne('App/Models/Instrumento', 'instrumento_id', 'id')
+        return this.hasOne('App/Models/Instrumento', 'instrumento_id', 'id' , 'magnitud_id' , 'id')
     }
-
+   
     calibracion_tarea () {
         return this.manyThrough('App/Models/Instrumento', 'tareaCalibracion', 'instrumento_id', 'id')
       }

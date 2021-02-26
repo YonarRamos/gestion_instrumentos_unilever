@@ -8,7 +8,6 @@ class UserController {
 
     async login ({ auth, request, response }) {
         try {
-
             const { email, password } = request.all()
             var datosResp = {}
             datosResp = await auth.attempt(email, password);

@@ -34,7 +34,10 @@ class Instrumento extends Model {
     }
 
     tareaCalibracion () {
-        return this.hasMany('App/Models/CalibracionTarea', 'id', 'instrumento_id')
+        return this.hasOne('App/Models/CalibracionTarea', 'id', 'instrumento_id')
+    }
+    calibracion_tipo () {
+        return this.hasOne('App/Models/CalibracionTipo', 'calibracion_tipo_id','id')
     }
 }
 

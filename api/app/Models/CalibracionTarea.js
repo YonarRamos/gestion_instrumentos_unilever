@@ -23,7 +23,7 @@ class CalibracionTarea extends Model {
         return this.belongsTo('App/Models/Instrumento', 'instrumento_id', 'id')
       }
     
-    calibracion_tipo () {
+    tipo () {
         return this.hasOne('App/Models/CalibracionTipo', 'calibracion_tipo_id','id')
     }
 }

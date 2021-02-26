@@ -47,7 +47,7 @@ module.exports = {
       password: Env.get('DB_PASSWORD', ''), 
       database: Env.get('DB_DATABASE', 'adonis'), 
       options: {
-        encrypt: Env.get('DB_ENCRYPT', true) 
+        encrypt: Env.get('DB_ENCRYPT', false) 
       }
     }
   },

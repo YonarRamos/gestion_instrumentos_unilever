@@ -29,8 +29,53 @@ class EquipoController {
       //seteo valores por defectos
       page = page || 1
       perPage = perPage || 10
-      let equipos = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').paginate(page, perPage);
-      response.status(200).json({ message: 'Listado de Equipos', data: equipos })
+      let equipos = await Equipo.query()
+      .with('sector')
+      .with('sector.planta')
+      .with('instrumento.magnitud')
+      .with('instrumento.encargado')
+      .with('instrumento.estado_rel')
+      .with('instrumento.unidad')
+      .with('instrumento.tipo')
+      .with('calibracion_tarea')
+      .with('calibracion_tarea.tipo').paginate(page, perPage);
+      equipos = equipos.toJSON();
+     // console.log(equipos)
+      let arraEquipos = equipos.data.map(item =>{
+        return{
+          "id": item.id,
+          "tag": item.tag,
+          "descripcion": item.descripcion,
+          "serie_requerido": item.serie_requerido,
+          "sector_name": item.sector.nombre,
+          "sector_planta": item.sector.planta.nombre,
+          "intrumento_id": item.instrumento.id,
+          "intrumento_estado": item.instrumento.estado_rel.nombre,
+          "instrumento_marca":item.instrumento.marca,
+          "instrumento_modelo": item.instrumento.modelo,
+          "instrumento_serie": item.instrumento.serie,
+          "instrumento_rango_de": item.instrumento.rango_de,
+          "instrumento_rango_a": item.instrumento.tango_a,
+          "instrumento_rango_normal_de": item.instrumento.instrumento_rango_normal_de,
+          "instrumento_rango_normal_a": item.instrumento_rango_normal_a,
+          "instrumento_resolucion":item.instrumento.resolucion,
+          "instrumento_tolerancia":item.instrumento.tolerancia,
+          "tipo_instrumento": item.instrumento.tipo.nombre,
+          "instrumento_unidad": item.instrumento.unidad.nombre,
+          "instrumento_magnitud": item.instrumento.magnitud.nombre,
+          "instrumento_create": item.instrumento.created_at,
+          "instrumento_update": item.instrumento.updated_at,
+          "instrumento_creado_usuario": item.instrumento.encargado.nombre,
+          "instrumento_encargado_calibracion": item.instrumento.encargado.empresa,
+          "calibracion_tarea_id": item.calibracion_tarea[0].id,
+          "calibracion_tarea_tipo": item.calibracion_tarea[0].tipo.nombre,
+          "calibracion_tarea_frecuencia": item.calibracion_tarea[0].frecuencia,
+          "calibracion_tarea_ult_efectuada": item.calibracion_tarea[0].ult_efectuado,
+          "calibracion_tarea_proxima": item.calibracion_tarea[0].proxima,
+        }
+      })
+      let resp = await Promise.all(arraEquipos);
+      response.status(200).json({ message: 'Listado de Equipos', data: resp })
     } catch (error) {
       console.log(error)
       return response.status(400).json({ menssage: 'Hubo un error al realizar la operación', error })
@@ -222,15 +267,64 @@ class EquipoController {
     try {
       const user = await auth.getUser()
       var id = params.id
-      let equipo = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').where('id', id).fetch();
-      return response.status(200).json({ menssage: 'Equipo', data: equipo });
+      
+      //const voucher = await Voucher.query().fetch()
+      let equipos = await Equipo.query()
+      .with('sector')
+      .with('sector.planta')
+      .with('instrumento.magnitud')
+      .with('instrumento.encargado')
+      .with('instrumento.estado_rel')
+      .with('instrumento.unidad')
+      .with('instrumento.tipo')
+      .with('calibracion_tarea')
+      .with('calibracion_tarea.tipo')
+      .where('id', id).fetch();
+      equipos = equipos.toJSON();
+      //console.log(equipos)
+      let arraEquipos = equipos.map(item =>{
+        return{
+          "id": item.id,
+          "tag": item.tag,
+          "descripcion": item.descripcion,
+          "serie_requerido": item.serie_requerido,
+          "sector_name": item.sector.nombre,
+          "sector_planta": item.sector.planta.nombre,
+          "intrumento_id": item.instrumento.id,
+          "intrumento_estado": item.instrumento.estado_rel.nombre,
+          "instrumento_marca":item.instrumento.marca,
+          "instrumento_modelo": item.instrumento.modelo,
+          "instrumento_serie": item.instrumento.serie,
+          "instrumento_rango_de": item.instrumento.rango_de,
+          "instrumento_rango_a": item.instrumento.tango_a,
+          "instrumento_rango_normal_de": item.instrumento.instrumento_rango_normal_de,
+          "instrumento_rango_normal_a": item.instrumento_rango_normal_a,
+          "instrumento_resolucion":item.instrumento.resolucion,
+          "instrumento_tolerancia":item.instrumento.tolerancia,
+          "tipo_instrumento": item.instrumento.tipo.nombre,
+          "instrumento_unidad": item.instrumento.unidad.nombre,
+          "instrumento_magnitud": item.instrumento.magnitud.nombre,
+          "instrumento_create": item.instrumento.created_at,
+          "instrumento_update": item.instrumento.updated_at,
+          "instrumento_creado_usuario": item.instrumento.encargado.nombre,
+          "instrumento_encargado_calibracion": item.instrumento.encargado.empresa,
+          "calibracion_tarea_id": item.calibracion_tarea[0].id,
+          "calibracion_tarea_tipo": item.calibracion_tarea[0].tipo.nombre,
+          "calibracion_tarea_frecuencia": item.calibracion_tarea[0].frecuencia,
+          "calibracion_tarea_ult_efectuada": item.calibracion_tarea[0].ult_efectuado,
+          "calibracion_tarea_proxima": item.calibracion_tarea[0].proxima,
+        }
+      })
+      let resp = await Promise.all(arraEquipos);
+      //let equipo = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').where('id', id).fetch();
+      return response.status(200).json({ menssage: 'Equipo', data: resp });
     } catch (error) {
       console.log(error)
       if (error.name == 'InvalidJwtToken') {
         return response.status(400).json({ menssage: 'Usuario no Valido' })
       }
       return response.status(400).json({
-        menssage: 'Grupo no encontrado',
+        menssage: 'Equipo no encontrado',
         id
       })
     }
