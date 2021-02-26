@@ -32,6 +32,7 @@ class EquipoController {
       let equipos = await Equipo.query()
       .with('sector')
       .with('sector.planta')
+      //.with('instrumento')
       .with('instrumento.magnitud')
       .with('instrumento.encargado')
       .with('instrumento.estado_rel')
@@ -45,6 +46,8 @@ class EquipoController {
         return{
           "id": item.id,
           "tag": item.tag,
+          "fecha_creacion_equipo": item.created_at,
+          "fecha_update_equipo": item.updated_at,
           "descripcion": item.descripcion,
           "serie_requerido": item.serie_requerido,
           "sector_name": item.sector.nombre,
@@ -55,9 +58,9 @@ class EquipoController {
           "instrumento_modelo": item.instrumento.modelo,
           "instrumento_serie": item.instrumento.serie,
           "instrumento_rango_de": item.instrumento.rango_de,
-          "instrumento_rango_a": item.instrumento.tango_a,
-          "instrumento_rango_normal_de": item.instrumento.instrumento_rango_normal_de,
-          "instrumento_rango_normal_a": item.instrumento_rango_normal_a,
+          "instrumento_rango_a": item.instrumento.rango_a,
+          "instrumento_rango_normal_de": item.instrumento.rango_normal_de,
+          "instrumento_rango_normal_a": item.rango_normal_a,
           "instrumento_resolucion":item.instrumento.resolucion,
           "instrumento_tolerancia":item.instrumento.tolerancia,
           "tipo_instrumento": item.instrumento.tipo.nombre,
@@ -286,6 +289,8 @@ class EquipoController {
         return{
           "id": item.id,
           "tag": item.tag,
+          "fecha_creacion_equipo": item.created_at,
+          "fecha_update_equipo": item.updated_at,
           "descripcion": item.descripcion,
           "serie_requerido": item.serie_requerido,
           "sector_name": item.sector.nombre,
@@ -296,9 +301,9 @@ class EquipoController {
           "instrumento_modelo": item.instrumento.modelo,
           "instrumento_serie": item.instrumento.serie,
           "instrumento_rango_de": item.instrumento.rango_de,
-          "instrumento_rango_a": item.instrumento.tango_a,
-          "instrumento_rango_normal_de": item.instrumento.instrumento_rango_normal_de,
-          "instrumento_rango_normal_a": item.instrumento_rango_normal_a,
+          "instrumento_rango_a": item.instrumento.rango_a,
+          "instrumento_rango_normal_de": item.instrumento.rango_normal_de,
+          "instrumento_rango_normal_a": item.rango_normal_a,
           "instrumento_resolucion":item.instrumento.resolucion,
           "instrumento_tolerancia":item.instrumento.tolerancia,
           "tipo_instrumento": item.instrumento.tipo.nombre,
