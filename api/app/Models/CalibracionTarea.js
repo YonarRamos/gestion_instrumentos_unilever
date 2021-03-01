@@ -4,6 +4,13 @@
 const Model = use('Model')
 
 class CalibracionTarea extends Model {
+    static get createdAtColumn() {
+        return null;
+    }
+        
+    static get updatedAtColumn() {
+        return null;
+    }
 
     static get table () {
         return 'calibracion_tarea'
