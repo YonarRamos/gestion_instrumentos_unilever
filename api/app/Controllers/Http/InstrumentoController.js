@@ -42,15 +42,60 @@ class InstrumentoController {
   async create ({ request, response, view }) {
   }
 
-  /**
-   * Create/save a new instrumento.
-   * POST instrumentos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
+  async store ({ request, response ,auth}) {
+    
+    try {
+      const user = await auth.getUser();
+      let {   marca, modelo , serie , rango_de , rango_a , rango_normal_de , rango_normal_a , resolucion , tolerancia , tipo_id , unidad_id , magnitud_id , encargado_calibracion} = request.all();
+       // console.log( marca, modelo , serie , rango_de , rango_a , rango_normal_de , rango_normal_a , resolucion , tolerancia , tipo_id , unidad_id , magnitud_id , encargado_calibracion)
+      const rules = {
+        marca: 'required',
+        modelo: 'required',
+        serie: 'required',
+        rango_de: 'required',
+        rango_a: 'required',
+        rango_normal_de: 'required',
+        rango_normal_a: 'required',
+        resolucion: 'required',
+        tolerancia: 'required',
+        tipo_id: 'required',
+        unidad_id: 'required',
+        magnitud_id: 'required',
+        encargado_calibracion: 'required'
+      }
+      let validation = await validate({ marca, modelo , serie , rango_de , rango_a , rango_normal_de , rango_normal_a , resolucion , tolerancia , tipo_id , unidad_id , magnitud_id , encargado_calibracion }, rules);
+      if (validation.fails()) {
+        return response.status(404).json({ message: "Datos Insufiente" });
+      }
+      if(user.rol == 0){
+        const instrumento = await Instrumento.create({
+          estado: 1,
+          marca,
+          serie,
+          modelo,
+          rango_de,
+          rango_a,
+          rango_normal_de,
+          rango_normal_a,
+          resolucion,
+          tolerancia,
+          tipo_id,
+          unidad_id,
+          magnitud_id,
+          creado_usuario: encargado_calibracion,
+          encargado_calibracion,
+          created_at :  moment().format('YYYY-MM-DD HH:mm:ss'),
+          updated_at:moment().format('YYYY-MM-DD HH:mm:ss'),
+        })
+
+        return response.status(200).json({ message: "Instrumento creado con exito!", data: instrumento})
+      }else{
+        return response.status(400).json({ menssage: "Usuario sin permiso suficiente para realizar esta operacion!" })
+      }
+    } catch (error) {
+      console.log(error)
+      response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
+    }
   }
 
   /**

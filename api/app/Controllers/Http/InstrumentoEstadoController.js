@@ -1,23 +1,29 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with instrumentoestados
- */
+const { validate } = use('Validator');
+const User = use('App/Models/User');
+const InstrumentoEstado = use('App/Models/InstrumentoEstado');
+var moment = require('moment');
+const Database = use('Database')
 class InstrumentoEstadoController {
-  /**
-   * Show a list of all instrumentoestados.
-   * GET instrumentoestados
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+
+  async index ({ request, response, view , auth}) {
+     //Chequea token
+     try {
+      await auth.check();
+    }
+    catch (error)
+    {
+      return response.status(401).json('Acceso no autorizado.');
+    }
+    try {
+      var query = InstrumentoEstado.query();
+      let estado = await InstrumentoEstado.query().fetch();
+      response.status(200).json({ menssage: 'Estado', data: estado })
+    } catch (error) {
+      console.log(error)
+      response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
+    }
   }
 
   /**

@@ -6,6 +6,25 @@ const Response = use('App/Models/Response');
 
 class UserController {
 
+    async index({auth , response, request}){
+         //Chequea token
+     try {
+        await auth.check();
+      }
+      catch (error)
+      {
+        return response.status(401).json('Acceso no autorizado.');
+      }
+      try {
+        var query = User.query();
+        let user = await User.query().fetch();
+        response.status(200).json({ menssage: 'Usuario', data: user })
+      } catch (error) {
+        console.log(error)
+        response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
+      }
+    }
+
     async login ({ auth, request, response }) {
         try {
             const { email, password } = request.all()

@@ -1,23 +1,29 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with unidads
- */
+const { validate } = use('Validator');
+const User = use('App/Models/User');
+const Unidad = use('App/Models/Unidad');
+var moment = require('moment');
+const Database = use('Database')
 class UnidadController {
-  /**
-   * Show a list of all unidads.
-   * GET unidads
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  
+  async index ({ request, response, view , auth}) {
+     //Chequea token
+     try {
+      await auth.check();
+    }
+    catch (error)
+    {
+      return response.status(401).json('Acceso no autorizado.');
+    }
+    try {
+      var query = Unidad.query();
+      let uni = await Unidad.query().fetch();
+      response.status(200).json({ menssage: 'Unidad', data: uni })
+    } catch (error) {
+      console.log(error)
+      response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
+    }
   }
 
   /**
