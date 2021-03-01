@@ -40,7 +40,28 @@ Route.delete("api/v1/equipo/:id", "EquipoController.destroy");
 
 
 // Rutas Instrumentos
-
 Route.get('/api/v1/instrumento' , 'InstrumentoController.index');
+Route.post('/api/v1/instrumento' , 'InstrumentoController.store');
 
 
+//Rutas get tipo Instrumento
+Route.get('/api/v1/instrumentoTipo' , 'InstrumentoTipoController.index');
+
+//Rutas  Instrumento Estado
+Route.get('/api/v1/instrumentoEstado' , 'InstrumentoEstadoController.index');
+
+//Rutas  Unidad
+Route.get('/api/v1/Unidad' , 'UnidadController.index');
+
+//Rutas  magnitud
+Route.get('/api/v1/Magnitud' , 'MagnitudController.index');
+
+//Rutas users
+Route.get('/api/v1/User' , 'UserController.index');
+
+//Rutas Tarea Realizada 
+Route.get('/api/v1/TareaRealizada' , 'CalibracionTareaRealizadaController.index');
+
+//rutas pruebas img & pdf
+
+Route.post('/api/v1/pruebas' , 'PruebasController.index');

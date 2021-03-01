@@ -442,7 +442,11 @@
             <v-card color="#FAFAFA"> 
               <v-container>
               <div class="overline">
+<<<<<<< HEAD
                 Calibración Tarea Realizada
+=======
+               Calibracion Tarea Realizada
+>>>>>>> 8003c6d33bc5cb4e19544b990b86d9511e9afba7
               </div>
               <v-divider></v-divider>
 

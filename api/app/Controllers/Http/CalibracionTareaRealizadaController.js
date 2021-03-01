@@ -1,34 +1,31 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with calibraciontarearealizadas
- */
+const { validate } = use('Validator');
+const User = use('App/Models/User');
+const CalibracionTareaRealizada = use('App/Models/CalibracionTareaRealizada');
+var moment = require('moment');
+const Database = use('Database')
 class CalibracionTareaRealizadaController {
-  /**
-   * Show a list of all calibraciontarearealizadas.
-   * GET calibraciontarearealizadas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
-  async index ({ request, response, view }) {
+  
+  async index ({ request, response, view , auth}) {
+     //Chequea token
+     try {
+      await auth.check();
+    }
+    catch (error)
+    {
+      return response.status(401).json('Acceso no autorizado.');
+    }
+    try {
+      var query = CalibracionTareaRealizada.query();
+      let TareaRealizada = await CalibracionTareaRealizada.query().fetch();
+      response.status(200).json({ menssage: 'Tarea Realizada', data: TareaRealizada })
+    } catch (error) {
+      console.log(error)
+      response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
+    }
   }
 
-  /**
-   * Render a form to be used for creating a new calibraciontarearealizada.
-   * GET calibraciontarearealizadas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
   async create ({ request, response, view }) {
   }
 

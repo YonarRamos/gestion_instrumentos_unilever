@@ -39,6 +39,7 @@ class Instrumento extends Model {
     calibracion_tipo () {
         return this.hasOne('App/Models/CalibracionTipo', 'calibracion_tipo_id','id')
     }
+    
 }
 
 module.exports = Instrumento
