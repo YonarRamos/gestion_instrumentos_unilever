@@ -58,13 +58,14 @@ Route.get('/api/v1/Magnitud' , 'MagnitudController.index');
 
 //Rutas users
 Route.get('/api/v1/User' , 'UserController.index');
-
+//Rutas users
+Route.get('/api/v1/calibracionTipo' , 'calibracionTipoController.index');
 //rutas tarea calibracion
-
 Route.post('/api/v1/calibracion' , 'CalibracionTareaController.store');
 //Rutas Tarea Realizada 
 Route.get('/api/v1/TareaRealizada' , 'CalibracionTareaRealizadaController.index');
 
 //rutas pruebas img & pdf
 Route.post('/api/v1/pruebas' , 'EquipoController.prueba');
+Route.get('/api/v1/pruebas/:FileName' , 'EquipoController.index');
 Route.post('/api/v1/pruebasPDF' , 'EquipoController.prueba1');

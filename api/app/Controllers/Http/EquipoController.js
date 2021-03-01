@@ -11,10 +11,43 @@ const { validate } = use('Validator');
 const User = use('App/Models/User');
 var moment = require('moment');
 const Database = use('Database');
-const Helpers = use('Helpers')
+const Helpers = use('Helpers');
+const Drive = use('Drive');
 
 class EquipoController {
- 
+  async index({request, response ,params  , auth}){
+    try{
+    //const user = await auth.getUser()
+    var query = Equipo.query();
+    var {
+        page,
+        perPage,
+    } = request.all()
+    // Seteo valores por defectos
+    page = page || 1
+    perPage = perPage || 10
+
+
+    const e = await Equipo.query().paginate(page, perPage);
+    const filePath = `uploads/${params.FileName}`;
+    console.log(filePath)
+        const isExist = await Drive.exists(filePath);
+        
+        if (isExist) {
+            return response.download(Helpers.tmpPath(filePath));
+            
+        }
+        return 'File does not exist';
+   // response.status(200).json({ menssage: 'Listado de Usuarios', data: e })
+} catch (error) {
+    console.log(error)
+    if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+    }
+    response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
+}
+
+  }
     async create({request, response , auth}){
        
       try {
