@@ -1,34 +1,17 @@
 'use strict'
 
-/** @typedef {import('@adonisjs/framework/src/Request')} Request */
-/** @typedef {import('@adonisjs/framework/src/Response')} Response */
-/** @typedef {import('@adonisjs/framework/src/View')} View */
-
-/**
- * Resourceful controller for interacting with calibraciontareas
- */
+const { validate } = use('Validator');
+const User = use('App/Models/User');
+const CalibracionTarea = use('App/Models/CalibracionTarea');
+const CalibracionTareaRealizada = use('App/Models/CalibracionTareaRealizada');
+var moment = require('moment');
+const Database = use('Database')
 class CalibracionTareaController {
-  /**
-   * Show a list of all calibraciontareas.
-   * GET calibraciontareas
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
+ 
   async index ({ request, response, view }) {
   }
 
-  /**
-   * Render a form to be used for creating a new calibraciontarea.
-   * GET calibraciontareas/create
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   * @param {View} ctx.view
-   */
+  
   async create ({ request, response, view }) {
   }
 
@@ -40,7 +23,39 @@ class CalibracionTareaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response , auth}) {
+    try {
+      const user = await auth.getUser();
+      let { instrumento_id,  calibracion_tipo_id,  frecuencia , proxima  } = request.all();
+      const rules = {
+        instrumento_id: 'required',
+        calibracion_tipo_id: 'required',
+        frecuencia: 'required',
+        proxima: 'required'
+      }
+      let validation = await validate({ instrumento_id, calibracion_tipo_id,  frecuencia, proxima }, rules);
+      if (validation.fails()) {
+        return response.status(404).json({ message: "Datos Insufiente" });
+      }
+      if(user.rol == 0){
+        const calibracionTarea = await CalibracionTarea.create({
+        instrumento_id,
+        calibracion_tipo_id,
+        frecuencia,
+        ult_efectuado: moment().format('YYYY-MM-DD HH:mm:ss'),
+        proxima
+      
+      })
+      return response.status(200).json({ message: "Equipo creado con exito!", data: calibracionTarea})
+     }else{
+      return response.status(400).json({ menssage: "Usuario sin permiso suficiente para realizar esta operacion!" })
+     }
+
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json({ menssage: 'Hubo un error al intentar realizar la operación', error })
+    }
+
   }
 
   /**
@@ -75,7 +90,12 @@ class CalibracionTareaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params, request, response , auth}) {
+    try {
+      
+    } catch (error) {
+      
+    }
   }
 
   /**

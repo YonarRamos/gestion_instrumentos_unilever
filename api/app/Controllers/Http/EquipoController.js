@@ -10,7 +10,8 @@ const Query = require("../../Utils/Query");
 const { validate } = use('Validator');
 const User = use('App/Models/User');
 var moment = require('moment');
-const Database = use('Database')
+const Database = use('Database');
+const Helpers = use('Helpers')
 
 class EquipoController {
  
@@ -282,7 +283,69 @@ class EquipoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async edit ({ params, request, response, view }) {
+  async prueba ({ params, request, response, auth }) {
+    try {
+      const user = await auth.getUser();
+      const img = request.file('img', {
+        type: ['image'],
+        size: '2mb'
+      });
+      console.log(img)
+      await img.move(Helpers.publicPath('uploads'),{
+        name: `avatar-1.jpg`,
+        overwrite: true
+      })
+      if (user.rol == 1) {
+        const newEquipo = {
+          description,
+          area_de_atencion,
+          formation_academica,
+          modelo_de_trabajo,
+          experiencia_profesional,
+          Sobre_my,
+          idiomas,
+          user_id,
+          img: 'avatar-julio.jpg'
+        }
+        const profesional = await Profesional.create(newEquipo);
+        return response.status(200).json(new Response(true, 'Profesional Cargado con exito!', profesional))
+      }
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json('Hubo un error en el proceso ' , error)
+    }
+  }
+  async prueba1 ({ params, request, response, auth }) {
+    try {
+      const user = await auth.getUser();
+      const img = request.file('img', {
+        type: ['pdf'],
+        size: '4mb'
+      });
+      console.log(img)
+      await img.move(Helpers.publicPath('Pdf'),{
+        name: `avatar-1.pdf`,
+        overwrite: true
+      })
+      if (user.rol == 1) {
+        const newEquipo = {
+          description,
+          area_de_atencion,
+          formation_academica,
+          modelo_de_trabajo,
+          experiencia_profesional,
+          Sobre_my,
+          idiomas,
+          user_id,
+          img: 'avatar-julio.pdf'
+        }
+        const profesional = await Profesional.create(newEquipo);
+        return response.status(200).json(new Response(true, 'Profesional Cargado con exito!', profesional))
+      }
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json('Hubo un error en el proceso ' , error)
+    }
   }
 
   /**
