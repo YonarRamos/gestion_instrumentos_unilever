@@ -473,7 +473,7 @@
             <v-card color="#FAFAFA"> 
               <v-container>
               <div class="overline">
-                Sector del Equipo
+               Calibracion Tarea Realizada
               </div>
               <v-divider></v-divider>
 
