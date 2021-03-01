@@ -45,7 +45,7 @@
 <v-menu bottom left>
         <template v-slot:activator="{ on, attrs }">
           <v-btn dark icon v-bind="attrs" v-on="on">
-            <v-img max-width="40px" max-height="40px" src="user2.png" />
+            <v-img max-width="40px" max-height="40px" src="../user2.png" />
           </v-btn>
         </template>
 

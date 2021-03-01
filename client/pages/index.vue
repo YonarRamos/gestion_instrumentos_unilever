@@ -1,47 +1,48 @@
 <template>
   <div class="fondo">
     <v-container >
-    <!--     <v-treeview
-              :items="items"
+      <v-row>
+        <v-col cols="3">
+            <div>
+
+            <v-treeview
+              rounded
+              hoverable
               activatable
+              :items="items"
               item-key="id"
               v-on:update:active="filtrarTabla"
+              style="cursor:pointer;"
+            />
+    <!--         <v-card
+              elevation="3"
+              max-width="400"
+              class="mx-auto"
             >
-            </v-treeview>
-   -->
-  
-<v-row>
-  <v-col cols="3">
-      <div>
-        <v-card
-          elevation="3"
-          max-width="400"
-          class="mx-auto"
-        >
-        <div class="overline ml-3">
-          Filtrar por sector:
-        </div>
-        <v-divider></v-divider>
-          <v-virtual-scroll
-            :items="items"
-            height="530"
-            item-height="50"
-          >
-            <template v-slot:default="{ item }">
-              <v-list-item :key="item.id" class="scrollItem">
-                <v-list-item-content @click="filtrarTabla(item.id)">
-                  <v-list-item-title>
-                    <strong> {{ item.name }}</strong>
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
+            <div class="overline ml-3">
+              Filtrar por sector:
+            </div>
+            <v-divider></v-divider>
+              <v-virtual-scroll
+                :items="items"
+                height="530"
+                item-height="50"
+              >
+                <template v-slot:default="{ item }">
+                  <v-list-item :key="item.id" class="scrollItem">
+                    <v-list-item-content @click="filtrarTabla(item.id)">
+                      <v-list-item-title>
+                        <strong> {{ item.name }}</strong>
+                      </v-list-item-title>
+                    </v-list-item-content>
+                  </v-list-item>
 
-              <v-divider></v-divider>
-            </template>
-          </v-virtual-scroll>
-        </v-card>
-      </div>
-  </v-col>
+                  <v-divider></v-divider>
+                </template>
+              </v-virtual-scroll>
+            </v-card>-->
+          </div> 
+      </v-col>
      
   <v-col cols="9">        
           <v-card>
@@ -86,7 +87,7 @@
           </template>
           
               <template v-slot:[`item.tag`]={item} >
-                <nuxt-link  :to="`formulario/${item.id}`"  :exact="true">
+                <nuxt-link  :to="`detalle_equipo/${item.id}`"  :exact="true">
                   <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -100,13 +101,13 @@
                         {{item.tag}}
                       </v-btn>
                     </template>
-                    <span>Ver Formulario</span>
+                    <span>Ver Detalle</span>
                   </v-tooltip>
                 </nuxt-link>
 
               </template> 
               <template v-slot:[`item.acciones`]="{ item }">
-                <v-row>
+                <v-row class="d-flex justify-center">
                   <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
                   <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
                 </v-row>
