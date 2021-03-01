@@ -61,3 +61,7 @@ Route.get('/api/v1/User' , 'UserController.index');
 
 //Rutas Tarea Realizada 
 Route.get('/api/v1/TareaRealizada' , 'CalibracionTareaRealizadaController.index');
+
+//rutas pruebas img & pdf
+
+Route.post('/api/v1/pruebas' , 'PruebasController.index');
