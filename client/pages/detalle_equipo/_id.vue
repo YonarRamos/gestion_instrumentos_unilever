@@ -458,8 +458,10 @@
                             height="420"
                             >
                               <template v-slot:[`item.certificado`]={item}>
-                                <v-btn icon fab small :color="item.certificado ? 'success' : 'gray'" @click="show(item)"><v-icon>verified</v-icon></v-btn>
                                 <agregar-certificado  @certificar="certificar,actualizarCertificado(item)" ref="cert" @click="show"/>
+                                <v-btn icon fab small :color="item.certificado ? 'success' : 'gray'" @click="show(item)"><v-icon>verified</v-icon></v-btn>
+
+
                               </template>
                             </v-data-table>
                         </v-card>
@@ -734,8 +736,8 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
-        console.log('Equipos res:', res.data.data)
-        this.item = res.data.data[0];
+        console.log('Equipos res:', res.data.data[0].detalleEquipos)
+        this.item = res.data.data[0].detalleEquipos;
 /*      this.item.tag = res.data.data[0].tag;
         this.item.serie = res.data.data[0].serie_requerido;
         this.item.fecha_creacion = res.data.data[0].created_at;
