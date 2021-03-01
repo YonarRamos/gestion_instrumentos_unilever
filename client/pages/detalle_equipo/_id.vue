@@ -170,71 +170,26 @@
           <v-container >
             <v-card color="#FAFAFA"> 
               <v-container>
-
-                <v-row>
-                  <v-col cols="12" sm="8">
-                    <v-row>
-                      <v-col cols="10">
-                        <div class="overline">
-                          Instrumentos del Equipo
-                        </div>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                      <v-col cols="2 d-flex justify-end pt-2">
-                        <v-tooltip bottom>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn 
-                            depressed 
-                            x-small 
-                            height="30" 
-                            color="info"
-                            v-bind="attrs"
-                            v-on="on"
-                            >
-                              <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                          </template>
-                          <span>Agregar Instrumento</span>
-                        </v-tooltip>
-                        
-                      </v-col>
-                    </v-row>
-                    <v-divider></v-divider>
-                  </v-col>
-
-                  <v-col cols="12" sm="4">
-                    <v-row>
-                      <v-col cols="10">
-                        <div class="overline">
-                          Tareas de Calibración
-                        </div>
-                      </v-col>
-                      <v-spacer></v-spacer>
-                      <v-col cols="2 d-flex justify-end pt-2">
-                        <v-tooltip bottom>
-                          <template v-slot:activator="{ on, attrs }">
-                            <v-btn 
-                            depressed 
-                            x-small 
-                            height="30" 
-                            color="info"
-                            v-bind="attrs"
-                            v-on="on"
-                            >
-                              <v-icon>mdi-plus</v-icon>
-                            </v-btn>
-                          </template>
-                          <span>Agregar Tarea</span>
-                        </v-tooltip>
-                        
-                      </v-col>
-                    </v-row>
-                    <v-divider></v-divider>
-                  </v-col>
-                </v-row>
-
                 <v-row class="mt-2" >
                  <v-col cols="12" sm="8">
+
+                    <v-row>
+                      <v-col>
+                        <v-row>
+                          <v-col cols="10">
+                            <div class="overline">
+                              Instrumentos del Equipo
+                            </div>
+                          </v-col>
+                          <v-spacer></v-spacer>
+                          <v-col cols="2">
+                                <agregar-instrumento />                       
+                          </v-col>
+                        </v-row>
+                        <v-divider></v-divider>
+                      </v-col>
+                    </v-row>
+
                     <v-row>
                         <v-col cols="6" >
   
@@ -450,7 +405,19 @@
                     </v-row>
                  </v-col>
                  <v-col cols="12" sm="4">
-                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;">
+                    <v-row>
+                      <v-col cols="10">
+                        <div class="overline">
+                          Tareas de Calibración
+                        </div>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-col cols="2 d-flex justify-end pt-2">
+                        <agregar-calibracion/>
+                      </v-col>
+                    </v-row>
+                      <v-divider></v-divider>
+                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;" class="mt-2">
                             <v-data-table
                             :headers="headers"
                             :items="desserts"
@@ -475,7 +442,7 @@
             <v-card color="#FAFAFA"> 
               <v-container>
               <div class="overline">
-                Sector del Equipo
+                Calibración Tarea Realizada
               </div>
               <v-divider></v-divider>
 
@@ -535,11 +502,15 @@ import BtnPDF from "~/components/common/btnPDF.vue";
 import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 import AgregarCertificado from "~/components/common/AgregarCertificado.vue";
+import AgregarInstrumento from "~/components/common/AgregarInstrumento.vue";
+import AgregarCalibracion from "~/components/common/AgregarCalibracion.vue";
 
 export default {
   components:{
     BtnPDF,
-    AgregarCertificado
+    AgregarCertificado,
+    AgregarInstrumento,
+    AgregarCalibracion
   },
   layout: 'equipo',
   data(){
