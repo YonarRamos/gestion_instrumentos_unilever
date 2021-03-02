@@ -139,8 +139,12 @@ export default {
   },
   methods:{
     agregarTareaCalibracion(){
+      const obj = this.tarea;
+      this.$emit('nuevaTarea', obj);
+      this.$refs.form.reset();
+      this.dialog = false;
       try {
-        if(this.$refs.form.validate()){
+/*         if(this.$refs.form.validate()){
           this.tarea.instrumento_id = this.instrumento.intrumento_id;
           this.tarea.calibracion_tipo_id = this.calibracionTipo[this.tarea.calibracion_tipo_id];
           console.log('Nueva Tarea', this.tarea);
@@ -152,8 +156,9 @@ export default {
               this.alerType = "success"
               this.alertShow = true;
               this.$refs.form.reset();
-            })
-      }
+              this.$emit('nuevaTarea', obj);
+            }) 
+      }*/
       } catch (error) {
         console.log(error)
         this.alertMsg = "Hubo un error al processar tu solicitud"
