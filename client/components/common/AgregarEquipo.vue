@@ -125,7 +125,7 @@ export default {
   methods:{
     agregarEquipo(){
       try {
-         if(this.valid){
+         if(this.$refs.form.validate()){
            this.item.serie_requerido == true ? this.item.serie_requerido = 1 : this.item.serie_requerido = 0;
            this.item.sector_id = this.sectores[this.item.sector_id];
            this.item.instrumento_id = this.instrumentos[this.item.instrumento_id];

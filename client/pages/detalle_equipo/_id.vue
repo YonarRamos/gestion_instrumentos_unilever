@@ -413,7 +413,7 @@
                       </v-col>
                       <v-spacer></v-spacer>
                       <v-col cols="2 d-flex justify-end pt-2">
-                        <agregar-calibracion/>
+                        <agregar-calibracion :instrumento="item"/>
                       </v-col>
                     </v-row>
                       <v-divider></v-divider>
@@ -442,11 +442,7 @@
             <v-card color="#FAFAFA"> 
               <v-container>
               <div class="overline">
-<<<<<<< HEAD
                 Calibración Tarea Realizada
-=======
-               Calibracion Tarea Realizada
->>>>>>> 8003c6d33bc5cb4e19544b990b86d9511e9afba7
               </div>
               <v-divider></v-divider>
 
@@ -535,8 +531,8 @@ export default {
           instrumento_create: "2020-02-21 21:00:00",
           instrumento_encargado_calibracion: "systelec",
           instrumento_magnitud: "prueba",
-          instrumento_marca: "prueba",
-          instrumento_modelo: "prueba",
+          instrumento_marca: "Marca Prueba",
+          instrumento_modelo: "Marca Modelo",
           instrumento_rango_a: 23,
           instrumento_rango_de: 23,
           instrumento_rango_normal_de:"",
@@ -711,26 +707,9 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
-        console.log('Equipos res:', res.data.data[0].detalleEquipos)
+        console.log('Equipos res:', res.data.data[0].detalleEquipos);
+        this.paramsId = res.data.data[0].detalleEquipos.intrumento_id
         this.item = res.data.data[0].detalleEquipos;
-/*      this.item.tag = res.data.data[0].tag;
-        this.item.serie = res.data.data[0].serie_requerido;
-        this.item.fecha_creacion = res.data.data[0].created_at;
-        this.item.fecha_actualizacion_equipo = res.data.data[0].updated_at;
-        this.item.descripcion = res.data.data[0].descripcion;
-        this.item.marca = res.data.data[0].instrumento.marca;
-        this.item.modelo = res.data.data[0].instrumento.modelo;
-        this.item.serie_instrumento = res.data.data[0].instrumento.serie;
-        this.item.rango_de = res.data.data[0].instrumento.rango_de;
-        this.item.rango_a = res.data.data[0].instrumento.rango_a;
-        this.item.rango_de_normal = res.data.data[0].instrumento.rango_normal_de;
-        this.item.rango_a_normal = res.data.data[0].instrumento.rango_normal_a;
-        this.item.resolucion = res.data.data[0].instrumento.resolucion;
-        this.item.tolerancia = res.data.data[0].instrumento.tolerancia;
-        this.item.encargado_calibracion = res.data.data[0].instrumento.encargado_calibracion;
-        this.item.fecha_actualizacion_instrumento = res.data.data[0].instrumento.updated_at; 
-        this.item.sector = res.data.data[0].sector.nombre;*/
-
       })
       } catch (error) {
         console.log(error)
@@ -749,7 +728,6 @@ export default {
     },
   },
   created(){
-    this.paramsId = this.$route.params.id;
     this.getEquipo();
   },
 }

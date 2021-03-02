@@ -64,7 +64,7 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapMutations } from "vuex";
 import password from "@/components/cambiarPassword";
 
 export default {
@@ -97,7 +97,6 @@ export default {
   methods: {
     ...mapMutations(["SET_DESLOGIN"]),
     Salir(){
-     // console.log(...mapMutations())
       this.SET_DESLOGIN();
     }
   },

@@ -14,47 +14,31 @@
               <v-icon>mdi-plus</v-icon>
             </v-btn>
           </template>
-          <span>Agregar Calibración</span>
+          <span>Agregar Tarea</span>
         </v-tooltip>
 
         <v-dialog v-model="dialog" width="500">
           <v-card>
             <v-card-title class="headline white--text blue darken-4">
-              Agregar Tarea de Calibración
+              Agregar  Nueva Tarea
             </v-card-title>
 
             <v-card-text>
-              <v-form ref="form" lazy-validation>
+              <v-form ref="form" lazy-validation v-model="valid">
                 <v-container>
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Marca"
-                      :rules="rules"
-                      >
-                      </v-text-field>
+<!--                   <v-row>
+                    <v-col cols="12">
+                      <h3>Modelo:{{instrumento.instrumento_modelo}}</h3>
+                      <h3>Marca:{{instrumento.instrumento_marca}}</h3>
                     </v-col>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Modelo"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
+                  </v-row> -->
 
                   <v-row>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Serie"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
+                    <v-col cols="12">
                       <v-select
-                      label="Tipo"
-                      :items="['tipo 1', 'tipo 2']"
+                      v-model="tarea.calibracion_tipo_id"
+                      label="Tipo de Calirbación"
+                      :items="Object.keys(calibracionTipo)"
                       :rules="rules"
                       >
                       </v-select>
@@ -62,99 +46,52 @@
                   </v-row>
 
                   <v-row>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Resolución"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Tolerancia"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
+                    <v-col cols="12">
+                      <v-text-field
+                        v-model="tarea.frecuencia"
+                        type="number"
+                        label="Frecuencia"
+                        :rules="rules"
+                      ></v-text-field>
+                    </v-col>  
                   </v-row>
-
+                  
 
                   <v-row>
-                    <v-col cols="6">
-                      <v-select
-                      label="Unidad"
-                      :items="['tipo 1', 'tipo 2']"
-                      :rules="rules"
-                      >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                      label="Magnitud"
-                      :items="['tipo 1', 'tipo 2']"
-                      :rules="rules"
-                      >
-                      </v-select>
+                    <v-col cols="12">
+
+                      <v-card class="pa-5">
+                        <v-text-field
+                          v-model="tarea.proxima"
+                          label="Próxima Calibración"
+                          readonly
+                        ></v-text-field>
+
+                        <v-date-picker
+                          v-model="tarea.proxima"
+                          :first-day-of-week="1"
+                          locale="es-ar"
+                          width="auto"
+                        ></v-date-picker>
+                      </v-card>
+
                     </v-col>
                   </v-row>
-
-                  <v-row>
-                    <v-col cols="6">
-                      <v-select
-                      label="Estado"
-                      :items="['tipo 1', 'tipo 2']"
-                      :rules="rules"
+                  <!-- Modal status http request -->
+                  <v-row v-if="alertShow">
+                    <v-col cols="12" class="px-0">
+                      <v-alert
+                        dense
+                        text
+                        :type="alertType"
                       >
-                      </v-select>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-select
-                      label="Encargado de Calibración"
-                      :items="['tipo 1', 'tipo 2']"
-                      :rules="rules"
-                      >
-                      </v-select>
+                        {{alertMsg}}
+                      </v-alert>
                     </v-col>
                   </v-row>
-
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Rango A"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Rango DE"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-
-                  <v-row>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Rango Normal A"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                    <v-col cols="6">
-                      <v-text-field 
-                      label="Rango Noarmal DE"
-                      :rules="rules"
-                      >
-                      </v-text-field>
-                    </v-col>
-                  </v-row>
-
                 </v-container>
               </v-form>
             </v-card-text>
-
             <v-divider></v-divider>
 
             <v-card-actions>
@@ -162,7 +99,7 @@
               <v-btn color="error" text @click="hide">
                 Cancelar
               </v-btn>
-              <v-btn color="primary" text @click="dialog = false">
+              <v-btn color="primary" text @click="agregarTareaCalibracion">
                 Ok
               </v-btn>
             </v-card-actions>
@@ -172,24 +109,80 @@
 </template>
 
 <script>
+import axios from '~/plugins/axios';
+import Cookies from 'js-cookie';
 export default {
+  props:{
+    instrumento:{
+      type: Object,
+      required: true
+    }
+  },
   data() {
     return {
+      picker: new Date().toISOString().substr(0, 10),
+      valid:false,
+      token: Cookies.get('token'),
       dialog: false,
+      alertShow: false,
+      alertMsg:'',
+      alertType:'success',
+      calibracionTipo:[],
       tarea:{
-        "calibracion_tarea_tipo": "prueba",
-        "calibracion_tarea_frecuencia": 23,
-        "calibracion_tarea_ult_efectuada": "2020-02-22",
-        "calibracion_tarea_proxima": "2021-02-23"
+          instrumento_id:null,
+          calibracion_tipo_id: 1,
+          frecuencia: 45,
+          proxima: new Date().toISOString().substr(0, 10),
       },
       rules:[ v => !!v || 'Requerido' ],
     }
   },
   methods:{
+    agregarTareaCalibracion(){
+      try {
+        if(this.$refs.form.validate()){
+          this.tarea.instrumento_id = this.instrumento.intrumento_id;
+          this.tarea.calibracion_tipo_id = this.calibracionTipo[this.tarea.calibracion_tipo_id];
+          console.log('Nueva Tarea', this.tarea);
+          axios.post('calibracion', this.tarea ,{
+              headers: { Authorization: `Bearer ${this.token}` },
+            })
+            .then(()=>{
+              this.alertMsg = "Instrumento agregado correctamente"
+              this.alerType = "success"
+              this.alertShow = true;
+              this.$refs.form.reset();
+            })
+      }
+      } catch (error) {
+        console.log(error)
+        this.alertMsg = "Hubo un error al processar tu solicitud"
+        this.alerType = "error"
+        this.alertShow = true;
+      }
+    },
     hide(){
       this.$refs.form.reset();
       this.dialog = false;
-    }
+    },
+    getCalibracionTipo(){
+        try {
+          axios.get('calibracionTipo', {
+            headers: { Authorization: `Bearer ${this.token}` },
+          })
+          .then((res)=>{
+            for (const item of res.data.data) {
+              this.calibracionTipo[item.nombre] = item.id ;
+            }
+            console.log('Calibracion Tipo:', this.calibracionTipo);
+          })
+          } catch (error) {
+            console.log(error)
+          }
+        }
+},
+  created(){
+ this.getCalibracionTipo();
   }
 }
 </script>

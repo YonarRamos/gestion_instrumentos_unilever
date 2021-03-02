@@ -18,13 +18,11 @@ export const mutations = {
   async SET_AUTH(state, token) {
     state.auth = true;  
     Cookies.set('token', token)
-/*     Cookies.set('name', state.user.nombre)
-    Cookies.set('lastname', state.user.apellido)
-    Cookies.set('rol', state.user.rol)    */
     this.$router.push('/')
   },
   async setUser(state, payload){
-    state.user = payload
+    Cookies.set('user', payload.empresa)
+    Cookies.set('user_id', payload.id)
   },
   toggleDialogPassword(state, payload){
     state.dialogPassword = payload
@@ -38,16 +36,12 @@ export const mutations = {
   ocultarInfoModal(state, payload){
     state.infoModal.dialog = payload
   },
-  cargarOTS(state, payload){
-    state.ots.push(payload)
-  },
   async SET_DESLOGIN(state) {  
+    Cookies.remove('token');
+    Cookies.remove('user');
+    Cookies.remove('user_id')
     state.auth = false;
-    Cookies.remove('token')
-    Cookies.remove('name')
-    Cookies.remove('lastname')
-    Cookies.remove('rol')   
-    location.reload();
+    this.$router.push('/login')
   },
   toggleLoading(state, payload){
     state.dialogLoading = payload;
@@ -56,7 +50,6 @@ export const mutations = {
 };
 export const actions ={
     nuxtServerInit({commit},{req }){
-        //console.log(req.headers)
         if(req.headers.cookie){
             let { token } = cookie.parse(req.headers.cookie);
             console.log(req.headers.cookie)
