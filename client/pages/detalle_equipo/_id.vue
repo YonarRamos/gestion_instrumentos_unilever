@@ -7,26 +7,41 @@
                 <v-card color="rgb(41, 83, 130)" dark class="mt-3">
                   <v-container class="py-0">
                     <v-row>
-                      <v-col cols="12" sm="7">
+                      <v-col>
                         <v-card-title class="pt-0"> TAG - {{item.tag}} </v-card-title>
                         <v-card-subtitle>
-                          <!-- {{item.descripcion}} -->
-                          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vero saepe ducimus deleniti doloribus iure corrupti earum, culpa vitae? Modi quasi consequatur sed libero fugiat reiciendis recusandae hic ipsa nihil laboriosam.
+                          {{item.descripcion}}
                         </v-card-subtitle>
                       </v-col>
 
-                      <v-col cols="12" sm="5" class="d-flex justify-end">
-                        <div class="input-img-wrap" >
+                      <v-col class="d-flex justify-end">
+                        <div class="img_banner">
                             <v-img
-                              class="img"
+                              v-if="item.img"
+                              max-height="145"
+                              max-width="245"
                               style="border-radius: 7px;"
                               src="../indus.jpg"
                               alt="No hay imagen"
                             ></v-img>
-                        </div>
-                            <div class="input-file-wrap" v-if="item.img">
+                            <div class="input-file-wrap">
+<!--                               <v-file-input
+                                id="file_inp"
+                                outlined
+                                height="145"
+                                :full-width="true"
+                                prepend-icon
+                                prepend-inner-icon="mdi-camera"
+                                accept="image/png, image/jpeg, image/bmp"
+                                label="Agregar img"
+                                style="cursor: pointer !important;"
+                                hide-details
+                                class="input-file"
+                              >
+                              </v-file-input> -->
                               <input class="file-input" type="file" />
                             </div>
+                        </div>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -57,15 +72,17 @@
                       ></v-text-field>
 
                   </v-col> 
-                  <v-col cols="2" class="pt-0 d-flex justify-center" >
-      
+                  <v-col cols="2" class="d-flex align-center" >
+        
+                    <div>
                       <v-checkbox
                         v-model="item.serie_requerido"
                         label="Serie"
+                        disabled
                         hide-details
-                        class="pt-1"
-                        
+                        class="mb=5"
                       ></v-checkbox>
+                    </div>
       
                   </v-col>
                   <v-col cols="12" md="6" >
@@ -155,7 +172,7 @@
             <v-card color="#FAFAFA"> 
               <v-container>
                 <v-row class="mt-2" >
-                 <v-col cols="12" sm="6">
+                 <v-col cols="12" sm="8">
 
                     <v-row>
                       <v-col>
@@ -388,29 +405,32 @@
                       </v-col>
                     </v-row>
                  </v-col>
-                 <v-col cols="12" sm="6">
+                 <v-col cols="12" sm="4">
                     <v-row>
                       <v-col cols="10">
                         <div class="overline">
-                          Tareas de Calibración
+                          Equipos Asignados
                         </div>
+                      
                       </v-col>
                       <v-spacer></v-spacer>
                       <v-col cols="2 d-flex justify-end pt-2">
-                        <agregar-calibracion @nuevaTarea="agregarTareaPendiente" :instrumento="item"/>
+                     <!--    <agregar-calibracion :instrumento="item"/>-->
                       </v-col>
                     </v-row>
                       <v-divider></v-divider>
-                        <v-card height="440" width="auto" flat style="border: 2px groove #D6D6D8 ;" class="mt-2">
+                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;" class="mt-2">
                             <v-data-table
                             :headers="headers"
-                            :items="tareasPendientes"
+                            :items="desserts"
                             hide-default-footer
-                            height="435"
+                            height="420"
                             >
                               <template v-slot:[`item.certificado`]={item}>
-                                <agregar-certificado  @certificar="certificar(item)" ref="cert" @click="show"/>
-                                <v-btn icon fab small :color="item.certificado ? 'success' : ''" @click="show(item)"><v-icon>verified</v-icon></v-btn>
+                                <agregar-certificado  @certificar="certificar,actualizarCertificado(item)" ref="cert" @click="show"/>
+                                <v-btn icon fab small :color="item.certificado ? 'success' : 'gray'" @click="show(item)"><v-icon>verified</v-icon></v-btn>
+
+
                               </template>
                             </v-data-table>
                         </v-card>
@@ -451,15 +471,29 @@
                             </v-data-table>
                         </v-card>
                   </v-col> 
+                  
                   <v-col cols="12" sm="6" class="pt-0" >
-        
+                    <v-row>
+                      <v-col cols="10">
+                        <div class="overline">
+                          Tarea de Calibracion
+                        </div>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-col cols="2 d-flex justify-end pt-2">
+                        <agregar-calibracion :instrumento="item"/>
+                      </v-col>
+                    </v-row>
+                      <v-divider></v-divider>
                         <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;">
-    <!--                         <v-data-table
-                            :headers="headers"
+                     
+                 <v-divider></v-divider>
+                            <v-data-table
+                            :headers="headers3"
                             :items="desserts"
                             hide-default-footer
                             height="420"
-                            /> -->
+                            /> 
                         </v-card>
       
                   </v-col>
@@ -502,60 +536,106 @@ export default {
       item:{
           fecha_creacion_equipo:'',
           fecha_update_equipo:'',
-          calibracion_tarea_frecuencia: null,
-          calibracion_tarea_id: null,
-          calibracion_tarea_proxima: "",
-          calibracion_tarea_tipo: null,
-          calibracion_tarea_ult_efectuada: "",
-          descripcion: "",
-          id: null,
-          instrumento_creado_usuario: "",
-          instrumento_create: "",
-          instrumento_encargado_calibracion: "",
-          instrumento_magnitud: "",
-          instrumento_marca: "",
-          instrumento_modelo: "",
-          instrumento_rango_a: null,
-          instrumento_rango_de: null,
-          instrumento_rango_normal_de:null,
-          instrumento_rango_normal_a:null,
-          instrumento_resolucion: null,
-          instrumento_serie: "",
-          instrumento_tolerancia: null,
-          instrumento_unidad: "",
-          instrumento_update: "",
-          intrumento_estado: "",
-          intrumento_id: null,
-          sector_name: "",
-          sector_planta: "",
+          calibracion_tarea_frecuencia: 23,
+          calibracion_tarea_id: "3",
+          calibracion_tarea_proxima: "2021-02-23",
+          calibracion_tarea_tipo: "prueba",
+          calibracion_tarea_ult_efectuada: "2020-02-22",
+          descripcion: "Descripción 266",
+          id: 9,
+          instrumento_creado_usuario: "admin",
+          instrumento_create: "2020-02-21 21:00:00",
+          instrumento_encargado_calibracion: "systelec",
+          instrumento_magnitud: "prueba",
+          instrumento_marca: "Marca Prueba",
+          instrumento_modelo: "Marca Modelo",
+          instrumento_rango_a: 23,
+          instrumento_rango_de: 23,
+          instrumento_rango_normal_de:"",
+          instrumento_rango_normal_a:"",
+          instrumento_resolucion: 23,
+          instrumento_serie: "prueba",
+          instrumento_tolerancia: 23,
+          instrumento_unidad: "prueba",
+          instrumento_update: "2020-02-21 21:00:00",
+          intrumento_estado: "disponible",
+          intrumento_id: "9",
+          sector_name: "prueba3",
+          sector_planta: "prueba",
           serie_requerido: true,
-          tag: "",
-          tipo_instrumento: "",
+          tag: "266",
+          tipo_instrumento: "prueba",
         },
      headers: [
-          { text: 'Tipo', align: 'start', value: 'tipo'},
-          { text: 'Frecuencia', value: 'frecuencia' },
-          { text: 'Próxima Calibración', value: 'proxima' },
-          {text: 'Certificado',align: 'center', value: 'certificado' }
+          { text: 'Equipo', align: 'start', value: 'name'},
+          { text: 'Instrumento', value: 'calories' },
+          { text: 'Desde', value: 'calories' },
+          { text: 'Hasta', value: 'calories' },
+          //{ text: 'Desde', value: 'certificado' ,sortable:false }
         ],
      headers2: [
-          { text: 'Dessert (100g serving)', align: 'start', value: 'name'},
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
+          { text: 'N° De Tarea', align: 'start', value: 'name'},
+          { text: 'Realizo', value: 'calories' },
+          { text: 'Fecha', value: 'fat' },
           {text: 'Certificado',align: 'center', value: 'protein' }
         ],
-        tareasPendientes: [
+        headers3: [
+          { text: 'Instrumento', align: 'start', value: 'name'},
+          { text: 'Tipo de Calibracion', value: 'calories' },
+          { text: 'Frecuencia', value: 'fat' },
+          {text: 'Proxima Calibracion',align: 'center', value: 'protein' }
+        ],
+        desserts: [
           {
-            tipo: 'Prueba',
-            frecuencia: 159,
-            proxima: '12-12-21',
+            name: 'Frozen Yogurt',
+            calories: 159,
             certificado: true,
           },
           {
-            tipo: 'Prueba',
-            frecuencia: 159,
-            proxima: '12-12-21',
+            name: 'Ice cream sandwich',
+            calories: 237,
+            certificado: false
+          },
+          {
+            name: 'Eclair',
+            calories: 262,
+            certificado: true,
+
+          },
+          {
+            name: 'Cupcake',
+            calories: 305,
             certificado: false,
+          },
+          {
+            name: 'Gingerbread',
+            calories: 356,
+            certificado: true,
+          },
+          {
+            name: 'Jelly bean',
+            calories: 375,
+            certificado: true,
+          },
+          {
+            name: 'Lollipop',
+            calories: 392,
+            certificado: false,
+          },
+          {
+            name: 'Honeycomb',
+            calories: 408,
+            certificado: true,
+          },
+          {
+            name: 'Donut',
+            calories: 452,
+            certificado: false,
+          },
+          {
+            name: 'KitKat',
+            calories: 518,
+            certificado: true,
           },
         ],
         desserts2: [
@@ -643,24 +723,16 @@ export default {
     }
   },
   methods:{
-    agregarTareaPendiente(obj){
-      
-      let tarea ={
-        tipo: obj.calibracion_tipo_id,
-        frecuencia: obj.frecuencia,
-        proxima: obj.proxima,
-        certificado: false,
-      }
-      this.tareasPendientes.push(tarea);
-    },
-  async  getEquipo(){
+    getEquipo(){
       try {
         const token = Cookies.get('token');
 
-      await axios.get(`formulario/${this.paramsId}`,{
+        axios.get(`formulario/${this.paramsId}`,{
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
+        
+        this.paramsId = res.data.data[0].detalleEquipos.intrumento_id
         this.item = res.data.data[0].detalleEquipos;
       })
       } catch (error) {
@@ -668,67 +740,47 @@ export default {
       }
     },
     show(item){
-      if(item.certificado == false){
+      if(item.certificado == 'false'){
         this.$refs.cert.show();
       }
     },
-    certificar(item){
+    certificar(certificado){
+      return certificado;
+    },
+    actualizarCertificado(item){
       item.certificado = true;
     },
   },
-  mounted(){
-   this.paramsId = this.$route.params.id;
-   this.getEquipo();
-  }
+  created(){
+    this.getEquipo();
+  },
 }
 </script>
 
 <style scoped>
-.img{
-  height: 150px;
-  width: 245px;
-}
 .input-file-wrap {
     background-image: url("/pic.jpg");
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
     height: 145px;
     width: 245px;
+    overflow: hidden;
     position: relative;
     cursor: pointer;
-    border-radius: 10px;
-    border: 3px inset #2A67A5;
+}
 
-}
-.input-img-wrap {
-    height: 155px;
-    width: 245px;
-    position: relative;
-    cursor: pointer;
-    border-radius: 10px;
-    border: 3px inset #2A67A5;
-}
-@media only screen and (max-width: 600px) {
-  .img{
-    width: 100%;
-    height: 190px;
-  }
-  .input-file-wrap {
-    width: 100%;
-    height: 195px;
-  }
-  .input-img-wrap{
-    width: 100%;
-    height: 195px;
-  }
-}
 .file-input {
     width: 100%;
     height: 100%;
     opacity: 0;
-/*     padding-left: 340px;
-    margin-right: -340px; */
+    padding-left: 240px;
+    margin-right: -240px;
     cursor: pointer;
 }
 
+.img_banner{
+  border-radius: 7px;
+  border: 3px inset #2A67A5;
+  height:150px;
+  width:250px;
+  background-color: slategrey;
+}
 </style>

@@ -51,7 +51,7 @@
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date"
+                      v-model="date1"
                       label="Hasta"
                       prepend-inner-icon="mdi-calendar"
                       readonly
@@ -93,9 +93,11 @@ export default {
   layout: 'custom',
   data: () => ({
     date: new Date().toISOString().substr(0, 10),
+    
+    date1: new Date().toISOString().substr(0, 10),
     menu: false,
     menu1: false,
-    modal: false,
+    
     menu2: false,
   }),
 

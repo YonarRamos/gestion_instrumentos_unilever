@@ -16,7 +16,13 @@
             <v-icon left color="#295382" align="center" >list</v-icon>
             Equipos
           </v-list-item-title>
-        </v-list-item>        
+        </v-list-item>
+        <v-list-item class="menuUser pointer" @click="drawer=false" to="/instrumento">
+          <v-list-item-title>
+            <v-icon left color="#295382" align="center" >build</v-icon>
+            Instrumento
+          </v-list-item-title>
+        </v-list-item>         
         <v-list-item class="menuUser pointer" @click="drawer=false" to="/datos">           
           <v-list-item-title>
             <v-icon left color="#295382" align="center" >post_add</v-icon>
