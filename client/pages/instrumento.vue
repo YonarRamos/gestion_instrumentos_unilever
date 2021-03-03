@@ -16,7 +16,6 @@
                 <v-divider></v-divider>
               </v-col>
             </v-row>
-            {{ tableData }}
             <v-data-table
               :headers="headers"
               :items="tableData"
@@ -70,9 +69,9 @@
               </template>
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
-                  <v-icon small @click="downloadCert(item.instrumento_id)">
+                  <!--<v-icon small @click="downloadCert(item.instrumento_id)">
                     mdi-download
-                  </v-icon>
+                  </v-icon>-->
                   <editar-equipo
                     :id="item.id"
                     class="mr-2"
@@ -121,18 +120,18 @@ export default {
     headers: [
       { text: 'estado', align: 'start', value: 'estado' },
       { text: 'Marca', value: 'marca' },
-      { text: 'Modelo', value: 'serie' },
-      { text: 'Serie', value: 'estadoName' },
-      { text: 'Rango_de', value: 'proximaCalib' },
-      { text: 'Rango_a', value: 'empresa' },
-      { text: 'Rango_normal_de', value: 'empresa' },
-      { text: 'Rango_normal_a', value: 'empresa' },
-      { text: 'Resolucíon', value: 'empresa' },
-      { text: 'Tolerancia', value: 'empresa' },
-      { text: 'Tipo', value: 'empresa' },
-      { text: 'Unidad', value: 'empresa' },
-      { text: 'Magnitud', value: 'empresa' },
-      { text: 'Encargado', value: 'empresa' },
+      { text: 'Modelo', value: 'modelo' },
+      { text: 'Serie', value: 'serie' },
+      { text: 'Rango_de', value: 'rango_de' },
+      { text: 'Rango_a', value: 'rango_a' },
+      { text: 'Rango_normal_de', value: 'rango_normal_de' },
+      { text: 'Rango_normal_a', value: 'rango_mormal_a' },
+      { text: 'Resolucíon', value: 'resolucion' },
+      { text: 'Tolerancia', value: 'tolerancia' },
+      { text: 'Tipo', value: 'tipo' },
+      { text: 'Unidad', value: 'unidad' },
+      { text: 'Magnitud', value: 'magnitud' },
+      { text: 'Encargado', value: 'encargado' },
       { text: 'Acciones', value: 'acciones', sortable: false, align: 'start' },
     ],
     tableData: [],

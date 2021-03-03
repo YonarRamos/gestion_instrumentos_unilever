@@ -1,7 +1,6 @@
 <template>
   <div class="fondo">
     <v-container >
-      {{tableData}}
       <v-row>
         <v-col cols="3">
             <div>
