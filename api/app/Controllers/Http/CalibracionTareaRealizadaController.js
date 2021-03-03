@@ -17,9 +17,19 @@ class CalibracionTareaRealizadaController {
       return response.status(401).json('Acceso no autorizado.');
     }
     try {
-      var query = CalibracionTareaRealizada.query();
-      let TareaRealizada = await CalibracionTareaRealizada.query().fetch();
-      response.status(200).json({ menssage: 'Tarea Realizada', data: TareaRealizada })
+      let TareaRealizada = await CalibracionTareaRealizada.query().with('realizada').with('tarea').with('tarea.instrumento').with('tarea.tipo').fetch();
+      TareaRealizada = TareaRealizada.toJSON();
+     var arrayTarea = TareaRealizada.map(e=>{
+       return{
+         "Num_tarea": e.tarea.id,
+         "intrumento": e.tarea.instrumento.serie,
+         "fecha": e.fecha,
+         "realizo": e.realizada.empresa,
+         "certificado": e.certificado 
+       }
+     })
+     let resp = await Promise.all(arrayTarea)
+      response.status(200).json({ menssage: 'Tarea Realizada', data: resp })
     } catch (error) {
       console.log(error)
       response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });

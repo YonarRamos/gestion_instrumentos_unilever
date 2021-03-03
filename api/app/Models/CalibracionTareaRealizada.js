@@ -8,13 +8,21 @@ class CalibracionTareaRealizada extends Model {
     static get table () {
         return 'calibracion_tarea_realizada'
     }
-
-    calibracion_tarea () {
-        return this.belongsTo('App/Models/CalibracionTarea', 'calibracion_tarea_id', 'id')
+    static get dates() {
+        return super.dates.concat(['fecha'])
+    }
+      
+    static castDates(field, value) {
+        if (field === 'fecha' ) {
+          return value.format('YYYY-MM-DD HH:mm:ss')
+        }
     }
 
-    realizo () {
-        return this.belongsTo('App/Models/User', 'realizo', 'id')
+    realizada () {
+        return this.hasOne('App/Models/User', 'realizo', 'id')
+    }
+    tarea () {
+        return this.hasOne('App/Models/CalibracionTarea', 'calibracion_tarea_id', 'id')
     }
 }
 
