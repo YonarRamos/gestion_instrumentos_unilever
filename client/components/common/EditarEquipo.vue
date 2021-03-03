@@ -4,7 +4,7 @@
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-card-title class="headline blue darken-4" style="color:white">
-          <span >Agregar Equipo</span>
+          <span >Editar Equipo</span>
           <v-spacer></v-spacer>
           <v-btn
             icon
@@ -130,12 +130,12 @@ export default {
           headers: { Authorization: `Bearer ${this.token}` }
         })
         .then((res)=>{
-          console.log('res getEquipo:', res.data.data);
-          this.item.tag = res.data.data[0].tag;
-          this.item.serie_requerido = res.data.data[0].serie_requerido;
-          this.item.sector_id = res.data.data[0].sector.nombre;
-          this.item.instrumento_id = res.data.data[0].instrumento.modelo;
-          this.item.descripcion = res.data.data[0].descripcion;
+          console.log('res llenar datos editar:', res.data.data);
+          this.item.tag = res.data.data[0].detalleEquipos.tag;
+          this.item.serie_requerido = res.data.data[0].detalleEquipos.serie_requerido;
+          this.item.sector_id = res.data.data[0].detalleEquipos.sector_name;
+          this.item.instrumento_id = res.data.data[0].detalleEquipos.instrumento_marca;
+          this.item.descripcion = res.data.data[0].detalleEquipos.descripcion;
         });
 
       } catch (error) {
@@ -147,7 +147,7 @@ export default {
          if(this.valid){
            this.item.sector_id = this.sectores[this.item.sector_id];
            this.item.instrumento_id = this.instrumentos[this.item.instrumento_id];
-                      this.item.serie_requerido == true ? this.item.serie_requerido = 1 : this.item.serie_requerido = '0';
+           this.item.serie_requerido == true ? this.item.serie_requerido = 1 : this.item.serie_requerido = '0';
            axios.put(`equipo/${this.id}`, this.item, {
              headers: { Authorization: `Bearer ${this.token}` },
            })
