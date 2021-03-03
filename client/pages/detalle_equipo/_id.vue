@@ -7,40 +7,25 @@
                 <v-card color="rgb(41, 83, 130)" dark class="mt-3">
                   <v-container class="py-0">
                     <v-row>
-                      <v-col>
+                      <v-col cols="12" sm="8" class="pb-0">
                         <v-card-title class="pt-0"> TAG - {{item.tag}} </v-card-title>
-                        <v-card-subtitle>
+                        <v-card-subtitle class="pb-0">
                           {{item.descripcion}}
                         </v-card-subtitle>
                       </v-col>
 
-                      <v-col class="d-flex justify-end">
-                        <div class="img_banner">
-                            <v-img
-                              v-if="item.img"
-                              max-height="145"
-                              max-width="245"
-                              style="border-radius: 7px;"
-                              src="../indus.jpg"
-                              alt="No hay imagen"
-                            ></v-img>
-                            <div class="input-file-wrap">
-<!--                               <v-file-input
-                                id="file_inp"
-                                outlined
-                                height="145"
-                                :full-width="true"
-                                prepend-icon
-                                prepend-inner-icon="mdi-camera"
-                                accept="image/png, image/jpeg, image/bmp"
-                                label="Agregar img"
-                                style="cursor: pointer !important;"
-                                hide-details
-                                class="input-file"
-                              >
-                              </v-file-input> -->
-                              <input class="file-input" type="file" />
-                            </div>
+                      <v-col cols="12" sm="4" class="d-flex justify-end ">
+                        <div class="input-file-wrap">
+                          <v-img
+                            style="border-radius: 7px;"
+                            src="../indus.jpg"
+                            alt="No hay imagen"
+                            class="img"
+                          ></v-img>
+                        </div>
+
+                        <div class="input-file-wrap" v-if="item.img">
+                          <input class="file-input" type="file" /> 
                         </div>
                       </v-col>
                     </v-row>
@@ -168,14 +153,14 @@
 
 
 
-          <v-container >
+          <v-container class="pt-0" >
             <v-card color="#FAFAFA"> 
               <v-container>
                 <v-row class="mt-2" >
-                 <v-col cols="12" sm="8">
+                 <v-col cols="12" sm="7">
 
                     <v-row>
-                      <v-col>
+                      <v-col  class="pb-0">
                         <v-row>
                           <v-col cols="10">
                             <div class="overline">
@@ -183,7 +168,7 @@
                             </div>
                           </v-col>
                           <v-spacer></v-spacer>
-                          <v-col cols="2">
+                          <v-col cols="2" class="pt-1">
                                 <agregar-instrumento />                       
                           </v-col>
                         </v-row>
@@ -404,8 +389,8 @@
 
                       </v-col>
                     </v-row>
-                 </v-col>
-                 <v-col cols="12" sm="4">
+                </v-col>
+                <v-col cols="12" sm="5">
                     <v-row>
                       <v-col cols="10">
                         <div class="overline">
@@ -419,19 +404,23 @@
                       </v-col>
                     </v-row>
                       <v-divider></v-divider>
-                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;" class="mt-2">
+                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;" class="mt-3">
                             <v-data-table
-                            :headers="headers"
-                            :items="desserts"
+                            :headers="headersEquiposAsignados"
+                            :items="equipoAsignado"
                             hide-default-footer
                             height="420"
                             >
-                              <template v-slot:[`item.certificado`]={item}>
-                                <agregar-certificado  @certificar="certificar,actualizarCertificado(item)" ref="cert" @click="show"/>
-                                <v-btn icon fab small :color="item.certificado ? 'success' : 'gray'" @click="show(item)"><v-icon>verified</v-icon></v-btn>
-
-
+                              <template v-slot:[`item.desde`]={item}>
+                                {{item.desde.toString().slice(0,10)}}
                               </template>
+                              <template v-slot:[`item.hasta`]={item}>
+                                {{item.hasta.toString().slice(0,10)}}
+                              </template>
+<!--                               <template v-slot:[`item.certificado`]={item}>
+                                <agregar-certificado  @certificar="certificar" ref="cert" @click="show"/>
+                                <v-btn icon fab small :color="item.certificado ? 'success' : 'gray'" @click="show(item)"><v-icon>verified</v-icon></v-btn>
+                              </template> -->
                             </v-data-table>
                         </v-card>
                  </v-col>
@@ -443,60 +432,68 @@
           <v-container >
             <v-card color="#FAFAFA"> 
               <v-container>
-              <div class="overline">
-                Calibración Tarea Realizada
-              </div>
-              <v-divider></v-divider>
-
-                <v-row class="mt-2" >
-                  <v-col cols="12" sm="6" class="pt-0">  
-                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;">
-                            <v-data-table
-                            :headers="headers2"
-                            :items="desserts2"
-                            hide-default-footer
-                            height="420"
-                            >
-
-                              <template v-slot:[`item.protein`]>
-                                  <v-tooltip bottom>
-                                    <template v-slot:activator="{ on, attrs }">
-                                      <v-btn :v-on="on"  v-bind="attrs" icon small color="info"><v-icon>mdi-download</v-icon>Descargar</v-btn>
-                                    </template>
-                                    <span>Certificación</span>
-                                  </v-tooltip>
-                                
-                              </template>
-                            
-                            </v-data-table>
-                        </v-card>
-                  </v-col> 
-                  
-                  <v-col cols="12" sm="6" class="pt-0" >
+                <v-row>      
+                  <v-col cols="12" sm="6">
                     <v-row>
                       <v-col cols="10">
                         <div class="overline">
-                          Tarea de Calibracion
+                          Tareas de Calibracion
                         </div>
                       </v-col>
                       <v-spacer></v-spacer>
-                      <v-col cols="2 d-flex justify-end pt-2">
-                        <agregar-calibracion :instrumento="item"/>
+                      <v-col cols="2" class="d-flex justify-end pt-2">
+                        <agregar-calibracion :instrumento="item" @click="getEquipo"/>
                       </v-col>
                     </v-row>
                       <v-divider></v-divider>
-                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;">
-                     
-                 <v-divider></v-divider>
+                        <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8;" class="mt-2">
+                            <v-divider/>
                             <v-data-table
-                            :headers="headers3"
-                            :items="desserts"
+                            :headers="headersTareasCalibracion"
+                            :items="tareasCalibracion"
                             hide-default-footer
                             height="420"
-                            /> 
-                        </v-card>
-      
+                            >
+                            <template v-slot:[`item.aprobar`]>
+                                <aprobar-tarea-calibracion/>
+                            </template>
+                            </v-data-table> 
+                        </v-card>     
                   </v-col>
+                  <v-col cols="12" sm="6">  
+                    <div class="overline">
+                      Tareas de Calibración Realizadas
+                    </div>
+                    <v-divider></v-divider>                    
+                      <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;" class="mt-2">
+                          <v-data-table
+                          :headers="headersTareasRealizadas"
+                          :items="tareasRealizadas"
+                          hide-default-footer
+                          height="420"
+                          >
+                            <template v-slot:[`item.certificado`]={item}>
+                                <v-tooltip bottom>
+                                  <template v-slot:activator="{ on, attrs }">
+                                    <v-btn 
+                                    :v-on="on" 
+                                    v-bind="attrs" 
+                                    text  
+                                    small 
+                                    color="info"
+                                    :href="`http://127.0.0.1:3333/Pdf/${item.certificado}`" 
+                                    target="_blank"
+                                    download
+                                    >
+                                    <v-icon>mdi-download</v-icon>Descargar</v-btn>
+                                  </template>
+                                  <span>Descargar Certificado</span>
+                                </v-tooltip>  
+                            </template>
+                          
+                          </v-data-table>
+                      </v-card>
+                  </v-col> 
                 </v-row>
               </v-container>
             </v-card>
@@ -520,206 +517,78 @@ import Cookies from 'js-cookie';
 import AgregarCertificado from "~/components/common/AgregarCertificado.vue";
 import AgregarInstrumento from "~/components/common/AgregarInstrumento.vue";
 import AgregarCalibracion from "~/components/common/AgregarCalibracion.vue";
+import AprobarTareaCalibracion from "~/components/common/AprobarTareaCalibracion.vue";
 
 export default {
   components:{
     BtnPDF,
     AgregarCertificado,
     AgregarInstrumento,
-    AgregarCalibracion
+    AgregarCalibracion,
+    AprobarTareaCalibracion
   },
   layout: 'equipo',
   data(){
     return{
       paramsId:null,
       equipo:[],
+      equipoAsignado:[],
       item:{
           fecha_creacion_equipo:'',
           fecha_update_equipo:'',
-          calibracion_tarea_frecuencia: 23,
-          calibracion_tarea_id: "3",
-          calibracion_tarea_proxima: "2021-02-23",
-          calibracion_tarea_tipo: "prueba",
-          calibracion_tarea_ult_efectuada: "2020-02-22",
-          descripcion: "Descripción 266",
-          id: 9,
-          instrumento_creado_usuario: "admin",
-          instrumento_create: "2020-02-21 21:00:00",
-          instrumento_encargado_calibracion: "systelec",
-          instrumento_magnitud: "prueba",
-          instrumento_marca: "Marca Prueba",
-          instrumento_modelo: "Marca Modelo",
-          instrumento_rango_a: 23,
-          instrumento_rango_de: 23,
+          calibracion_tarea_frecuencia: null,
+          calibracion_tarea_id: null,
+          calibracion_tarea_proxima: "",
+          calibracion_tarea_tipo: "",
+          calibracion_tarea_ult_efectuada: "",
+          descripcion: "",
+          id: null,
+          instrumento_creado_usuario: "",
+          instrumento_create: "",
+          instrumento_encargado_calibracion: "",
+          instrumento_magnitud: "",
+          instrumento_marca: "",
+          instrumento_modelo: "",
+          instrumento_rango_a: null,
+          instrumento_rango_de: null,
           instrumento_rango_normal_de:"",
           instrumento_rango_normal_a:"",
-          instrumento_resolucion: 23,
-          instrumento_serie: "prueba",
-          instrumento_tolerancia: 23,
-          instrumento_unidad: "prueba",
-          instrumento_update: "2020-02-21 21:00:00",
-          intrumento_estado: "disponible",
-          intrumento_id: "9",
-          sector_name: "prueba3",
-          sector_planta: "prueba",
-          serie_requerido: true,
-          tag: "266",
-          tipo_instrumento: "prueba",
+          instrumento_resolucion: null,
+          instrumento_serie: "",
+          instrumento_tolerancia: null,
+          instrumento_unidad: "",
+          instrumento_update: "",
+          intrumento_estado: "",
+          intrumento_id: "",
+          sector_name: "",
+          sector_planta: "",
+          serie_requerido: null,
+          tag: "",
+          tipo_instrumento: "",
         },
-     headers: [
-          { text: 'Equipo', align: 'start', value: 'name'},
-          { text: 'Instrumento', value: 'calories' },
-          { text: 'Desde', value: 'calories' },
-          { text: 'Hasta', value: 'calories' },
-          //{ text: 'Desde', value: 'certificado' ,sortable:false }
+     headersEquiposAsignados: [
+          { text: 'Equipo', align: 'start', value: 'equipo'},
+          { text: 'Instrumento', value: 'instrumento' },
+          { text: 'Desde', value: 'desde' },
+          { text: 'Hasta', value: 'hasta' },
         ],
-     headers2: [
-          { text: 'N° De Tarea', align: 'start', value: 'name'},
-          { text: 'Realizo', value: 'calories' },
-          { text: 'Fecha', value: 'fat' },
-          {text: 'Certificado',align: 'center', value: 'protein' }
+     headersTareasRealizadas: [
+          { text: 'N°', align: 'start', value: 'Num_tarea'},
+          { text: 'Instrumento', value: 'intrumento' },
+          { text: ' Fecha Realización', value: 'fecha' },
+          { text: 'Encargado', value: 'realizo' },
+          {text: 'Certificado',align: 'center', value: 'certificado' }
         ],
-        headers3: [
-          { text: 'Instrumento', align: 'start', value: 'name'},
-          { text: 'Tipo de Calibracion', value: 'calories' },
-          { text: 'Frecuencia', value: 'fat' },
-          {text: 'Proxima Calibracion',align: 'center', value: 'protein' }
+      headersTareasCalibracion: [
+          { text: 'N°', align: 'start', value: 'num_tarea'},
+          { text: 'Tipo de Calibración', align: 'start', value: 'calibracion_tarea_tipo'},
+          { text: 'Frecuencia', value: 'calibracion_tarea_frecuencia' },
+          { text: 'Ultima Efectuada', value: 'calibracion_tarea_proxima' },
+          {text: 'Proxima Calibracion',align: 'center', value: 'calibracion_tarea_proxima' },
+          {text: 'Aprobar',align: 'center', value: 'aprobar' }
         ],
-        desserts: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            certificado: true,
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            certificado: false
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            certificado: true,
-
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            certificado: false,
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            certificado: true,
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            certificado: true,
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            certificado: false,
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            certificado: true,
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            certificado: false,
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            certificado: true,
-          },
-        ],
-        desserts2: [
-          {
-            name: 'Frozen Yogurt',
-            calories: 159,
-            fat: 'success',
-            carbs: 24,
-            protein: 4.0,
-            iron: '1%',
-          },
-          {
-            name: 'Ice cream sandwich',
-            calories: 237,
-            fat: 'gray',
-            carbs: 37,
-            protein: 4.3,
-            iron: '1%',
-          },
-          {
-            name: 'Eclair',
-            calories: 262,
-            fat: 'success',
-            carbs: 23,
-            protein: 6.0,
-            iron: '7%',
-          },
-          {
-            name: 'Cupcake',
-            calories: 305,
-            fat: 'success',
-            carbs: 67,
-            protein: 4.3,
-            iron: '8%',
-          },
-          {
-            name: 'Gingerbread',
-            calories: 356,
-            fat: 'success',
-            carbs: 49,
-            protein: 3.9,
-            iron: '16%',
-          },
-          {
-            name: 'Jelly bean',
-            calories: 375,
-            fat: 'gray',
-            carbs: 94,
-            protein: 0.0,
-            iron: '0%',
-          },
-          {
-            name: 'Lollipop',
-            calories: 392,
-            fat: 'success',
-            carbs: 98,
-            protein: 0,
-            iron: '2%',
-          },
-          {
-            name: 'Honeycomb',
-            calories: 408,
-            fat: 'gray',
-            carbs: 87,
-            protein: 6.5,
-            iron: '45%',
-          },
-          {
-            name: 'Donut',
-            calories: 452,
-            fat: 'success',
-            carbs: 51,
-            protein: 4.9,
-            iron: '22%',
-          },
-          {
-            name: 'KitKat',
-            calories: 518,
-            fat: 'success',
-            carbs: 65,
-            protein: 7,
-            iron: '6%',
-          },
-        ],
+        tareasCalibracion: [],
+        tareasRealizadas: [],
     }
   },
   methods:{
@@ -731,10 +600,39 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
-        
-        this.paramsId = res.data.data[0].detalleEquipos.intrumento_id
+        console.log('res:',res.data.data[0].detalleEquipos.intrumento_id )
         this.item = res.data.data[0].detalleEquipos;
+        //Tareas de calibracion pendientes
+        this.tareasCalibracion = res.data.data[0].calibracion;
       })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+     async getEquipoAsignado(){
+      try {
+        const token = Cookies.get('token');
+        await axios.get(`EquipoAsignado`,{
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      .then((res)=>{
+        console.log('resEquipoAsignado:',res.data.data.data);
+        this.equipoAsignado = res.data.data.data;
+      })
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    async getTareasRealizadas(){
+      const token = Cookies.get('token');
+      try {
+        await axios.get('TareaRealizada',{
+          headers: { Authorization: `Bearer ${token}` },
+        })
+        .then((res)=>{
+          console.log('res Tareas Realizadas',res.data.data);
+          this.tareasRealizadas = res.data.data;
+        })
       } catch (error) {
         console.log(error)
       }
@@ -751,36 +649,64 @@ export default {
       item.certificado = true;
     },
   },
-  created(){
+  mounted(){
+    this.paramsId = this.$route.params.id
     this.getEquipo();
+    this.getEquipoAsignado();
+    this.getTareasRealizadas();
   },
 }
 </script>
 
 <style scoped>
+.img{
+  width: 245px;
+  height: 145px;
+}
 .input-file-wrap {
     background-image: url("/pic.jpg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     height: 145px;
     width: 245px;
     overflow: hidden;
     position: relative;
     cursor: pointer;
+    border-radius: 7px;
+    border: 3px inset #2A67A5;
 }
 
 .file-input {
     width: 100%;
     height: 100%;
     opacity: 0;
-    padding-left: 240px;
-    margin-right: -240px;
+/*     padding-left: 240px;
+    margin-right: -240px; */
     cursor: pointer;
 }
 
-.img_banner{
+@media screen and (max-width: 480px) {
+  .input-file-wrap {
+      height: 195px;
+      width: 100%;
+  }
+  .file-input {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+.img{
+  width: 100%;
+  height: 195px;
+}
+}
+
+/* .img_banner{
   border-radius: 7px;
   border: 3px inset #2A67A5;
   height:150px;
   width:250px;
   background-color: slategrey;
-}
+} */
 </style>

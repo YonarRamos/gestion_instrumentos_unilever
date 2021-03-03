@@ -1,19 +1,19 @@
 <template>
   <v-container>
+
             <v-row style="background:#F9F9F9">
               <v-col cols="12" md="4">
                 <v-menu
-                  ref="menu"
-                  v-model="menu"
-                  :close-on-content-click="false"
-                  :return-value.sync="date"
+                  ref="menu1"
+                  v-model="menu1"
+                  :close-on-content-click="true"        
                   transition="scale-transition"
                   offset-y
                   min-width="auto"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date"
+                      v-model="date1"
                       label="Desde"
                       prepend-inner-icon="mdi-calendar"
                       readonly
@@ -26,32 +26,31 @@
                       background-color="white"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
+                  <v-date-picker v-model="date1" no-title scrollable>
+<!--                     <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menu1 = false">
                       Cancel
                     </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                    <v-btn text color="primary" @click="$refs.menu1.save(date1)">
                       OK
-                    </v-btn>
+                    </v-btn> -->
                   </v-date-picker>
                 </v-menu>
               </v-col>
 
               <v-col cols="12" md="4">
                 <v-menu
-                  ref="menu"
-                  v-model="menu1"
+                  ref="menu2"
+                  v-model="menu2"
                    class="picker"
-                  :close-on-content-click="false"
-                  :return-value.sync="date"
+                  :close-on-content-click="true"
                   transition="scale-transition"
                   offset-y
                   min-width="auto"
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-text-field
-                      v-model="date1"
+                      v-model="date2"
                       label="Hasta"
                       prepend-inner-icon="mdi-calendar"
                       readonly
@@ -64,14 +63,14 @@
                       background-color="white"
                     ></v-text-field>
                   </template>
-                  <v-date-picker v-model="date" no-title scrollable>
-                    <v-spacer></v-spacer>
-                    <v-btn text color="primary" @click="menu = false">
+                  <v-date-picker v-model="date2" no-title scrollable>
+<!--                     <v-spacer></v-spacer>
+                    <v-btn text color="primary" @click="menu2 = false">
                       Cancel
                     </v-btn>
-                    <v-btn text color="primary" @click="$refs.menu.save(date)">
+                    <v-btn text color="primary" @click="$refs.menu2.save(date2)">
                       OK
-                    </v-btn>
+                    </v-btn> -->
                   </v-date-picker>
                 </v-menu>
               </v-col>
@@ -92,21 +91,15 @@ export default {
   middleware: 'NOAUTH',
   layout: 'custom',
   data: () => ({
-    date: new Date().toISOString().substr(0, 10),
-    
+    date2: new Date().toISOString().substr(0, 10),
     date1: new Date().toISOString().substr(0, 10),
-    menu: false,
-    menu1: false,
-    
     menu2: false,
+    menu1: false,
   }),
 
   created() {
-    this.date = moment().format('YYYY-MM-DD')
-   
-    const desde = moment().format('YYYY-MM-DD HH:mm:ss')
-
-    const hasta = moment() .format('YYYY-MM-DD HH:mm:ss')
+    this.date1="";
+    this.date2="";
   },
   methods: {
     formatDate(date) {
