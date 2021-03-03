@@ -345,7 +345,7 @@ class EquipoController {
          
         },'calibracion': item.calibracion_tarea.map(e=>{
         return{
-          "calibracion_tarea_id": e.id,
+          "num_tarea": e.id,
           "calibracion_tarea_tipo": e.tipo.nombre,
           "calibracion_tarea_frecuencia": e.frecuencia,
           "calibracion_tarea_ult_efectuada": e.ult_efectuado,
