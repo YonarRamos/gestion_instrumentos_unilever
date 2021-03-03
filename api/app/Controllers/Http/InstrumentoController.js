@@ -22,7 +22,33 @@ class InstrumentoController {
       //seteo valores por defectos
       page = page || 1
       perPage = perPage || 10
-      let res = await Instrumento.query().paginate(page, perPage);
+      let res = await Instrumento.query()
+      .with('tipo')
+      .with('unidad')
+      .with('magnitud')
+      .with('encargado')
+      .with('estado_rel').paginate(page, perPage);
+      res = res.toJSON();
+      var ArrayInstrumento = res.data.map(e =>{
+        return {
+          "estado": e.estado_rel.nombre,
+          "marca": e.marca,
+          "modelo": e.modelo,
+          "serie": e.serie,
+          "rango_de": e.rango_de,
+          "rango_a": e.rango_a,
+          "rango_normal_de": e.rango_normal_de,
+          "rango_mormal_a": e.rango_normal_a,
+          "resolucion": e.resolucion,
+          "tolerancia": e.tolerancia,
+          "tipo": e.tipo.nombre,
+          "unidad": e.unidad.nombre,
+          "magnitud": e.magnitud.nombre,
+          "encargado": e.encargado.empresa
+        }
+      })
+      let resp = await Promise.all(ArrayInstrumento)
+      res.data = resp
       response.status(200).json({ message: 'Listado de Instrumentos', data: res })
     } catch (error) {
       console.log(error)

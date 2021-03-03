@@ -30,8 +30,8 @@ Route.group(() => {
     Route.post('register', 'UserController.store');
 }).prefix('api/v1');
 
-
-
+//Rutas Equipos Asignados
+Route.get('/api/v1/EquipoAsignado' , 'EquipoAsignacionController.index');
 //Rutas formulario 
 Route.get('/api/v1/formulario' , 'EquipoController.index');
 Route.get('/api/v1/formulario/:id' , 'EquipoController.show');
