@@ -105,7 +105,7 @@ class EquipoController {
       var req = request.all();
 
       req.options = JSON.parse(req.options);
-      console.log(req.options)
+      
       var sortBy = req.options.sortBy;
       var sortDesc = req.options.sortDesc;
       var page = req.options.page;
@@ -205,6 +205,70 @@ class EquipoController {
     }
   }
 
+
+  async getLastCert({request, response, auth}) {
+    
+    var user, instrumento;
+    var req = request.all();
+
+    //Validación
+    try {
+      user = await auth.getUser();
+      user = user.toJSON()
+
+      instrumento = await Instrumento.find(req.id);
+
+      if (!instrumento)
+      {
+        return "Instrumento no encontrado"
+      }
+
+      if (user.rol = 3 && user.id != instrumento.encargado_calibracion)
+      {
+        throw "Acceso no autorizado.";
+      }
+    }
+    catch (error)
+    {
+      return response.status(401).json('Acceso no autorizado.');
+    }
+
+    // Devolvemos el archivo en cuestion
+    try {
+
+      var listIdsTareasCalib = await CalibracionTarea.query().select('id').where('instrumento_id', req.id).fetch();
+      listIdsTareasCalib = listIdsTareasCalib.toJSON();
+
+      var arrayPromesas = listIdsTareasCalib.map(it => {
+        return it.id;
+      })
+      
+      listIdsTareasCalib = await Promise.all(arrayPromesas);
+      
+      var cert = await CalibracionTareaRealizada.query().select('certificado').whereIn('calibracion_tarea_id', listIdsTareasCalib).orderBy('fecha', 'DESC').fetch();
+      cert = cert.toJSON();
+      if (cert[0])
+      {
+        const isExist = await Drive.exists(`archivos/certificados/${req.id}/${cert[0].certificado}`);
+        
+        if (isExist) {
+            return response.download(Helpers.appRoot(`storage/archivos/certificados/${req.id}/${cert[0].certificado}`));
+        }
+        return `archivos/certificados/${req.id}/${cert.toJSON()[0].certificado}`
+        return 'File does not exist';
+      }
+      else
+      {
+        throw 'Error al buscar el certificado';
+      }
+
+      
+
+    } catch (error) {
+      return response.status(400).json({ menssage: 'Error al buscar el certificado.' })
+    }
+
+  }
 
 
 

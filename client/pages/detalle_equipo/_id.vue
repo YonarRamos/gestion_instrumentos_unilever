@@ -78,6 +78,7 @@
                       <v-checkbox
                         v-model="item.serie_requerido"
                         label="Serie"
+                        disabled
                         hide-details
                         class="mb=5"
                       ></v-checkbox>
@@ -408,12 +409,13 @@
                     <v-row>
                       <v-col cols="10">
                         <div class="overline">
-                          Tareas de Calibración
+                          Equipos Asignados
                         </div>
+                      
                       </v-col>
                       <v-spacer></v-spacer>
                       <v-col cols="2 d-flex justify-end pt-2">
-                        <agregar-calibracion :instrumento="item"/>
+                     <!--    <agregar-calibracion :instrumento="item"/>-->
                       </v-col>
                     </v-row>
                       <v-divider></v-divider>
@@ -469,15 +471,29 @@
                             </v-data-table>
                         </v-card>
                   </v-col> 
+                  
                   <v-col cols="12" sm="6" class="pt-0" >
-        
+                    <v-row>
+                      <v-col cols="10">
+                        <div class="overline">
+                          Tarea de Calibracion
+                        </div>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-col cols="2 d-flex justify-end pt-2">
+                        <agregar-calibracion :instrumento="item"/>
+                      </v-col>
+                    </v-row>
+                      <v-divider></v-divider>
                         <v-card height="425" width="auto" flat style="border: 2px groove #D6D6D8 ;">
-    <!--                         <v-data-table
-                            :headers="headers"
+                     
+                 <v-divider></v-divider>
+                            <v-data-table
+                            :headers="headers3"
                             :items="desserts"
                             hide-default-footer
                             height="420"
-                            /> -->
+                            /> 
                         </v-card>
       
                   </v-col>
@@ -551,15 +567,23 @@ export default {
           tipo_instrumento: "prueba",
         },
      headers: [
-          { text: 'Dessert (100g serving)', align: 'start', value: 'name'},
-          { text: 'Calories', value: 'calories' },
-          { text: 'Estatus', value: 'certificado' ,sortable:false }
+          { text: 'Equipo', align: 'start', value: 'name'},
+          { text: 'Instrumento', value: 'calories' },
+          { text: 'Desde', value: 'calories' },
+          { text: 'Hasta', value: 'calories' },
+          //{ text: 'Desde', value: 'certificado' ,sortable:false }
         ],
      headers2: [
-          { text: 'Dessert (100g serving)', align: 'start', value: 'name'},
-          { text: 'Calories', value: 'calories' },
-          { text: 'Fat (g)', value: 'fat' },
+          { text: 'N° De Tarea', align: 'start', value: 'name'},
+          { text: 'Realizo', value: 'calories' },
+          { text: 'Fecha', value: 'fat' },
           {text: 'Certificado',align: 'center', value: 'protein' }
+        ],
+        headers3: [
+          { text: 'Instrumento', align: 'start', value: 'name'},
+          { text: 'Tipo de Calibracion', value: 'calories' },
+          { text: 'Frecuencia', value: 'fat' },
+          {text: 'Proxima Calibracion',align: 'center', value: 'protein' }
         ],
         desserts: [
           {
@@ -707,7 +731,7 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
-        console.log('Equipos res:', res.data.data[0].detalleEquipos);
+        
         this.paramsId = res.data.data[0].detalleEquipos.intrumento_id
         this.item = res.data.data[0].detalleEquipos;
       })

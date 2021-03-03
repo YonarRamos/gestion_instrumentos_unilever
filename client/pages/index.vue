@@ -108,6 +108,7 @@
               </template> 
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
+                  <v-icon small @click="downloadCert(item.instrumento_id)"> mdi-download </v-icon>
                   <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
                   <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
                 </v-row>
@@ -179,6 +180,21 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleDialogPassword']),
+
+    async downloadCert(inId) {
+      try {
+        await axios
+        .get("download/lastcert", {
+        headers: { Authorization: `Bearer ${this.token}`}, params: {id: inId}
+      })
+        .then(res => {
+          console.log(res);
+        })
+      } catch (error) {
+        
+      }
+      
+    },
 
     async fillItems() {
 

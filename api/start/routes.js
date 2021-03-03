@@ -24,6 +24,7 @@ Route.get('/api/v1',() => {
 // Rutas del Runtime
 Route.group(() => {
     Route.get('tablaequipos', 'EquipoController.getEquiposTable');
+    Route.get('download/lastcert', 'EquipoController.getLastCert');
     Route.get('sector', 'SectorController.index');
     Route.post('login', 'UserController.login');
     Route.post('register', 'UserController.store');
