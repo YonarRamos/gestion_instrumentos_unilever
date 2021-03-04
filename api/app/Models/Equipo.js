@@ -8,6 +8,15 @@ class Equipo extends Model {
     static get table () {
         return 'equipo'
     }
+    static get dates() {
+        return super.dates.concat(['proxima'])
+    }
+      
+    static castDates(field, value) {
+        if (field === 'proxima' ) {
+          return value.format('YYYY-MM-DD HH:mm:ss')
+        }
+    }
 
     sector () {
         return this.hasOne('App/Models/Sector', 'sector_id', 'id')
