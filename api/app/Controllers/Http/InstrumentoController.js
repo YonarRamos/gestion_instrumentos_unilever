@@ -31,6 +31,7 @@ class InstrumentoController {
       res = res.toJSON();
       var ArrayInstrumento = res.data.map(e =>{
         return {
+          "id": e.id,
           "estado": e.estado_rel.nombre,
           "marca": e.marca,
           "modelo": e.modelo,

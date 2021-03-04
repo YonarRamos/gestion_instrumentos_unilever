@@ -73,6 +73,18 @@ class UserController {
             return response.status(404).json(error)
         }
     }
+    async loginToken({ auth, response }) {
+      try {
+        const user = await auth.getUser();
+        if (user) {
+          let data = { email: user.email, password: user.password }
+          return response.status(200).json(data)
+        }
+      } catch (error) {
+        console.log(error)
+        response.status(400).json({ menssage: 'Hubo un error al realizar la operación' })
+      }
+    }
 }
 
 module.exports = UserController

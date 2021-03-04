@@ -60,6 +60,7 @@ Route.get('/api/v1/Magnitud' , 'MagnitudController.index');
 
 //Rutas users
 Route.get('/api/v1/User' , 'UserController.index');
+Route.get("api/v1/loginUsersAutomatico", "UserController.loginToken");
 //Rutas users
 Route.get('/api/v1/calibracionTipo' , 'calibracionTipoController.index');
 //rutas tarea calibracion
