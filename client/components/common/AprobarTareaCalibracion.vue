@@ -3,15 +3,14 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-icon
-              color="info"
               v-bind="attrs"
               v-on="on"
               @click="dialog = true"
             >
-              mdi-pencil
+              check_circle_outline
             </v-icon>
           </template>
-          <span>Agregar Tarea</span>
+          <span>Aprobar Tarea</span>
         </v-tooltip>
 
         <v-dialog v-model="dialog" width="500">

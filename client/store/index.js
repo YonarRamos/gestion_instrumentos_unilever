@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie'
-import cookie from 'cookie'
+import cookie from 'cookie';
+import axios from "../plugins/axios";
 
 export const state = () => ({
   infoModal:{
@@ -18,6 +19,10 @@ export const mutations = {
   async SET_AUTH(state, token) {
     state.auth = true;  
     Cookies.set('token', token)
+    this.$router.push('/')
+  },
+  async SET_AUTH_AUTOMATIC(state, res) {
+    state.auth = true;
     this.$router.push('/')
   },
   async setUser(state, payload){
@@ -48,15 +53,23 @@ export const mutations = {
   }
 
 };
-export const actions ={
-    nuxtServerInit({commit},{req }){
-        if(req.headers.cookie){
-            let { token } = cookie.parse(req.headers.cookie);
-            console.log(req.headers.cookie)
-            if (token) {
-                commit('SET_AUTH', token)
-              }
-        }
-    }
+export const actions = {
+  
+  async nuxtServerInit ({ commit , state }, { req }  ) { 
+        
+     if (req.headers.cookie) {
+         let { token } = cookie.parse(req.headers.cookie);
+        
+         await axios
+           .get("loginUsersAutomatico", {
+             headers: { Authorization: `Bearer ${token}` }
+           })
+           .then(res => {
+             this.commit('SET_AUTH_AUTOMATIC', true );                    
+           }).catch(err => {               
+           })                
+     }
+   },
+ 
 
-}
+};

@@ -53,7 +53,7 @@
             <v-divider></v-divider>
             <v-row>
               <v-col>
-                <filtro/>
+                <filtro @click="getDataTable"/>
                 <v-divider></v-divider>
               </v-col>
             </v-row>
@@ -87,6 +87,7 @@
           </template>
           
               <template v-slot:[`item.tag`]={item} >
+
                 <nuxt-link  :to="`detalle_equipo/${item.id}`"  :exact="true">
                   <v-tooltip right>
                     <template v-slot:activator="{ on, attrs }">
@@ -104,14 +105,18 @@
                     <span>Ver Detalle</span>
                   </v-tooltip>
                 </nuxt-link>
-
               </template> 
+
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
                   <v-icon small @click="downloadCert(item.instrumento_id)"> mdi-download </v-icon>
                   <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
                   <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
                 </v-row>
+              </template>
+
+              <template v-slot:[`item.proximaCalib`]={item}>
+                {{item.proximaCalib | fecha}} 
               </template>
             </v-data-table>
           </v-card>
@@ -122,12 +127,12 @@
 </template>
 
 <script>
-
-import Filtro from '@/components/public/Filtro'
-import axios from '~/plugins/axios'
-import { mapMutations, mapState } from 'vuex'
-import Cookies from 'js-cookie'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import moment from 'moment';
+import Filtro from '@/components/public/Filtro';
+import axios from '~/plugins/axios';
+import { mapMutations, mapState } from 'vuex';
+import Cookies from 'js-cookie';
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
@@ -178,6 +183,15 @@ export default {
       return this.editedIndex === -1 ? 'Nuevo' : 'Editar'
     },
   },
+  filters:{
+    fecha(v){
+      if(v=='')
+      {return "No hay tarea asignada"}
+      else{
+      return v.toString().slice(0,10);
+      }
+    }
+  },
   methods: {
     ...mapMutations(['toggleDialogPassword']),
 
@@ -209,10 +223,10 @@ export default {
 
         })
     },
-    async getDataTable() {
+    async getDataTable(desde, hasta) {
       this.loading = true
       await axios
-        .get("tablaequipos", { headers: { Authorization: `Bearer ${this.token}`} , params: { options: this.options, buscar: this.txtBuscar, filtroTree: this.filtroTree } })
+        .get("tablaequipos", { headers: { Authorization: `Bearer ${this.token}`} , params: { desde, hasta, options: this.options, buscar: this.txtBuscar, filtroTree: this.filtroTree } })
         .then(res => {
           this.totalTableItems = res.data.total;
           res.data.tableItemsData.forEach(it => {
@@ -250,7 +264,9 @@ export default {
         this.editedIndex = -1
       })
     },
-
+    filterByDate(desde, hasta){
+      this.getDataTable()
+    },
     closeDelete() {
       this.dialogDelete = false
       this.$nextTick(() => {

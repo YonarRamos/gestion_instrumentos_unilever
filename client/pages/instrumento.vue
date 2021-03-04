@@ -2,8 +2,7 @@
   <div>
     <v-container>
       <v-row>
-        <v-col cols="3"> </v-col>
-        <v-col cols="9">
+        <v-col>
           <v-card>
             <v-card-title style="box-shadow: 1px 2px 4px #888888">
               Instrumento
@@ -39,12 +38,12 @@
                   <v-btn
                     text
                     color="error"
-                    @click="limpiarFiltros"
+                    
                     class="mr-3 mb-2"
                   >
                     Limpiar Filtros
                   </v-btn>
-                  <agregar-instrumento-index @click="getDataTable" />
+                  <agregar-instrumento-index @click="getInstrumentos" />
                 </v-toolbar>
               </template>
 
@@ -72,15 +71,14 @@
                   <!--<v-icon small @click="downloadCert(item.instrumento_id)">
                     mdi-download
                   </v-icon>-->
-                  <editar-equipo
+                  <editar-instrumento
                     :id="item.id"
                     class="mr-2"
-                    @click="getDataTable"
+                    @click="getInstrumentos"
                   />
-                  <eliminar-equipo
+                  <eliminar-instrumento
                     :id="item.id"
-                    :tag="item.tag"
-                    @click="getDataTable"
+                    @click="getInstrumentos"
                   />
                 </v-row>
               </template>
@@ -93,7 +91,9 @@
 </template>
 
 <script>
-import Filtro from '@/components/public/Filtro'
+import Filtro from '@/components/public/Filtro';
+import EditarInstrumento from "~/components/common/EditarInstrumento.vue";
+import EliminarInstrumento from "~/components/common/EliminarInstrumento.vue";
 import axios from '~/plugins/axios'
 import { mapMutations, mapState } from 'vuex'
 import Cookies from 'js-cookie'
@@ -102,8 +102,11 @@ export default {
   middleware: 'NOAUTH',
   components: {
     Filtro,
+    EditarInstrumento,
+    EliminarInstrumento
   },
   data: () => ({
+    instrumento_id:null,
     token: Cookies.get('token'),
     benched: 0,
     items: [],
@@ -137,15 +140,15 @@ export default {
     tableData: [],
   }),
   methods: {
-    async getInstrumento() {
+    async getInstrumentos() {
       try {
         await axios
           .get('instrumento', {
             headers: { Authorization: `Bearer ${this.token}` },
           })
           .then((res) => {
-            console.log(res + 'adasfsfadfsdfasf')
-            this.tableData = res.data.data.data
+            this.tableData = res.data.data.data;
+            this.instrumento_id = res.data.data.data[0].id
           })
       } catch (error) {
         console.log(error)
@@ -153,7 +156,7 @@ export default {
     },
   },
   mounted(){
-      this.getInstrumento()
+      this.getInstrumentos()
   } 
   
 }

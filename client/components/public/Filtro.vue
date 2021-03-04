@@ -76,7 +76,7 @@
               </v-col>
 
               <v-col cols="12" md="4" class="d-flex justify-end align-center"> 
-                <v-btn color="grey darken-1" outlined height="40">
+                <v-btn color="grey darken-1" outlined height="40" @click="filtrar">
                     <v-icon>refresh</v-icon>
                     Aplicar Filtro
                 </v-btn>
@@ -105,6 +105,9 @@ export default {
     formatDate(date) {
       return moment(date).format('YYYY-MM-DD HH:mm')
     },
+    filtrar(){
+      this.$emit('click', this.date1, this.date2);
+    }
   },
 }
 </script>

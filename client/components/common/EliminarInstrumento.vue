@@ -4,11 +4,11 @@
     <v-dialog v-model="dialog" max-width="500px">
       <v-card>
         <v-card-title class="headline blue darken-4 white--text">
-          Eliminar Equipo
+          Eliminar Instrumento
         </v-card-title>
 
         <v-card-subtitle class="mt-5 Subtitle 1">
-            <strong><h3>¿Está seguro de que desea eliminar el equipo {{tag}}?</h3></strong>
+            <strong><h3>¿Está seguro de que desea eliminar este instrumento</h3></strong>
         </v-card-subtitle>
 
         <v-card-actions>
@@ -16,7 +16,7 @@
           <v-btn color="error" text @click="dialog=false">
             Cancelar
           </v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItem(id)">
+          <v-btn color="blue darken-1" text @click="deleteItem">
             OK
           </v-btn>
         </v-card-actions>
@@ -30,7 +30,7 @@
       <v-card>
         <v-card-title class="headline">
           <v-alert width="380" outlined type="success"> 
-            Se ha eliminado el equipo <strong>{{tag}}</strong>
+            Se ha eliminado el instrumento correctamente
           </v-alert>
         </v-card-title>
         <v-card-actions>
@@ -46,7 +46,7 @@
       </v-card>
     </v-dialog>
 
-    <loading :tag="tag"/>
+    <loading :tag="'Borrando Instrumento'"/>
 
   </div>
 </template>
@@ -62,12 +62,9 @@ export default {
   },
   props:{
     id:{
-    type: Number,
+    type: String,
     required:true
     },
-    tag:{
-      type: String
-    }
   },
   data(){
     return{
@@ -77,19 +74,21 @@ export default {
   },
   methods:{
    ...mapMutations(['toggleLoading']),
-    deleteItem(id) {
+   async deleteItem() {
       const token = Cookies.get('token');
       this.toggleLoading(true);
       try {
-        axios.delete(`equipo/${id}`, {
-          headers: { Authorization: `Bearer ${token}`,
-          params:{id:id}  
-          },
+       await axios.delete(`instrumento/${this.id}`, {
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            params:{id:this.id} 
+            },
         })
         .then(()=>{
           this.dialog = false;
           this.toggleLoading(false);
           this.dialogEliminado = true;
+          this.$emit('click');
         });
       } catch (error) {
         this.toggleLoading(false);

@@ -130,7 +130,6 @@ export default {
           headers: { Authorization: `Bearer ${this.token}` }
         })
         .then((res)=>{
-          console.log('res llenar datos editar:', res.data.data);
           this.item.tag = res.data.data[0].detalleEquipos.tag;
           this.item.serie_requerido = res.data.data[0].detalleEquipos.serie_requerido;
           this.item.sector_id = res.data.data[0].detalleEquipos.sector_name;

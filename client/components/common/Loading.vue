@@ -10,7 +10,7 @@
         dark
       >
         <v-card-text>
-          Eliminando Equipo {{tag}}...
+          {{tag}}...
           <v-progress-linear
             indeterminate
             color="white"
