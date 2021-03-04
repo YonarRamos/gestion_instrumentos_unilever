@@ -37,7 +37,7 @@
                     <v-col cols="12">
                       <v-select
                       v-model="tarea.calibracion_tipo_id"
-                      label="Tipo de Calirbación"
+                      label="Tipo de Calibración"
                       :items="Object.keys(calibracionTipo)"
                       :rules="rules"
                       >
@@ -138,27 +138,24 @@ export default {
     }
   },
   methods:{
-    agregarTareaCalibracion(){
+   async agregarTareaCalibracion(){
       const obj = this.tarea;
-      this.$emit('nuevaTarea', obj);
-      this.$refs.form.reset();
-      this.dialog = false;
       try {
-/*         if(this.$refs.form.validate()){
+        if(this.$refs.form.validate()){
           this.tarea.instrumento_id = this.instrumento.intrumento_id;
           this.tarea.calibracion_tipo_id = this.calibracionTipo[this.tarea.calibracion_tipo_id];
           console.log('Nueva Tarea', this.tarea);
-          axios.post('calibracion', this.tarea ,{
+         await axios.post('calibracion', this.tarea ,{
               headers: { Authorization: `Bearer ${this.token}` },
             })
             .then(()=>{
-              this.alertMsg = "Instrumento agregado correctamente"
+              this.alertMsg = "Se agregó una nueva tarea de calibración"
               this.alerType = "success"
               this.alertShow = true;
               this.$refs.form.reset();
-              this.$emit('nuevaTarea', obj);
+              this.$emit('click');
             }) 
-      }*/
+      }
       } catch (error) {
         console.log(error)
         this.alertMsg = "Hubo un error al processar tu solicitud"
