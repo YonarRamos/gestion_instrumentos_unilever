@@ -44,7 +44,8 @@ Route.delete("api/v1/equipo/:id", "EquipoController.destroy");
 // Rutas Instrumentos
 Route.get('/api/v1/instrumento' , 'InstrumentoController.index');
 Route.post('/api/v1/instrumento' , 'InstrumentoController.store');
-
+Route.put('/api/v1/instrumento/:id' , 'InstrumentoController.update');
+Route.delete('/api/v1/instrumento/:id' , 'InstrumentoController.destroy');
 
 //Rutas get tipo Instrumento
 Route.get('/api/v1/instrumentoTipo' , 'InstrumentoTipoController.index');

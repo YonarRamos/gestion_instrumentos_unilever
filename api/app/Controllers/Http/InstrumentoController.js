@@ -157,7 +157,41 @@ class InstrumentoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update ({ params, request, response }) {
+  async update ({ params: {id}, request, response, auth }) {
+    try {
+      const user = await auth.getUser()
+      const data = request.only(["estado", "marca", "modelo", "serie", "rango_de", "rango_a", "rango_normal_de", "rango_normal_a", "resolucion", "tolerancia" , "tipo_id" , "unidad_id" , "magnitud_id" ])
+      if (user.rol == 0) {
+        const inst = await Instrumento.find(id);
+        inst.estado = data.estado || inst.estado;
+        inst.marca = data.marca || inst.marca;
+        inst.modelo = data.modelo || inst.modelo;
+        inst.serie = data.serie || inst.serie;
+        inst.rango_de = data.rango_de || inst.rango_de; 
+        inst.rango_a = data.rango_a || inst.rango_a; 
+        inst.rango_normal_de = data.rango_normal_de || inst.rango_normal_de; 
+        inst.rango_normal_a = data.rango_normal_a || inst.rango_normal_a; 
+        inst.resolucion = data.resolucion || inst.resolucion; 
+        inst.tolerancia = data.tolerancia || inst.tolerancia; 
+        inst.tipo_id = data.tipo_id || inst.tipo_id;
+        inst.unidad_id = data.unidad_id || inst.unidad_id;
+        inst.magnitud_id = data.magnitud_id || inst.magnitud_id;
+        inst.updated_at = moment(); 
+        await inst.save();
+        response.status(200).json({ menssage: 'Instrumento modificado con Exito!', data: inst })
+      }
+      else {
+        response.status(400).json({ menssage: "Usuario sin permisos para realizar la operacion" })
+      }
+    } catch (error) {
+      console.log(error)
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      response.status(400).json({
+        menssage: "Hubo un error al realizar la operación",
+      })
+    }
   }
 
   /**
@@ -168,7 +202,26 @@ class InstrumentoController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy ({ params, request, response }) {
+  async destroy ({ params, request, response , auth}) {
+    const id = params.id
+    try {
+      const user = await auth.getUser()
+      if (user.rol == 0) {
+
+        const inst = await Instrumento.findOrFail(id);
+        await inst.delete();
+        return response.status(200).json({ menssage: 'Instrumento eliminado con Exito!' })
+      }
+    } catch (error) {
+      console.log(error)
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      response.status(404).json({
+        message: "Instrumento a eliminar no encontrado",
+        id
+      });
+    } 
   }
 }
 
