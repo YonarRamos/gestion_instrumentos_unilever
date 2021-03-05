@@ -1,5 +1,6 @@
 'use strict'
 const Instrumento = use('App/Models/Instrumento');
+const Equipo = use('App/Models/Equipo');
 const Query = require("../../Utils/Query");
 const { validate } = use('Validator');
 const User = use('App/Models/User');
@@ -205,9 +206,11 @@ class InstrumentoController {
   async destroy ({ params, request, response , auth}) {
     const id = params.id
     try {
-      const user = await auth.getUser()
-      if (user.rol == 0) {
+      const user = await auth.getUser();
 
+       // return response.status(400).json({ menssage: 'No se puede eliminar el Instrumento ya pertenece a un equipo!' })
+      
+      if (user.rol == 0) {
         const inst = await Instrumento.findOrFail(id);
         await inst.delete();
         return response.status(200).json({ menssage: 'Instrumento eliminado con Exito!' })
@@ -216,6 +219,9 @@ class InstrumentoController {
       console.log(error)
       if (error.name == 'InvalidJwtToken') {
         return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      if(error.menssage = `The DELETE statement conflicted with the REFERENCE constraint "FK_calibracion_tarea_instrumento". The conflict occurred in database "CertificadosDB", table "dbo.calibracion_tarea", column 'instrumento_id'.`){
+         return response.status(400).json({ menssage: 'No se puede eliminar el Instrumento ya pertenece a un equipo!' })
       }
       response.status(404).json({
         message: "Instrumento a eliminar no encontrado",
