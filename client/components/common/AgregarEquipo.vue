@@ -53,14 +53,16 @@
                 </v-autocomplete>
                 
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="9" md="6">
                 <v-autocomplete
                   v-model="item.instrumento_id"
                   :items="instrumentos"
                   label="Instrumento"
-                  auto-select-first
                   :rules="rules"
                 ></v-autocomplete>
+              </v-col>
+              <v-col cols="3">
+                <agregar-instrumento @click="nuevoInstrumento"/>
               </v-col>
               <v-col cols="12">
                 <v-textarea
@@ -104,11 +106,13 @@
 import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 import SeleccionarSector from "~/components/common/SeleccionarSector.vue";
+import AgregarInstrumento from "~/components/common/AgregarInstrumento.vue";
 
 export default {
   
   components:{
-    SeleccionarSector
+    SeleccionarSector,
+    AgregarInstrumento
   },
   watch:{
     dialog: function () {
@@ -175,6 +179,11 @@ export default {
         this.alertType = 'error';
         this.alertShow = true;
       }
+    },
+    nuevoInstrumento(){
+      this.getInstrumentos();
+      this.item.instrumento_id = 'Elemento' /* this.instrumentos[parseInt(this.instrumentos.length-1)].serie */;
+
     },
     getInstrumentos(){
       try {
