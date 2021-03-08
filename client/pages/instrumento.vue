@@ -68,9 +68,6 @@
               </template>
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
-                  <!--<v-icon small @click="downloadCert(item.instrumento_id)">
-                    mdi-download
-                  </v-icon>-->
                   <editar-instrumento
                     :id="item.id"
                     class="mr-2"

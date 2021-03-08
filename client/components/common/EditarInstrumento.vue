@@ -15,7 +15,7 @@
         <v-dialog v-model="dialog" width="500">
           <v-card>
             <v-card-title class="headline white--text blue darken-4">
-              Editar Instrumento
+              Editar Instrumento {{`Magnitud: ${instrumento.magnitud_id}`}}
             </v-card-title>
 
             <v-card-text>
@@ -160,7 +160,7 @@
               <v-btn color="error" text @click="hide">
                 Cancelar
               </v-btn>
-              <v-btn color="primary" text @click="agregarInstrumento">
+              <v-btn color="primary" text @click="editarInstrumento">
                 Ok
               </v-btn>
             </v-card-actions>
@@ -200,7 +200,7 @@ export default {
         tolerancia: null, 
         tipo_id: null,
         unidad_id: null,
-        magnitud_id: null,
+        magnitud_id: '',
         encargado_calibracion: Cookies.get('user_id')
       },
       rules:[ v => !!v || 'Requerido' ],
@@ -208,13 +208,13 @@ export default {
   },
   methods:{
     show(){
-      this.getInstrumentoTipo();
       this.getUnidad();
       this.getMagnitud();
       this.getInstrumento();
+      this.getInstrumentoTipo();
       this.dialog = true;
     },
-   async agregarInstrumento(){
+   async editarInstrumento(){
       try {
         if(this.$refs.form.validate()){
           this.instrumento.tipo_id = this.instrumentoTipo[this.instrumento.tipo_id];
@@ -225,16 +225,17 @@ export default {
               headers: { Authorization: `Bearer ${this.token}` },
             })
             .then(()=>{
-              this.alertMsg = "Instrumento agregado correctamente"
-              this.alerType = "success"
+              this.alertMsg = "Instrumento actualizado correctamente"
+              this.alertType = "success"
               this.alertShow = true;
               this.$refs.form.reset();
+              this.$emit('click');
             })
       }
       } catch (error) {
         console.log(error)
         this.alertMsg = "Hubo un error al processar tu solicitud"
-        this.alerType = "error"
+        this.alertType = "error"
         this.alertShow = true;
       }
     },
@@ -246,6 +247,7 @@ export default {
           .then((res)=>{
             console.log('EditarInst:',res.data.data);
             this.instrumento = res.data.data;
+            this.instrumento.magnitud_id ='Dato de prueba'
           })
           } catch (error) {
             console.log(error)
@@ -300,8 +302,6 @@ export default {
         this.$refs.form.reset();
         this.dialog = false;
       },
-},
-  created(){
   }
 }
 </script>

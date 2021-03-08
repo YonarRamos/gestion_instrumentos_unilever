@@ -11,7 +11,7 @@ export const state = () => ({
   },
   dialogPassword: false,
   ots:[],
-  auth: false,
+  auth: true,
   dialogLoading: false
 });
 
