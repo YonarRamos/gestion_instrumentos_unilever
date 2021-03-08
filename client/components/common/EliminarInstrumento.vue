@@ -8,7 +8,7 @@
         </v-card-title>
 
         <v-card-subtitle class="mt-5 Subtitle 1">
-            <strong><h3>¿Está seguro de que desea eliminar este instrumento</h3></strong>
+            <strong><h3>¿Está seguro de que desea eliminar este instrumento.?</h3></strong>
         </v-card-subtitle>
 
         <v-card-actions>

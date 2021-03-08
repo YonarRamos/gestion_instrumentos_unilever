@@ -27,17 +27,19 @@
               <v-form ref="form" lazy-validation v-model="valid">
                 <v-container>
                   <v-row>
-                <v-col cols="12" md="6">
+              <v-col cols="12">
                 <v-autocomplete
                   v-model="item"
                   :items="sectores"
-                  label="Sector"
+                  label="Intrumento Disponible"
                   auto-select-first
                   :rules="rules"
                 >
                 </v-autocomplete>
                 
               </v-col>
+                  </v-row>
+                  <v-row>
                     <v-col cols="6">
                       <v-text-field 
                       v-model="instrumento.marca"
@@ -221,21 +223,17 @@ export default {
   methods:{
    async agregarInstrumento(){
       try {
-        if(this.$refs.form.validate()){
-          this.instrumento.tipo_id = this.instrumentoTipo[this.instrumento.tipo_id];
-          this.instrumento.unidad_id = this.instrumentoUnidad[this.instrumento.unidad_id];
-          this.instrumento.magnitud_id = this.instrumentoUnidad[this.instrumento.magnitud_id];
-          console.log('Instrumentoer:', this.instrumento);
-          await axios.post('instrumento', this.instrumento ,{
+        
+          await axios.get('instrumentoslist', this.instrumento ,{
               headers: { Authorization: `Bearer ${this.token}` },
             })
-            .then(()=>{
+            .then((res)=>{
+              
               this.alertMsg = "Instrumento agregado correctamente"
               this.alerType = "success"
               this.alertShow = true;
               this.$refs.form.reset();
             })
-      }
       } catch (error) {
         console.log(error)
         this.alertMsg = "Hubo un error al processar tu solicitud"

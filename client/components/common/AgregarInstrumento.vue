@@ -3,15 +3,12 @@
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
-              depressed
-              x-small
-              height="30"
-              color="info"
+              color="primary"
               v-bind="attrs"
               v-on="on"
               @click="dialog = true"
             >
-              <v-icon>mdi-plus</v-icon>
+              Agregar
             </v-btn>
           </template>
           <span>Agregar Instrumento</span>
