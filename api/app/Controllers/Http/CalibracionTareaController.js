@@ -91,10 +91,21 @@ class CalibracionTareaController {
    * @param {Response} ctx.response
    */
   async update ({ params, request, response , auth}) {
+    const id = params.id
     try {
-      
+      const user = await auth.getUser();
+      if(user.rol == 0){
+        const insertTareaRealizada = await Database.from('calibracion_tarea_realizada').insert([{calibracion_tarea_id:id, fecha : moment() , realizo : user.id , certificado : 'avatar-4.pdf'}])
+        return response.status(200).json({menssage: 'Tarea Realizada Aprobada.!'})
+      }
     } catch (error) {
-      
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      response.status(404).json({
+        message: "Tarea no encontrada",
+        id
+      });
     }
   }
 

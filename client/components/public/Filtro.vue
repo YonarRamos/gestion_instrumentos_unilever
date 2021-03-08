@@ -108,7 +108,7 @@ export default {
     filtrar(){
       this.$emit('click', this.date1, this.date2);
     }
-  },
+  }
 }
 </script>
 

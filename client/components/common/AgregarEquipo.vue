@@ -14,7 +14,7 @@
 
     <v-card>
       <v-card-title class="headline blue darken-4" style="color:white">
-        <span >Agregar Equipo</span>
+        <span >Agregar</span>
         <v-spacer></v-spacer>
         <v-btn
           icon
@@ -39,30 +39,34 @@
               <v-col cols="3" >
                 <v-checkbox
                   v-model="item.serie_requerido"
-                  label="Serie"
+                  label="Serie requerido"
                 ></v-checkbox>
               </v-col>
               <v-col cols="12" md="6">
-                <v-select
+                <v-autocomplete
                   v-model="item.sector_id"
-                  :items="Object.keys(sectores)"
+                  :items="sectores"
                   label="Sector"
+                  auto-select-first
                   :rules="rules"
-                ></v-select>
+                >
+                </v-autocomplete>
+                
               </v-col>
               <v-col cols="12" md="6">
-                <v-select
+                <v-autocomplete
                   v-model="item.instrumento_id"
-                  :items="Object.keys(instrumentos)"
+                  :items="instrumentos"
                   label="Instrumento"
+                  auto-select-first
                   :rules="rules"
-                ></v-select>
+                ></v-autocomplete>
               </v-col>
               <v-col cols="12">
                 <v-textarea
                   v-model="item.descripcion"
                   label="Descripción"
-                  rows="3"
+                  rows="1"
                   no-resize
                   :rules="rules"
                 ></v-textarea>
@@ -99,9 +103,23 @@
 <script>
 import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
+import SeleccionarSector from "~/components/common/SeleccionarSector.vue";
 
 export default {
   
+  components:{
+    SeleccionarSector
+  },
+  watch:{
+    dialog: function () {
+      if (this.dialog)
+      {
+        this.getInstrumentos();
+        this.getSectores();
+      }
+    }
+  },
+
   data(){
     return{
       valid:false,
@@ -127,19 +145,28 @@ export default {
       try {
          if(this.$refs.form.validate()){
            this.item.serie_requerido == true ? this.item.serie_requerido = 1 : this.item.serie_requerido = 0;
-           this.item.sector_id = this.sectores[this.item.sector_id];
-           this.item.instrumento_id = this.instrumentos[this.item.instrumento_id];
-           console.log('Equipo para agregar:', this.item)
+           this.item.sector_id = this.item.sector_id;
+           this.item.instrumento_id = this.item.instrumento_id;
+           
             await axios.post('equipo', this.item, {
              headers: { Authorization: `Bearer ${this.token}` },
            })
-           .then(()=>{
-              this.alertMsg = `Equipo ${this.item.tag} agregado exitosamente.`;
-              this.alertType = 'success';
-              this.alertShow = true;
-              this.$refs.form.reset();
-              setTimeout(()=>this.alertShow = false, 3000);
-              this.$emit('click');
+           .then((resp)=>{
+             if (resp.data.estado) {
+               this.alertMsg = `Equipo ${this.item.tag} agregado exitosamente.`;
+                this.alertType = 'success';
+                this.alertShow = true;
+                this.$refs.form.reset();
+                setTimeout(()=>this.alertShow = false, 3000);
+                this.$emit('click');
+             }
+             else
+             {
+                this.alertMsg = resp.data.message;
+                this.alertType = 'error';
+                this.alertShow = true;
+             }
+              
            })
          }
       } catch (error) {
@@ -151,12 +178,12 @@ export default {
     },
     getInstrumentos(){
       try {
-        axios.get('instrumento',{
+        axios.get('instrumentoslist',{
           headers:{Authorization: `Bearer ${this.token}`}
         })
         .then((res)=>{
-          for (const item of res.data.data.data) {
-            this.instrumentos[item.modelo] = item.id;
+          for (const item of res.data.data) {
+            this.instrumentos.push({ text: item.serie , value: item.id});
           }
         });
 
@@ -170,8 +197,8 @@ export default {
           headers:{Authorization: `Bearer ${this.token}`}
         })
         .then((res)=>{
-          for (const item of res.data.sectoresResp) {
-            this.sectores[item.name] = item.id;
+          for (const item of res.data.listRutas) {
+            this.sectores.push({ text: item.ruta , value: item.i});
           }
         })
       } catch (error) {
@@ -184,8 +211,6 @@ export default {
     }
   },
   mounted(){
-    this.getInstrumentos();
-    this.getSectores();
   }
 }
 </script>

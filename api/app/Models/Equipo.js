@@ -16,6 +16,12 @@ class Equipo extends Model {
         if (field === 'proxima' ) {
           return value.format('YYYY-MM-DD HH:mm:ss')
         }
+        if (field === 'created_at' ) {
+            return value.format('YYYY-MM-DD HH:mm:ss')
+          }
+          if (field === 'updated_at' ) {
+            return value.format('YYYY-MM-DD HH:mm:ss')
+          }
     }
 
     sector () {

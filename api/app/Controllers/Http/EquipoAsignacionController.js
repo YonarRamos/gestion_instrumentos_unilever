@@ -31,7 +31,7 @@ class EquipoAsignacionController {
           "equipo": e.equipo.tag,
           "instrumento": e.instrumento.serie,
           "desde": e.desde,
-          "hasta": e.hasta
+          "hasta": e.hasta || ''
         }
       })
       let resp = await Promise.all(ArrayEquipo)

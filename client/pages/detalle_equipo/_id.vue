@@ -8,7 +8,7 @@
                   <v-container class="py-0">
                     <v-row>
                       <v-col cols="12" sm="8" class="pb-0">
-                        <v-card-title class="pt-0"> TAG - {{item.tag}} </v-card-title>
+                        <v-card-title class="pt-0"> {{item.tag}} </v-card-title>
                         <v-card-subtitle class="pb-0">
                           {{item.descripcion}}
                         </v-card-subtitle>
@@ -394,7 +394,7 @@
                     <v-row>
                       <v-col cols="10">
                         <div class="overline">
-                          Equipos Asignados
+                          Asignaciones
                         </div>
                       
                       </v-col>
@@ -533,6 +533,7 @@ export default {
       paramsId:null,
       equipo:[],
       equipoAsignado:[],
+      listRutas:[],
       item:{
           fecha_creacion_equipo:'',
           fecha_update_equipo:'',
@@ -592,16 +593,47 @@ export default {
     }
   },
   methods:{
+    getRutas() {
+
+      try {
+        const token = Cookies.get('token');
+
+        axios
+        .get("sector", {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+        .then(res => {
+        
+          this.listRutas = res.data.listRutas;
+
+          console.log(this.listRutas)
+
+        })
+      } catch (error) {
+        console.log('Error al traer rutas')
+      }
+    },
     getEquipo(){
       try {
         const token = Cookies.get('token');
 
-        axios.get(`formulario/${this.paramsId}`,{
+        axios.get(`equipo/${this.paramsId}`,{
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
-        console.log('res:',res.data.data[0].detalleEquipos.intrumento_id )
+        console.log('res:',res.data.data[0].detalleEquipos )
         this.item = res.data.data[0].detalleEquipos;
+
+        var auxRuta = this.listRutas.find(el => el.i == this.item.sector_id);
+
+        if (auxRuta !== undefined)
+        {
+          this.item.sector_name = auxRuta.ruta;
+        }
+        else
+        {
+          this.item.sector_name = 'Error en ruta';
+        }
         //Tareas de calibracion pendientes
         this.tareasCalibracion = res.data.data[0].calibracion;
       })
@@ -651,6 +683,7 @@ export default {
   },
   mounted(){
     this.paramsId = this.$route.params.id
+    this.getRutas();
     this.getEquipo();
     this.getEquipoAsignado();
     this.getTareasRealizadas();
