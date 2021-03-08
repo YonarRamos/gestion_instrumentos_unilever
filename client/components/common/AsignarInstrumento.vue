@@ -9,7 +9,7 @@
               color="info"
               v-bind="attrs"
               v-on="on"
-              @click="dialog = true"
+              @click="show"
             >
               <v-icon>mdi-plus</v-icon>
             </v-btn>
@@ -27,22 +27,26 @@
               <v-form ref="form" lazy-validation v-model="valid">
                 <v-container>
                   <v-row>
-                <v-col cols="12" md="6">
-                <v-autocomplete
-                  v-model="item"
-                  :items="sectores"
-                  label="Sector"
-                  auto-select-first
-                  :rules="rules"
-                >
-                </v-autocomplete>
+                <v-col cols="12" class="px-0">
+                  <v-card flat style="border: 2px solid lightgray;" color="#F9F9F9">
+                    <v-autocomplete
+                      v-model="seleccionado"
+                      :items="Object.keys(instrumentosDisponibles)"
+                      label="Seleccione un Instrumento:"
+                      auto-select-first
+                      :rules="rules"
+                      class="mx-3"
+                      @change="mostrarInstrumento"
+                    >
+                    </v-autocomplete>
+                  </v-card>
                 
               </v-col>
                     <v-col cols="6">
                       <v-text-field 
                       v-model="instrumento.marca"
                       label="Marca"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -50,7 +54,7 @@
                       <v-text-field 
                       v-model="instrumento.modelo"
                       label="Modelo"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -61,18 +65,18 @@
                       <v-text-field 
                       v-model="instrumento.serie"
                       label="Serie"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
-                      <v-select
+                      <v-text-field 
                       v-model="instrumento.tipo_id"
                       label="Tipo"
                       :items="Object.keys(instrumentoTipo)"
-                      :rules="rules"
+                      readonly
                       >
-                      </v-select>
+                      </v-text-field >
                     </v-col>
                   </v-row>
 
@@ -81,7 +85,7 @@
                       <v-text-field 
                       v-model="instrumento.resolucion"
                       label="Resolución"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -89,7 +93,7 @@
                       <v-text-field
                       v-model="instrumento.tolerancia" 
                       label="Tolerancia"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -98,22 +102,22 @@
 
                   <v-row>
                     <v-col cols="6">
-                      <v-select
+                      <v-text-field 
                       v-model="instrumento.unidad_id"
                       label="Unidad"
                       :items="Object.keys(instrumentoUnidad)"
-                      :rules="rules"
+                      readonly
                       >
-                      </v-select>
+                      </v-text-field >
                     </v-col>
                     <v-col cols="6">
-                      <v-select
+                      <v-text-field 
                       v-model="instrumento.magnitud_id"
                       label="Magnitud"
                       :items="Object.keys(instrumentoMagnitud)"
-                      :rules="rules"
+                      readonly
                       >
-                      </v-select>
+                      </v-text-field >
                     </v-col>
                   </v-row>
 
@@ -122,7 +126,7 @@
                       <v-text-field 
                       v-model="instrumento.rango_a"
                       label="Rango A"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -130,7 +134,7 @@
                       <v-text-field
                       v-model="instrumento.rango_de" 
                       label="Rango DE"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -141,7 +145,7 @@
                       <v-text-field 
                       v-model="instrumento.rango_normal_a"
                       label="Rango Normal A"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -149,7 +153,7 @@
                       <v-text-field 
                       v-model="instrumento.rango_normal_de"
                       label="Rango Normal DE"
-                      :rules="rules"
+                      readonly
                       >
                       </v-text-field>
                     </v-col>
@@ -170,14 +174,13 @@
               </v-form>
             </v-card-text>
             <v-divider></v-divider>
-
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="error" text @click="hide">
                 Cancelar
               </v-btn>
-              <v-btn color="primary" text @click="agregarInstrumento">
-                Ok
+              <v-btn color="primary" text @click="editarEquipo">
+                Asignar Instrumento
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -189,17 +192,29 @@
 import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 export default {
+  props:{
+    equipo:{
+      type: Object,
+      required: true
+    },
+    equipoID:{
+      type: String,
+      required: true
+    }
+  },
   data() {
     return {
       valid:false,
       token: Cookies.get('token'),
       dialog: false,
-      alertShow: false,
-      alertMsg:'',
-      alertType:'success',
+      alertMsg:"",
+      alertType:"",
+      alertShow:false,
       instrumentoTipo:[],
       instrumentoUnidad:[],
       instrumentoMagnitud:[],
+      instrumentosDisponibles:[],
+      seleccionado:'',
       instrumento:{
         marca: "",
         modelo: "",
@@ -215,10 +230,75 @@ export default {
         magnitud_id: null,
         encargado_calibracion: Cookies.get('user_id')
       },
+      equipoActualizado:{
+        tag:"",
+        serie_requerido: 0,
+        sector_id: null,
+        instrumento_id: null,
+        instrumento_serie: '',
+        descripcion: ""
+      },
       rules:[ v => !!v || 'Requerido' ],
     }
   },
   methods:{
+   getInstrumentList(){
+    try {
+       axios.get('instrumentoslist', {
+              headers: { Authorization: `Bearer ${this.token}` },
+            })
+            .then((res)=>{
+              for (const item of res.data.data) {
+                this.instrumentosDisponibles[item.serie] = item.id;
+              }
+            })
+    } catch (error) {
+      console.log(error)
+    }
+  },
+    editarEquipo(){
+      this.equipoActualizado.serie_requerido == true ? this.equipoActualizado.serie_requerido = 1 : this.equipoActualizado.serie_requerido = '0';
+      console.log('EActualizado:', this.equipoActualizado)
+      try {
+           axios.put(`equipo/${this.equipoID}`, this.equipoActualizado, {
+             headers: { Authorization: `Bearer ${this.token}` },
+           })
+           .then((resp)=>{
+               this.alertMsg = `Se ha actualizado en instrumento Asociado al equipo ${this.equipoActualizado.tag}`;
+                this.alertType = 'success';
+                this.alertShow = true;
+                this.$emit('click');
+           })
+
+      } catch (error) {
+        console.log(error)
+        this.alertMsg = error;
+        this.alertType = 'error';
+        this.alertShow = true;
+      }
+    },
+  async mostrarInstrumento(){
+    let id = this.instrumentosDisponibles[this.seleccionado];
+      await axios.get(`instrumento/${id}`,{
+              headers: { Authorization: `Bearer ${this.token}` },
+            })
+            .then((res)=>{
+              console.log('Instrimento seleccionado',res.data.data)
+              this.instrumento = res.data.data
+              //Llenamos los datos del equipo actualizando el id
+              this.equipoActualizado.instrumento_id = id
+              this.equipoActualizado.tag = this.equipo.tag
+              this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
+              this.equipoActualizado.instrumento_serie = this.equipo.instrumento_serie
+              this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
+              this.equipoActualizado.descripcion = this.equipo.descripcion
+            })
+    try {
+      
+    } catch (error) {
+      console.log(error)
+    }
+  },
    async agregarInstrumento(){
       try {
         if(this.$refs.form.validate()){
@@ -246,6 +326,12 @@ export default {
     hide(){
       this.$refs.form.reset();
       this.dialog = false;
+      this.alertShow = false;
+      this.getInstrumentList();
+    },
+    show(){
+      this.getInstrumentList();
+      this.dialog = true;
     },
     getInstrumentoTipo(){
         try {
@@ -297,11 +383,9 @@ export default {
 
   }
 },
-  created(){
-    this.getInstrumentoTipo();
-    this.getUnidad();
-    this.getMagnitud();
-  }
+mounted(){
+  this.getInstrumentList();
+}
 }
 </script>
 

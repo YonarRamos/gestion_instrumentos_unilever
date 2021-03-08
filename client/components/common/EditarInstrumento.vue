@@ -249,10 +249,12 @@ export default {
           .then((res)=>{
             console.log('getIntrumento:',res.data.data);
             this.instrumento = res.data.data;
-            /*let index = null;
-            index = Object.keys(this.instrumentoTipo[parseInt(res.data.data.tipo_id)])
-            console.log('index:', index);
-             this.instrumento.tipo_id = this.instrumentoTipo[index]; */
+            for (const item in this.instrumentoTipo) {
+             /*  if(item == res.data.data.tipo_id){
+                console.log('lo encontre');
+              } */
+              console.log(item)
+            }
             
           })
           } catch (error) {
@@ -267,7 +269,6 @@ export default {
           .then((res)=>{
             for (const item of res.data.data) {
               this.instrumentoTipo[item.nombre] = item.id ;
-              console.log('instrumento tipo:', this.instrumentoTipo);
             }
           })
           } catch (error) {

@@ -168,8 +168,8 @@
                             </div>
                           </v-col>
                           <v-spacer></v-spacer>
-                          <v-col cols="2" class="pt-1">
-                                <asignar-instrumento />                       
+                          <v-col cols="2" class="pt-1"> 
+                                <asignar-instrumento :equipo="item" :equipoID="$route.params.id" @click="getEquipo"/>                       
                           </v-col>
                         </v-row>
                         <v-divider></v-divider>
@@ -516,7 +516,6 @@ import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 import AgregarCertificado from "~/components/common/AgregarCertificado.vue";
 import AsignarInstrumento from "~/components/common/AsignarInstrumento.vue";
-import AgregarInstrumento from "~/components/common/AsignarInstrumento.vue";
 import AgregarCalibracion from "~/components/common/AgregarCalibracion.vue";
 import AprobarTareaCalibracion from "~/components/common/AprobarTareaCalibracion.vue";
 
@@ -524,7 +523,6 @@ export default {
   components:{
     BtnPDF,
     AgregarCertificado,
-    AgregarInstrumento,
     AgregarCalibracion,
     AprobarTareaCalibracion,
     AsignarInstrumento
@@ -615,11 +613,11 @@ export default {
         console.log('Error al traer rutas')
       }
     },
-    getEquipo(){
+   async getEquipo(){
       try {
         const token = Cookies.get('token');
 
-        axios.get(`equipo/${this.paramsId}`,{
+       await axios.get(`equipo/${this.paramsId}`,{
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
