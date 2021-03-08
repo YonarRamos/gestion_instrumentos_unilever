@@ -15,7 +15,7 @@
         <v-dialog v-model="dialog" width="500">
           <v-card>
             <v-card-title class="headline white--text blue darken-4">
-              Editar Instrumento {{`Magnitud: ${instrumento.magnitud_id}`}}
+              Editar Instrumento
             </v-card-title>
 
             <v-card-text>
@@ -50,13 +50,13 @@
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
-                      <v-select
+                      <v-autocomplete
                       v-model="instrumento.tipo_id"
                       label="Tipo"
                       :items="Object.keys(instrumentoTipo)"
                       :rules="rules"
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-col>
                   </v-row>
 
@@ -82,22 +82,22 @@
 
                   <v-row>
                     <v-col cols="6">
-                      <v-select
+                      <v-autocomplete
                       v-model="instrumento.unidad_id"
                       label="Unidad"
                       :items="Object.keys(instrumentoUnidad)"
                       :rules="rules"
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-col>
                     <v-col cols="6">
-                      <v-select
+                      <v-autocomplete
                       v-model="instrumento.magnitud_id"
                       label="Magnitud"
                       :items="Object.keys(instrumentoMagnitud)"
                       :rules="rules"
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-col>
                   </v-row>
 
@@ -174,8 +174,10 @@ import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 export default {
   props:{
-    id: String,
-    required: true
+    id:{
+      type: String,
+      required: true
+    } 
   },
   data() {
     return {
@@ -210,8 +212,8 @@ export default {
     show(){
       this.getUnidad();
       this.getMagnitud();
-      this.getInstrumento();
       this.getInstrumentoTipo();
+      this.getInstrumento();
       this.dialog = true;
     },
    async editarInstrumento(){
@@ -221,7 +223,7 @@ export default {
           this.instrumento.unidad_id = this.instrumentoUnidad[this.instrumento.unidad_id];
           this.instrumento.magnitud_id = this.instrumentoUnidad[this.instrumento.magnitud_id];
           console.log('InstrumentoEnviado:', this.instrumento);
-          await axios.post('instrumento', this.instrumento ,{
+          await axios.put(`instrumento/${this.id}`, this.instrumento ,{
               headers: { Authorization: `Bearer ${this.token}` },
             })
             .then(()=>{
@@ -241,13 +243,17 @@ export default {
     },
    async getInstrumento(){
         try {
-         await axios.put(`instrumento/${this.id}`,this.item, {
+         await axios.get(`instrumento/${this.id}`, {
             headers: { Authorization: `Bearer ${this.token}` },
           })
           .then((res)=>{
-            console.log('EditarInst:',res.data.data);
+            console.log('getIntrumento:',res.data.data);
             this.instrumento = res.data.data;
-            this.instrumento.magnitud_id ='Dato de prueba'
+            /*let index = null;
+            index = Object.keys(this.instrumentoTipo[parseInt(res.data.data.tipo_id)])
+            console.log('index:', index);
+             this.instrumento.tipo_id = this.instrumentoTipo[index]; */
+            
           })
           } catch (error) {
             console.log(error)
@@ -261,6 +267,7 @@ export default {
           .then((res)=>{
             for (const item of res.data.data) {
               this.instrumentoTipo[item.nombre] = item.id ;
+              console.log('instrumento tipo:', this.instrumentoTipo);
             }
           })
           } catch (error) {
@@ -299,8 +306,8 @@ export default {
         }
       },
       hide(){
-        this.$refs.form.reset();
         this.dialog = false;
+        this.$refs.form.reset();
       },
   }
 }
