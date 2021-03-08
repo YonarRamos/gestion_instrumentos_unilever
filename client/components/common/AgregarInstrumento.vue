@@ -223,6 +223,7 @@ export default {
               this.alerType = "success"
               this.alertShow = true;
               this.$refs.form.reset();
+              this.$emit('click');
             })
       }
       } catch (error) {

@@ -220,7 +220,7 @@ export default {
           this.instrumento.tipo_id = this.instrumentoTipo[this.instrumento.tipo_id];
           this.instrumento.unidad_id = this.instrumentoUnidad[this.instrumento.unidad_id];
           this.instrumento.magnitud_id = this.instrumentoUnidad[this.instrumento.magnitud_id];
-          console.log('Instrumentoer:', this.instrumento);
+          console.log('InstrumentoEnviado:', this.instrumento);
           await axios.post('instrumento', this.instrumento ,{
               headers: { Authorization: `Bearer ${this.token}` },
             })
