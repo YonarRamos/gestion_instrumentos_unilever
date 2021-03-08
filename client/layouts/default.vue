@@ -20,7 +20,7 @@
         <v-list-item class="menuUser pointer" @click="drawer=false" to="/instrumento">
           <v-list-item-title>
             <v-icon left color="#295382" align="center" >build</v-icon>
-            Instrumento
+            Instrumentos
           </v-list-item-title>
         </v-list-item>         
         <v-list-item class="menuUser pointer" @click="drawer=false" to="/datos">           

@@ -35,7 +35,7 @@ Route.get('/api/v1/EquipoAsignado' , 'EquipoAsignacionController.index');
 
 //Rutas formulario 
 Route.get('/api/v1/formulario' , 'EquipoController.index');
-Route.get('/api/v1/formulario/:id' , 'EquipoController.show');
+Route.get("api/v1/equipo/:id", "EquipoController.show");
 Route.post('/api/v1/equipo', 'EquipoController.create');
 Route.put("api/v1/equipo/:id", "EquipoController.update");
 Route.delete("api/v1/equipo/:id", "EquipoController.destroy");
@@ -43,6 +43,7 @@ Route.delete("api/v1/equipo/:id", "EquipoController.destroy");
 
 // Rutas Instrumentos
 Route.get('/api/v1/instrumento' , 'InstrumentoController.index');
+Route.get('/api/v1/instrumentoslist' , 'InstrumentoController.getInstrumentosList');
 Route.post('/api/v1/instrumento' , 'InstrumentoController.store');
 Route.put('/api/v1/instrumento/:id' , 'InstrumentoController.update');
 Route.delete('/api/v1/instrumento/:id' , 'InstrumentoController.destroy');
@@ -66,6 +67,7 @@ Route.get("api/v1/loginUsersAutomatico", "UserController.loginToken");
 Route.get('/api/v1/calibracionTipo' , 'calibracionTipoController.index');
 //rutas tarea calibracion
 Route.post('/api/v1/calibracion' , 'CalibracionTareaController.store');
+Route.put('/api/v1/calibracion/:id' , 'CalibracionTareaController.update');
 //Rutas Tarea Realizada 
 Route.get('/api/v1/TareaRealizada' , 'CalibracionTareaRealizadaController.index');
 

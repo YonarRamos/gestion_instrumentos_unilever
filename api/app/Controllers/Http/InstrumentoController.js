@@ -5,6 +5,7 @@ const Query = require("../../Utils/Query");
 const { validate } = use('Validator');
 const User = use('App/Models/User');
 var moment = require('moment');
+const EquipoController = require("./EquipoController");
 const Database = use('Database')
 class InstrumentoController {
  
@@ -15,7 +16,7 @@ class InstrumentoController {
       return response.status(401).json('Acceso no Autorizado')
     }
     try {
-      var query = Instrumento.query();
+   
       var {
         page,
         perPage,
@@ -23,7 +24,7 @@ class InstrumentoController {
       //seteo valores por defectos
       page = page || 1
       perPage = perPage || 10
-      let res = await Instrumento.query()
+      var res = await Instrumento.query()
       .with('tipo')
       .with('unidad')
       .with('magnitud')
@@ -57,6 +58,58 @@ class InstrumentoController {
       return response.status(400).json({ menssage: 'Hubo un error al realizar la operación', error })
     }
   }
+
+  async getInstrumentosList ({ params, request, response, auth }) {
+    try {
+      await auth.check();
+    } catch (error) {
+      return response.status(401).json('Acceso no Autorizado')
+    }
+    try {
+
+      var { instrumento_id } = request.all();
+      console.log(instrumento_id)
+      var listInstrumentosOut = await Database.from('equipo').distinct('instrumento_id');
+
+      var listExcluir = [];
+      listInstrumentosOut.forEach(it => {
+        listExcluir.push(it.instrumento_id)
+      });
+
+      var query = Instrumento.query()
+      .with('tipo')
+      .with('unidad')
+      .with('magnitud')
+      .with('encargado')
+      .with('estado_rel')
+      .where(function () {
+        this.whereNot('estado', 3)
+            .whereNotIn('id', listExcluir)
+      });
+      if (instrumento_id)
+      {
+        query.orWhere('id', instrumento_id);
+      }
+      
+      query = await query.fetch();
+      query = query.toJSON();
+
+      var ArrayInstrumento = query.map(e =>{
+        return {
+          "id": e.id,
+          "serie": e.serie
+        }
+      })
+
+      let resp = await Promise.all(ArrayInstrumento)
+
+      response.status(200).json({ message: 'Listado de Instrumentos', data: resp })
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json({ menssage: 'Hubo un error al realizar la operación', error })
+    }
+  }
+
 
   /**
    * Render a form to be used for creating a new instrumento.

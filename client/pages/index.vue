@@ -9,38 +9,12 @@
               rounded
               hoverable
               activatable
+              :active="itemsSelected"
               :items="items"
               item-key="id"
               v-on:update:active="filtrarTabla"
               style="cursor:pointer;"
             />
-    <!--         <v-card
-              elevation="3"
-              max-width="400"
-              class="mx-auto"
-            >
-            <div class="overline ml-3">
-              Filtrar por sector:
-            </div>
-            <v-divider></v-divider>
-              <v-virtual-scroll
-                :items="items"
-                height="530"
-                item-height="50"
-              >
-                <template v-slot:default="{ item }">
-                  <v-list-item :key="item.id" class="scrollItem">
-                    <v-list-item-content @click="filtrarTabla(item.id)">
-                      <v-list-item-title>
-                        <strong> {{ item.name }}</strong>
-                      </v-list-item-title>
-                    </v-list-item-content>
-                  </v-list-item>
-
-                  <v-divider></v-divider>
-                </template>
-              </v-virtual-scroll>
-            </v-card>-->
           </div> 
       </v-col>
      
@@ -53,7 +27,7 @@
             <v-divider></v-divider>
             <v-row>
               <v-col>
-                <filtro @click="getDataTable"/>
+                <filtro @click="filterByDate" />
                 <v-divider></v-divider>
               </v-col>
             </v-row>
@@ -201,9 +175,6 @@ export default {
         .get("download/lastcert", {
         headers: { Authorization: `Bearer ${this.token}`}, params: {id: inId}
       })
-        .then(res => {
-          console.log(res);
-        })
       } catch (error) {
         
       }
@@ -223,10 +194,10 @@ export default {
 
         })
     },
-    async getDataTable(desde, hasta) {
+    async getDataTable() {
       this.loading = true
       await axios
-        .get("tablaequipos", { headers: { Authorization: `Bearer ${this.token}`} , params: { desde, hasta, options: this.options, buscar: this.txtBuscar, filtroTree: this.filtroTree } })
+        .get("tablaequipos", { headers: { Authorization: `Bearer ${this.token}`} , params: { desde: this.desde, hasta: this.hasta, options: this.options, buscar: this.txtBuscar, filtroTree: this.filtroTree } })
         .then(res => {
           this.totalTableItems = res.data.total;
           res.data.tableItemsData.forEach(it => {
@@ -254,7 +225,10 @@ export default {
     },
     async limpiarFiltros () {
       this.filtroTree = undefined;
-      /* this.fillItems(); */
+      this.desde = null;
+      this.hasta = null;
+      this.txtBuscar = '';
+      this.itemsSelected = [];
       this.getDataTable();
     },
     close() {
@@ -264,7 +238,9 @@ export default {
         this.editedIndex = -1
       })
     },
-    filterByDate(desde, hasta){
+    async filterByDate(desde, hasta){
+      this.desde = desde;
+      this.hasta = hasta;
       this.getDataTable()
     },
     closeDelete() {

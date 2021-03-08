@@ -48,24 +48,38 @@ class EquipoController {
 }
 
   }
-    async create({request, response , auth}){
-       
-      try {
-        const user = await auth.getUser();
-        let { tag,  descripcion, serie_requerido , sector_id , instrumento_id} = request.all();
-        
-        const rules = {
-          tag: 'required',
-          serie_requerido: 'required',
-          sector_id: 'required',
-          instrumento_id: 'required',
-          descripcion: 'required'
+
+  async create({request, response , auth}){
+      
+    try {
+      const user = await auth.getUser();
+
+      let { tag,  descripcion, serie_requerido , sector_id , instrumento_id} = request.all();
+      
+      const rules = {
+        tag: 'required',
+        serie_requerido: 'required',
+        sector_id: 'required',
+        instrumento_id: 'required',
+        descripcion: 'required'
+      }
+      let validation = await validate({ serie_requerido, sector_id, instrumento_id, tag, descripcion }, rules);
+      if (validation.fails()) {
+        return response.status(404).json({ message: "Datos Insufientes" });
+      }
+      if(user.rol == 0){
+
+        //Verifico si existe el equipo
+        const equipoAux = await Equipo.query().where('tag', tag).orWhere('instrumento_id', instrumento_id).count();
+
+        const instrumentoAux = await Database.from('instrumento').where('id', instrumento_id).count();
+
+        if (instrumentoAux[0][''] == 0) {
+          return response.status(200).json({ estado: false, message: "El instrumento no existe."})
         }
-        let validation = await validate({ serie_requerido, sector_id, instrumento_id, tag, descripcion }, rules);
-        if (validation.fails()) {
-          return response.status(404).json({ message: "Datos Insufiente" });
-        }
-        if(user.rol == 0){
+
+        if (equipoAux[0][''] == 0)
+        {
           const equipo = await Equipo.create({
             tag,
             serie_requerido,
@@ -76,15 +90,20 @@ class EquipoController {
             updated_at:moment().format('YYYY-MM-DD HH:mm:ss'),
           })
 
-          return response.status(200).json({ message: "Equipo creado con exito!", data: equipo})
-        }else{
-          return response.status(400).json({ menssage: "Usuario sin permiso suficiente para realizar esta operacion!" })
+          return response.status(200).json({ estado: true, message: "Equipo creado con exito!", data: equipo})
         }
-      } catch (error) {
-        console.log(error)
-        return response.status(400).json({ menssage: 'Hubo un error al intentar realizar la operación', error })
+        else
+        {
+          return response.status(200).json({ estado: false, message: "El tag ya existe o el instrumento no se encuentra disponible!"})
+        }
+      }else{
+        return response.status(200).json({ estado: false, menssage: "Usuario sin privilegios suficientes para realizar esta operación!" })
       }
+    } catch (error) {
+      console.log(error)
+      return response.status(400).json({ menssage: 'Hubo un error al intentar realizar la operación', error })
     }
+  }
 
   async getEquiposTable ({ request, response, view, auth }) {
 
@@ -205,7 +224,6 @@ class EquipoController {
     }
   }
 
-
   async getLastCert({request, response, auth}) {
     
     var user, instrumento;
@@ -254,7 +272,6 @@ class EquipoController {
         if (isExist) {
             return response.download(Helpers.appRoot(`storage/archivos/certificados/${req.id}/${cert[0].certificado}`));
         }
-        return `archivos/certificados/${req.id}/${cert.toJSON()[0].certificado}`
         return 'File does not exist';
       }
       else
@@ -270,20 +287,6 @@ class EquipoController {
 
   }
 
-
-
-  /**
-   * Create/save a new equipo.
-   * POST equipos
-   *
-   * @param {object} ctx
-   * @param {Request} ctx.request
-   * @param {Response} ctx.response
-   */
-  async store ({ request, response }) {
-    return "hola";
-  }
-
   /**
    * Display a single equipo.
    * GET equipos/:id
@@ -297,9 +300,9 @@ class EquipoController {
     try {
       const user = await auth.getUser()
       var id = params.id
-      
+
       //const voucher = await Voucher.query().fetch()
-      let equipos = await Equipo.query()
+      var equipos = await Equipo.query()
       .with('sector')
       .with('sector.planta')
       .with('instrumento.magnitud')
@@ -311,8 +314,9 @@ class EquipoController {
       .with('calibracion_tarea.tipo')
       .where('id', id).fetch();
       equipos = equipos.toJSON();
-      //console.log(equipos)
+
       let arraEquipos = equipos.map(item =>{
+        
         return {'detalleEquipos':{
 
         
@@ -322,10 +326,10 @@ class EquipoController {
           "fecha_update_equipo": item.updated_at,
           "descripcion": item.descripcion,
           "serie_requerido": item.serie_requerido,
-          "sector_name": item.sector.nombre,
+          "sector_id": item.sector.id,
           "sector_planta": item.sector.planta.nombre,
-          "intrumento_id": item.instrumento.id,
-          "intrumento_estado": item.instrumento.estado_rel.nombre,
+          "instrumento_id": item.instrumento.id,
+          "instrumento_estado": item.instrumento.estado_rel.nombre,
           "instrumento_marca":item.instrumento.marca,
           "instrumento_modelo": item.instrumento.modelo,
           "instrumento_serie": item.instrumento.serie,
@@ -357,7 +361,7 @@ class EquipoController {
       }
       })
       let resp = await Promise.all(arraEquipos);
-      //let equipo = await Equipo.query().with('sector').with('instrumento').with('calibracion_tarea').where('id', id).fetch();
+      
       return response.status(200).json({ menssage: 'Equipo', data: resp });
     } catch (error) {
       console.log(error)
@@ -462,7 +466,29 @@ class EquipoController {
         equipo.tag = data.tag || equipo.tag;
         equipo.serie_requerido = data.serie_requerido || equipo.serie_requerido;
         equipo.sector_id = data.sector_id || equipo.sector_id;
-        equipo.instrumento_id = data.instrumento_id || equipo.instrumento_id;
+        if (data.instrumento_id != equipo.instrumento_id)
+        {
+          // Chequeo si hay un equipo con este instrumento ID
+          var auxInstrumentoOcup = await Equipo.query().where('instrumento_id', data.instrumento_id).fetch();
+          auxInstrumentoOcup = auxInstrumentoOcup.toJSON();
+
+          // Verifico si el instrumento se encuentra fuera de servicio.
+          var auxInstrumentoFueraServicio = await Instrumento.query().where('id', data.instrumento_id).where('estado', 3).fetch();
+          auxInstrumentoFueraServicio = auxInstrumentoFueraServicio.toJSON();
+
+          console.log(auxInstrumentoOcup)
+          console.log(auxInstrumentoFueraServicio)
+
+          if (auxInstrumentoOcup.length == 0 && auxInstrumentoFueraServicio.length == 0)
+          {
+            equipo.instrumento_id = data.instrumento_id;
+          }
+          else
+          {
+            return response.status(400).json({ menssage: 'Instrumento no disponible'})
+          }
+        }
+        
         equipo.descripcion = data.descripcion || equipo.descripcion; 
         await equipo.save();
         response.status(200).json({ menssage: 'Equipo modificado con Exito!', data: equipo })
