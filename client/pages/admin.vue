@@ -30,7 +30,7 @@
                   ></v-text-field>
 
                   <v-spacer></v-spacer>
-                  <agregar-instrumento-index @click="getInstrumentos" />
+                  <agregar-usuario @click="AgregarUsuario"/>
                 </v-toolbar>
               </template>
 
@@ -58,14 +58,14 @@
                   <!--<v-icon small @click="downloadCert(item.instrumento_id)">
                     mdi-download
                   </v-icon>-->
-                  <editar-instrumento
+                  <editar-usuario
                     :id="item.id"
                     class="mr-2"
-                    @click="getInstrumentos"
+                    @click="EditarUsuario"
                   />
-                  <eliminar-instrumento
+                  <eliminar-usuario
                     :id="item.id"
-                    @click="getInstrumentos"
+                    @click="EliminarUsuario"
                   />
                 </v-row>
               </template>
@@ -80,10 +80,16 @@
 <script>
 import Cookies from 'js-cookie'
 import axios from '~/plugins/axios'
+import AgregarUsuario from "~/components/common/AgregarUsuario.vue";
+import EliminarUsuario from "~/components/common/EliminarUsuario.vue";
+import EditarUsuario from "~/components/common/EditarUsuario.vue";
 import 'material-design-icons-iconfont/dist/material-design-icons.css'
 export default {
  middleware: 'NOAUTH',
   components: {
+      AgregarUsuario,
+      EditarUsuario,
+      EliminarUsuario
     
   },
   data: () => ({
