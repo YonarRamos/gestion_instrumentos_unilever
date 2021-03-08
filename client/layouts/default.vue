@@ -23,12 +23,7 @@
             Instrumentos
           </v-list-item-title>
         </v-list-item>         
-        <v-list-item class="menuUser pointer" @click="drawer=false" to="/datos">           
-          <v-list-item-title>
-            <v-icon left color="#295382" align="center" >post_add</v-icon>
-            Carga de Datos
-          </v-list-item-title>
-        </v-list-item>
+        
       </v-list>
 
       <password/>
@@ -52,6 +47,12 @@
             <v-list-item-title  @click="toggleDialogPassword(true)">
               <v-icon left color="#295382" align="center" >lock</v-icon>
               Cambiar Contraseña
+            </v-list-item-title>
+          </v-list-item>
+           <v-list-item class="menuUser poiter" to="/admin">
+            <v-list-item-title>
+              <v-icon left color="#295382" >settings</v-icon>
+              Adm. Usuarios
             </v-list-item-title>
           </v-list-item>
           <v-list-item class="menuUser poiter">

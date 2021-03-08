@@ -97,7 +97,18 @@ class InstrumentoController {
       var ArrayInstrumento = query.map(e =>{
         return {
           "id": e.id,
-          "serie": e.serie
+          "marca": e.marca,
+          "modelo": e.modelo,
+          "serie": e.serie,
+          "tipo": e.tipo.nombre,
+          "resolucion": e.resolucion,
+          "tolerancia": e.tolerancia,
+          "unidad": e.unidad.nombre,
+          "magintud": e.magnitud.nombre,
+          "rango_a": e.rango_a,
+          "rango_de": e.rango_de,
+          "rango_normal_a": e.rango_normal_a,
+          "rango_normal_de": e.rango_normal_de
         }
       })
 
@@ -188,7 +199,21 @@ class InstrumentoController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params: {id}, request, response, auth }) {
+    try {
+      const user = await auth.getUser();
+      const instrumento = await Instrumento.findOrFail(id);
+      return response.status(200).json({ menssage: 'Instrumento', data: instrumento });
+    }catch(error){
+      console.log(error.name)
+      if(error.name == 'InvalidJwtToken'){
+        return response.status(400).json({menssage: 'Usuario no Valido'})
+       }
+      return response.status(400).json({
+        menssage: 'Instrumento no encontrado',
+        id
+      })
+    }
   }
 
   /**

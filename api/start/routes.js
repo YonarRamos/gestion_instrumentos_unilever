@@ -43,6 +43,7 @@ Route.delete("api/v1/equipo/:id", "EquipoController.destroy");
 
 // Rutas Instrumentos
 Route.get('/api/v1/instrumento' , 'InstrumentoController.index');
+Route.get('/api/v1/instrumento/:id' , 'InstrumentoController.show');
 Route.get('/api/v1/instrumentoslist' , 'InstrumentoController.getInstrumentosList');
 Route.post('/api/v1/instrumento' , 'InstrumentoController.store');
 Route.put('/api/v1/instrumento/:id' , 'InstrumentoController.update');
@@ -61,7 +62,7 @@ Route.get('/api/v1/Unidad' , 'UnidadController.index');
 Route.get('/api/v1/Magnitud' , 'MagnitudController.index');
 
 //Rutas users
-Route.get('/api/v1/User' , 'UserController.index');
+Route.get('/api/v1/user' , 'UserController.index');
 Route.get("api/v1/loginUsersAutomatico", "UserController.loginToken");
 //Rutas users
 Route.get('/api/v1/calibracionTipo' , 'calibracionTipoController.index');

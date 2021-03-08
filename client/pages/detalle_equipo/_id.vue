@@ -169,7 +169,7 @@
                           </v-col>
                           <v-spacer></v-spacer>
                           <v-col cols="2" class="pt-1">
-                                <agregar-instrumento />                       
+                                <asignar-instrumento />                       
                           </v-col>
                         </v-row>
                         <v-divider></v-divider>
@@ -515,7 +515,9 @@ import BtnPDF from "~/components/common/btnPDF.vue";
 import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 import AgregarCertificado from "~/components/common/AgregarCertificado.vue";
-import AgregarInstrumento from "~/components/common/AgregarInstrumento.vue";
+
+import AsignarInstrumento from "~/components/common/AsignarInstrumento.vue";
+import AgregarInstrumento from "~/components/common/AsignarInstrumento.vue";
 import AgregarCalibracion from "~/components/common/AgregarCalibracion.vue";
 import AprobarTareaCalibracion from "~/components/common/AprobarTareaCalibracion.vue";
 
@@ -525,7 +527,8 @@ export default {
     AgregarCertificado,
     AgregarInstrumento,
     AgregarCalibracion,
-    AprobarTareaCalibracion
+    AprobarTareaCalibracion,
+    AsignarInstrumento
   },
   layout: 'equipo',
   data(){
