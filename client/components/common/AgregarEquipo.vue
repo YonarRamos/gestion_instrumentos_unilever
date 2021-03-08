@@ -58,12 +58,11 @@
                   v-model="item.instrumento_id"
                   :items="instrumentos"
                   label="Instrumento"
-                  auto-select-first
                   :rules="rules"
                 ></v-autocomplete>
               </v-col>
               <v-col cols="3">
-                <agregar-instrumento/>
+                <agregar-instrumento @click="nuevoInstrumento"/>
               </v-col>
               <v-col cols="12">
                 <v-textarea
@@ -180,6 +179,11 @@ export default {
         this.alertType = 'error';
         this.alertShow = true;
       }
+    },
+    nuevoInstrumento(){
+      this.getInstrumentos();
+      this.item.instrumento_id = 'Elemento' /* this.instrumentos[parseInt(this.instrumentos.length-1)].serie */;
+
     },
     getInstrumentos(){
       try {
