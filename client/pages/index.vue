@@ -2,7 +2,7 @@
   <div class="fondo">
     <v-container >
       <v-row>
-        <v-col cols="3">
+        <v-col cols="12" md="3">
             <div>
 
             <v-treeview
@@ -18,7 +18,7 @@
           </div> 
       </v-col>
      
-  <v-col cols="9">        
+      <v-col cols="12" md="9">        
           <v-card>
             <v-card-title  style="box-shadow:1px 2px 4px #888888">
               Equipos
@@ -199,6 +199,7 @@ export default {
       await axios
         .get("tablaequipos", { headers: { Authorization: `Bearer ${this.token}`} , params: { desde: this.desde, hasta: this.hasta, options: this.options, buscar: this.txtBuscar, filtroTree: this.filtroTree } })
         .then(res => {
+          console.log('resEquipoTabla:',res.data.tableItemsData )
           this.totalTableItems = res.data.total;
           res.data.tableItemsData.forEach(it => {
             var auxRuta = this.listRutas.find(el => el.i == it.sector_id);

@@ -26,11 +26,11 @@
     <v-dialog
       v-model="dialogEliminado"
       persistent
-      max-width="400">
+      max-width="435">
       <v-card>
         <v-card-title class="headline">
-          <v-alert width="380" outlined type="success"> 
-            Se ha eliminado el instrumento correctamente
+          <v-alert width="435" outlined :type="alertType"> 
+            {{alertMsg}}
           </v-alert>
         </v-card-title>
         <v-card-actions>
@@ -70,6 +70,8 @@ export default {
     return{
       dialog:false,
       dialogEliminado:false,
+      alertType:'',
+      alertMsg:''
     }
   },
   methods:{
@@ -78,24 +80,31 @@ export default {
       const token = Cookies.get('token');
       this.toggleLoading(true);
       try {
-       await axios.delete(`instrumento/${this.id}`, {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            params:{id:this.id} 
-            },
+        await axios
+          .delete(`instrumento/${this.id}`, {
+              headers: { 
+                Authorization: `Bearer ${token}`,
+                params:{id:this.id} 
+              },
         })
         .then(()=>{
           this.dialog = false;
           this.toggleLoading(false);
+          this.alertMsg = "Se ha eliminado el instrumento correctamente";
+          this.alertType = 'success'
           this.dialogEliminado = true;
           this.$emit('click');
         });
       } catch (error) {
         this.toggleLoading(false);
-        console.log('Error Eliminar Item:',error);
+        this.dialog = false;
+        this.alertMsg = `No es posible eliminar este Instrumento ya que está asociado a un equipo`;
+        this.alertType = 'error'
+        this.dialogEliminado = true;
+        console.log('Error Eliminar instrumento:',error);
       }
     },
-    hide(){
+    hide(){ //oculta el modal despues de eliminar el instrumento.
       this.dialogEliminado = false;
       this.$emit('click');
     }

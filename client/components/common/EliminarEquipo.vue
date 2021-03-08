@@ -16,7 +16,7 @@
           <v-btn color="error" text @click="dialog=false">
             Cancelar
           </v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItem(id)">
+          <v-btn color="blue darken-1" text @click="deleteItem">
             OK
           </v-btn>
         </v-card-actions>
@@ -46,7 +46,7 @@
       </v-card>
     </v-dialog>
 
-    <loading :tag="tag"/>
+    <loading :tag="`Eliminando equipo ${tag}`"/>
 
   </div>
 </template>
@@ -77,13 +77,13 @@ export default {
   },
   methods:{
    ...mapMutations(['toggleLoading']),
-    deleteItem(id) {
+    deleteItem() {
       const token = Cookies.get('token');
       this.toggleLoading(true);
+      console.log(this.id)
       try {
-        axios.delete(`equipo/${id}`, {
-          headers: { Authorization: `Bearer ${token}`,
-          params:{id:id}  
+        axios.delete(`equipo/${this.id}`, {
+          headers: { Authorization: `Bearer ${token}`
           },
         })
         .then(()=>{

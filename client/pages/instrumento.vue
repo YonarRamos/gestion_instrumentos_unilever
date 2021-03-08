@@ -43,7 +43,7 @@
                   >
                     Limpiar Filtros
                   </v-btn>
-                  <agregar-instrumento-index @click="getInstrumentos" />
+                  <agregar-instrumento @click="getInstrumentos" />
                 </v-toolbar>
               </template>
 
@@ -68,9 +68,6 @@
               </template>
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
-                  <!--<v-icon small @click="downloadCert(item.instrumento_id)">
-                    mdi-download
-                  </v-icon>-->
                   <editar-instrumento
                     :id="item.id"
                     class="mr-2"
@@ -95,15 +92,16 @@ import Filtro from '@/components/public/Filtro';
 import EditarInstrumento from "~/components/common/EditarInstrumento.vue";
 import EliminarInstrumento from "~/components/common/EliminarInstrumento.vue";
 import axios from '~/plugins/axios'
-import { mapMutations, mapState } from 'vuex'
 import Cookies from 'js-cookie'
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
+import AgregarInstrumento from "~/components/common/AgregarInstrumento.vue";
 export default {
   middleware: 'NOAUTH',
   components: {
     Filtro,
     EditarInstrumento,
-    EliminarInstrumento
+    EliminarInstrumento,
+    AgregarInstrumento
   },
   data: () => ({
     instrumento_id:null,
@@ -147,6 +145,7 @@ export default {
             headers: { Authorization: `Bearer ${this.token}` },
           })
           .then((res) => {
+            console.log('Refrescando Tabla...')
             this.tableData = res.data.data.data;
             this.instrumento_id = res.data.data.data[0].id
           })
