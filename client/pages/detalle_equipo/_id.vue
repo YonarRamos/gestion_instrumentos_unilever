@@ -159,25 +159,19 @@
                 <v-row class="mt-2" >
                  <v-col cols="12" sm="7">
 
-                    <v-row>
-                      <v-col  class="pb-0">
-                        <v-row>
-                          <v-col cols="10">
-                            <div class="overline">
-                              Instrumentos del Equipo
-                            </div>
-                          </v-col>
-                          <v-spacer></v-spacer>
-                          <v-col cols="2" class="pt-1"> 
-                                <asignar-instrumento :equipo="item" :equipoID="$route.params.id" @click="getEquipo"/>                       
-                          </v-col>
-                        </v-row>
-                        <v-divider></v-divider>
-                      </v-col>
-                    </v-row>
 
-                    <v-row>
-                        <v-col cols="6" >
+                  <v-row>
+                    <v-col class="d-flex pt-0">
+                      <div class="overline d-flex align-end" style="padding-top:8px;">
+                        Instrumentos del Equipo
+                      </div>
+                      <asignar-instrumento :equipo="item" :equipoID="$route.params.id" @click="getEquipo" class="ml-3"/>
+                    </v-col>  
+                                          
+                  </v-row> 
+                  <v-divider></v-divider>    
+                    <v-row class="mt-3">
+                        <v-col cols="6">
   
                           <v-text-field
                             v-model="item.instrumento_marca"
@@ -392,11 +386,10 @@
                 </v-col>
                 <v-col cols="12" sm="5">
                     <v-row>
-                      <v-col cols="10">
+                      <v-col cols="10" class="pt-2">
                         <div class="overline">
                           Asignaciones
                         </div>
-                      
                       </v-col>
                       <v-spacer></v-spacer>
                       <v-col cols="2 d-flex justify-end pt-2">
@@ -435,13 +428,13 @@
                 <v-row>      
                   <v-col cols="12" sm="6">
                     <v-row>
-                      <v-col cols="10">
+                      <v-col cols="6" class="pr-0 pl-4">
                         <div class="overline">
                           Tareas de Calibracion
                         </div>
                       </v-col>
                       <v-spacer></v-spacer>
-                      <v-col cols="2" class="d-flex justify-end pt-2">
+                      <v-col cols="6" class="d-flex justify-start pt-2 px-0">
                         <agregar-calibracion :instrumento="item" @click="getEquipo"/>
                       </v-col>
                     </v-row>

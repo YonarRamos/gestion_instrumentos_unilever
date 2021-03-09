@@ -14,7 +14,7 @@
 
     <v-card>
       <v-card-title class="headline blue darken-4" style="color:white">
-        <span >Agregar</span>
+        <span >Agregar Equipo</span>
         <v-spacer></v-spacer>
         <v-btn
           icon
@@ -42,18 +42,16 @@
                   label="Serie requerido"
                 ></v-checkbox>
               </v-col>
-              <v-col cols="12" md="6">
+              <v-col cols="12">
                 <v-autocomplete
                   v-model="item.sector_id"
                   :items="sectores"
                   label="Sector"
                   auto-select-first
                   :rules="rules"
-                >
-                </v-autocomplete>
-                
+                />
               </v-col>
-              <v-col cols="9" md="6">
+              <v-col cols="9">
                 <v-autocomplete
                   v-model="item.instrumento_id"
                   :items="instrumentos"
@@ -61,7 +59,7 @@
                   :rules="rules"
                 ></v-autocomplete>
               </v-col>
-              <v-col cols="3">
+              <v-col cols="3" class="d-flex justify-center align-center">
                 <agregar-instrumento @click="nuevoInstrumento"/>
               </v-col>
               <v-col cols="12">
@@ -142,7 +140,7 @@ export default {
         tag:"",
         serie_requerido: 0,
         sector_id: null,
-        instrumento_id: null,
+        instrumento_id:'',
         descripcion: ""
       },
       token: Cookies.get('token')
@@ -186,7 +184,7 @@ export default {
     },
     nuevoInstrumento(){
       this.getInstrumentos();
-      this.item.instrumento_id = 'Elemento' /* this.instrumentos[parseInt(this.instrumentos.length-1)].serie */;
+     /* this.item.instrumento_id = this.instrumentos[parseInt(this.instrumentos.length-1)].serie */;
 
     },
     getInstrumentos(){

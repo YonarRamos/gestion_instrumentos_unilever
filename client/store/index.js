@@ -25,6 +25,13 @@ export const mutations = {
     state.auth = true;
     this.$router.push('/')
   },
+  async SET_DESLOGIN(state) {  
+    state.auth = false;
+    Cookies.remove('token');
+    Cookies.remove('user');
+    Cookies.remove('user_id')
+    this.$router.push('/login');
+  },
   async setUser(state, payload){
     Cookies.set('user', payload.empresa)
     Cookies.set('user_id', payload.id)
@@ -41,27 +48,21 @@ export const mutations = {
   ocultarInfoModal(state, payload){
     state.infoModal.dialog = payload
   },
-  async SET_DESLOGIN(state) {  
-    Cookies.remove('token');
-    Cookies.remove('user');
-    Cookies.remove('user_id')
-    state.auth = false;
-    this.$router.push('/login')
-  },
   toggleLoading(state, payload){
     state.dialogLoading = payload;
   }
 
 };
+
 export const actions = {
   
   async nuxtServerInit ({ commit , state }, { req }  ) { 
         
-     if (req.headers.cookie) {
+     if (req.headers.cookie) { 
          let { token } = cookie.parse(req.headers.cookie);
         
          await axios
-           .get("loginUsersAutomatico", {
+           .get("/loginUsersAutomatico", {
              headers: { Authorization: `Bearer ${token}` }
            })
            .then(res => {

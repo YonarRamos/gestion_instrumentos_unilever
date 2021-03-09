@@ -111,6 +111,7 @@ import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
 import UltimaTareaRealizada from "~/components/common/UltimaTareaRealizada.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
+import DescargarCetificado from "~/components/common/DescargarCetificado.vue";
 
 export default {
   middleware: 'NOAUTH',
@@ -119,7 +120,7 @@ export default {
     AgregarEquipo,
     EliminarEquipo,
     EditarEquipo,
-    UltimaTareaRealizada
+    DescargarCetificado
   },
     data: () => ({
       token: Cookies.get("token"),
@@ -170,19 +171,6 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleDialogPassword']),
-
-    async downloadCert(inId) {
-      try {
-        await axios
-        .get("download/lastcert", {
-        headers: { Authorization: `Bearer ${this.token}`}, params: {id: inId}
-      })
-      } catch (error) {
-        
-      }
-      
-    },
-
     async fillItems() {
 
       await axios

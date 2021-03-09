@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-end">
+  <div class="d-flex justify-start">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -34,23 +34,28 @@
                   <v-card flat style="border: 2px solid lightgray;" color="#F9F9F9">
                     <v-autocomplete
                       v-model="seleccionado"
-                      :items="instrumentosDisponibles"
-                      label="Seleccione un Instrumento:"
-                      auto-select-first
-                      :rules="rules"
+                      :items="Object.keys(instrumentosDisponibles)"
+                      label="Seleccione un Instrumento disponible:"
                       class="mx-3"
+                       clearable
                       @change="mostrarInstrumento"
                     >
                     </v-autocomplete>
                   </v-card>
-                </v-col>
-                  </v-row>
-                  <v-row>
+
+              <v-col>
+                <div class="overline">
+                  Asigne un instrumento Nuevo
+                </div>
+                <v-divider></v-divider>
+              </v-col>
+
+              </v-col>
                     <v-col cols="6">
                       <v-text-field 
                       v-model="instrumento.marca"
                       label="Marca"
-                      readonly
+                      :disabled="manual"  
                       >
                       </v-text-field>
                     </v-col>
@@ -58,7 +63,7 @@
                       <v-text-field 
                       v-model="instrumento.modelo"
                       label="Modelo"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -69,18 +74,19 @@
                       <v-text-field 
                       v-model="instrumento.serie"
                       label="Serie"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field 
+                      <v-autocomplete
                       v-model="instrumento.tipo_id"
                       label="Tipo"
-                      :items="Object.keys(instrumentoTipo)"
-                      readonly
+                      :items="instrumentosTipo"
+                      item-text="nombre"
+                      :disabled="manual"
                       >
-                      </v-text-field >
+                      </v-autocomplete>
                     </v-col>
                   </v-row>
 
@@ -89,7 +95,7 @@
                       <v-text-field 
                       v-model="instrumento.resolucion"
                       label="Resolución"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -97,7 +103,7 @@
                       <v-text-field
                       v-model="instrumento.tolerancia" 
                       label="Tolerancia"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -106,22 +112,24 @@
 
                   <v-row>
                     <v-col cols="6">
-                      <v-text-field 
+                      <v-autocomplete
                       v-model="instrumento.unidad_id"
                       label="Unidad"
-                      :items="Object.keys(instrumentoUnidad)"
-                      readonly
+                      :items="instrumentoUnidad"
+                      item-text="nombre"
+                      :disabled="manual"
                       >
-                      </v-text-field >
+                      </v-autocomplete>
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field 
+                      <v-autocomplete 
                       v-model="instrumento.magnitud_id"
                       label="Magnitud"
-                      :items="Object.keys(instrumentoMagnitud)"
-                      readonly
+                      :items="instrumentoMagnitud"
+                      item-text="nombre"
+                      :disabled="manual"
                       >
-                      </v-text-field >
+                      </v-autocomplete>
                     </v-col>
                   </v-row>
 
@@ -130,7 +138,7 @@
                       <v-text-field 
                       v-model="instrumento.rango_a"
                       label="Rango A"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -138,7 +146,7 @@
                       <v-text-field
                       v-model="instrumento.rango_de" 
                       label="Rango DE"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -149,7 +157,7 @@
                       <v-text-field 
                       v-model="instrumento.rango_normal_a"
                       label="Rango Normal A"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -157,7 +165,7 @@
                       <v-text-field 
                       v-model="instrumento.rango_normal_de"
                       label="Rango Normal DE"
-                      readonly
+                      :disabled="manual"
                       >
                       </v-text-field>
                     </v-col>
@@ -183,8 +191,11 @@
               <v-btn color="error" text @click="hide">
                 Cancelar
               </v-btn>
-              <v-btn color="primary" text @click="editarEquipo">
+              <v-btn v-if="manual" color="primary" text @click="editarEquipo(equipoActualizado)">
                 Asignar Instrumento
+              </v-btn>
+              <v-btn v-if="!manual" color="primary" text @click="agregarInstrumento">
+                Asignar Instrumento Nuevo
               </v-btn>
             </v-card-actions>
           </v-card>
@@ -208,17 +219,18 @@ export default {
   },
   data() {
     return {
+      manual:false,
       valid:false,
       token: Cookies.get('token'),
       dialog: false,
       alertMsg:"",
       alertType:"",
       alertShow:false,
-      instrumentoTipo:[],
+      instrumentosTipo:[],
       instrumentoUnidad:[],
       instrumentoMagnitud:[],
       instrumentosDisponibles:[],
-      seleccionado:'',
+      seleccionado:null,
       instrumento:{
         marca: "",
         modelo: "",
@@ -246,33 +258,36 @@ export default {
     }
   },
   methods:{
+  handleInput (valor) {
+    this.instrumento.tipo_id = valor;
+  },
    getInstrumentList(){
     try {
-      this.instrumentosDisponibles = [];
-       axios.get('instrumentoslist', {
-              headers: { Authorization: `Bearer ${this.token}` },
-            })
-            .then((res)=>{
-              for (const item of res.data.data) {
-                this.instrumentosDisponibles.push({ text: item.serie , value: item.id});
-              }
-            })
+        axios.get('instrumentoslist', {
+          headers: { Authorization: `Bearer ${this.token}` },
+        })
+        .then((res)=>{
+          for (const item of res.data.data) {
+            this.instrumentosDisponibles[item.serie] = item.id;
+          }
+        })
     } catch (error) {
       console.log(error)
     }
   },
-    editarEquipo(){
-      this.equipoActualizado.serie_requerido == true ? this.equipoActualizado.serie_requerido = 1 : this.equipoActualizado.serie_requerido = '0';
-      console.log('EActualizado:', this.equipoActualizado)
+    editarEquipo(equipoActualizado){
+      equipoActualizado.serie_requerido == true ? equipoActualizado.serie_requerido = 1 : equipoActualizado.serie_requerido = '0';
       try {
-           axios.put(`equipo/${this.equipoID}`, this.equipoActualizado, {
+           axios.put(`equipo/${this.equipoID}`, equipoActualizado, {
              headers: { Authorization: `Bearer ${this.token}` },
            })
            .then((resp)=>{
-               this.alertMsg = `Se ha actualizado en instrumento Asociado al equipo ${this.equipoActualizado.tag}`;
+               this.alertMsg = `Se ha actualizado en instrumento Asociado al equipo ${equipoActualizado.tag}`;
                 this.alertType = 'success';
                 this.alertShow = true;
                 this.$emit('click');
+                this.$refs.form.reset();
+                setTimeout(()=>{this.alertShow = false} ,3000) 
            })
 
       } catch (error) {
@@ -283,40 +298,63 @@ export default {
       }
     },
   async mostrarInstrumento(){
-    let id = this.seleccionado;
-      await axios.get(`instrumento/${id}`,{
-              headers: { Authorization: `Bearer ${this.token}` },
-            })
-            .then((res)=>{
-              console.log('Instrimento seleccionado',res.data.data)
-              this.instrumento = res.data.data
-              //Llenamos los datos del equipo actualizando el id
-              this.equipoActualizado.instrumento_id = id
-              this.equipoActualizado.tag = this.equipo.tag
-              this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
-              this.equipoActualizado.instrumento_serie = this.equipo.instrumento_serie
-              this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
-              this.equipoActualizado.descripcion = this.equipo.descripcion
-            })
-    try {
+   try { 
+    if(this.seleccionado != null){
+      let id = this.instrumentosDisponibles[this.seleccionado];
+        await axios.get(`instrumento/${id}`,{
+                headers: { Authorization: `Bearer ${this.token}` },
+              })
+              .then((res)=>{
+                this.instrumento = res.data.data
+                let indexTipo = this.instrumentosTipo.findIndex(p => p.id == this.instrumento.tipo_id);
+                let indexUnidad = this.instrumentoUnidad.findIndex(p => p.id == this.instrumento.unidad_id);
+                let indexMagnitud = this.instrumentoMagnitud.findIndex(p => p.id == this.instrumento.magnitud_id);
+                this.instrumento.tipo_id = this.instrumentosTipo[indexTipo].nombre;
+                this.instrumento.unidad_id = this.instrumentoUnidad[indexUnidad].nombre;
+                this.instrumento.magnitud_id = this.instrumentoMagnitud[indexMagnitud].nombre;
+                //Llenamos los datos del equipo actualizando el id
+                this.equipoActualizado.instrumento_id = id
+                this.equipoActualizado.tag = this.equipo.tag
+                this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
+                this.equipoActualizado.instrumento_serie = this.equipo.instrumento_serie
+                this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
+                this.equipoActualizado.descripcion = this.equipo.descripcion
+              })
+          }else{
+            this.$refs.form.reset();
+          }
       
     } catch (error) {
       console.log(error)
+      this.$refs.form.reset();
     }
   },
    async agregarInstrumento(){
       try {
-        
-          await axios.get('instrumentoslist', this.instrumento ,{
-              headers: { Authorization: `Bearer ${this.token}` },
-            })
-            .then((res)=>{
-              
-              this.alertMsg = "Instrumento agregado correctamente"
-              this.alerType = "success"
-              this.alertShow = true;
-              this.$refs.form.reset();
-            })
+        if(this.$refs.form.validate()){
+        let indexTipo = this.instrumentosTipo.findIndex(p => p.nombre == this.instrumento.tipo_id);
+        let indexUnidad = this.instrumentoUnidad.findIndex(p => p.nombre == this.instrumento.unidad_id);
+        let indexMagnitud = this.instrumentoMagnitud.findIndex(p => p.nombre == this.instrumento.magnitud_id);
+        this.instrumento.tipo_id = this.instrumentosTipo[indexTipo].id;
+        this.instrumento.unidad_id = this.instrumentoUnidad[indexUnidad].id;
+        this.instrumento.magnitud_id = this.instrumentoMagnitud[indexMagnitud].id;
+
+        await axios.post('instrumento', this.instrumento ,{
+            headers: { Authorization: `Bearer ${this.token}` },
+          })
+          .then((res)=>{
+            console.log('Instrumento nuevo:',res.data.data.id);
+            let id = res.data.data.id;
+            //Llenamos los datos del equipo actualizando el id
+            this.equipoActualizado.instrumento_id = id
+            this.equipoActualizado.tag = this.equipo.tag
+            this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
+            this.equipoActualizado.instrumento_serie = this.equipo.instrumento_serie
+            this.equipoActualizado.serie_requerido = this.equipo.serie_requerido
+            this.equipoActualizado.descripcion = this.equipo.descripcion
+            this.editarEquipo(this.equipoActualizado);
+          })
+      } 
       } catch (error) {
         console.log(error)
         this.alertMsg = "Hubo un error al processar tu solicitud"
@@ -330,6 +368,9 @@ export default {
       this.alertShow = false;
     },
     show(){
+      this.getUnidad();
+      this.getMagnitud();
+      this.getInstrumentoTipo();
       this.getInstrumentList();
       this.dialog = true;
     },
@@ -340,9 +381,9 @@ export default {
           })
           .then((res)=>{
             for (const item of res.data.data) {
-              this.instrumentoTipo[item.nombre] = item.id ;
+              this.instrumentosTipo.push({id:item.id, nombre:item.nombre});
             }
-            console.log('instrumento Tipo:', this.instrumentoTipo);
+            console.log('instrumento Tipo:', this.instrumentosTipo);
           })
           } catch (error) {
             console.log(error)
@@ -355,9 +396,8 @@ export default {
           })
           .then((res)=>{
             for (const item of res.data.data) {
-              this.instrumentoUnidad[item.nombre] = item.id ;
+              this.instrumentoUnidad.push({id:item.id, nombre:item.nombre});
             }
-            console.log('instrumento Unidad:', this.instrumentoUnidad);
           })
 
           } catch (error) {
@@ -372,9 +412,8 @@ export default {
       })
       .then((res)=>{
         for (const item of res.data.data) {
-          this.instrumentoMagnitud[item.nombre] = item.id ;
+          this.instrumentoMagnitud.push({id:item.id, nombre:item.nombre});
         }
-        console.log('instrumento Magnitud:', this.instrumentoMagnitud);
       })
 
       } catch (error) {
@@ -384,6 +423,14 @@ export default {
   }
 },
 mounted(){
+  this.getInstrumentList();
+},
+watch:{
+  seleccionado: function () {
+    if(this.seleccionado != null){
+      this.manual = true;
+      }else{this.manual = false}
+    }
 }
 }
 </script>
