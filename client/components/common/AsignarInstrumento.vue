@@ -11,7 +11,7 @@
               v-on="on"
               @click="show"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>add_task</v-icon>
             </v-btn>
           </template>
           <span>Asignar Instrumento</span>
