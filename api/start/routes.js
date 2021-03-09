@@ -63,6 +63,9 @@ Route.get('/api/v1/Magnitud' , 'MagnitudController.index');
 
 //Rutas users
 Route.get('/api/v1/user' , 'UserController.index');
+Route.post('/api/v1/user' , 'UserController.store');
+
+Route.get('/api/v1/user/:id' , 'UserController.show');
 Route.put('/api/v1/user/:id' , 'UserController.update');
 Route.delete('/api/v1/user/:id' , 'UserController.destroy');
 Route.get("api/v1/loginUsersAutomatico", "UserController.loginToken");

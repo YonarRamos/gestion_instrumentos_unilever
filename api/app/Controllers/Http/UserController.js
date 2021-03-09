@@ -2,7 +2,7 @@
 
 const User = use('App/Models/User');
 const Response = use('App/Models/Response');
-
+var moment = require('moment');
 
 class UserController {
 
@@ -23,7 +23,22 @@ class UserController {
       response.status(404).json({ menssage: 'Hubo un error al realizar la operación', error });
     }
   }
-
+  async show ({ params: {id}, request, response, auth }) {
+    try {
+      const user = await auth.getUser();
+      const usuario = await User.findOrFail(id);
+      return response.status(200).json({ menssage: 'Usuario', data: usuario });
+    }catch(error){
+      console.log(error.name)
+      if(error.name == 'InvalidJwtToken'){
+        return response.status(400).json({menssage: 'Usuario no Valido'})
+       }
+      return response.status(400).json({
+        menssage: 'Instrumento no encontrado',
+        id
+      })
+    }
+  }
   async login({ auth, request, response }) {
     try {
       const { email, password } = request.all()
@@ -87,11 +102,12 @@ class UserController {
   async update({ auth, response, request , params:{id}}) {
     try {
       const user = await auth.getUser()
-      const data = request.only(["nombre", "apellido", "email", "empresa", "rol", "updated_at"])
+      const data = request.only(["nombre", "apellido", "email", "empresa", "rol","password", "updated_at"])
       if (user.rol == 0) {
         const usuarios = await User.find(id);
         usuarios.nombre = data.nombre || usuarios.nombre;
         usuarios.apellido = data.apellido || usuarios.apellido;
+        usuarios.password = data.password || usuarios.password;
         usuarios.email = data.email || usuarios.email;
         usuarios.empresa = data.empresa || usuarios.empresa;
         usuarios.rol = data.rol || usuarios.rol;
@@ -112,7 +128,7 @@ class UserController {
     }
 
   }
-  async detroy({ auth, response, request , params}){
+  async destroy({ auth, response, request , params}){
     try {
     const id = params.id
     const user = await auth.getUser();
