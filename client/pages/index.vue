@@ -3,8 +3,15 @@
     <v-container >
       <v-row>
         <v-col cols="12" md="3">
-            <div>
-
+          <v-col class="d-flex pb-0 pl-1">
+            <div class="overline">
+              Sectores
+            </div>
+            <v-spacer/>
+            <agregar-sector/>
+          </v-col>
+            <v-divider></v-divider>
+          <div>
             <v-treeview
               rounded
               hoverable
@@ -16,13 +23,6 @@
               style="cursor:pointer;"
             />
           </div> 
-          <div class="btnSector">
-            <v-col>
-              <v-btn icon>
-            <v-icon >brush</v-icon>
-              </v-btn>
-            </v-col>
-          </div>
       </v-col>
       <v-col cols="12" md="9">        
           <v-card>
@@ -118,6 +118,7 @@ import UltimaTareaRealizada from "~/components/common/UltimaTareaRealizada.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
 import DescargarCetificado from "~/components/common/DescargarCetificado.vue";
+import AgregarSector from "~/components/common/AgregarSector.vue";
 
 export default {
   middleware: 'NOAUTH',
@@ -126,7 +127,8 @@ export default {
     AgregarEquipo,
     EliminarEquipo,
     EditarEquipo,
-    DescargarCetificado
+    DescargarCetificado,
+    AgregarSector
   },
     data: () => ({
       token: Cookies.get("token"),
