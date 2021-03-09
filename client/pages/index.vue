@@ -16,8 +16,14 @@
               style="cursor:pointer;"
             />
           </div> 
+          <div class="btnSector">
+            <v-col>
+              <v-btn icon>
+            <v-icon >brush</v-icon>
+              </v-btn>
+            </v-col>
+          </div>
       </v-col>
-     
       <v-col cols="12" md="9">        
           <v-card>
             <v-card-title  style="box-shadow:1px 2px 4px #888888">

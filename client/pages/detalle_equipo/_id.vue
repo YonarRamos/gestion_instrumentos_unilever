@@ -428,10 +428,13 @@
                 <v-row>      
                   <v-col cols="12" sm="6">
                     <v-row>
-                      <v-col class="d-flex pt-2">
-                        <div class="overline mr-3" style="padding-top:8px;">
+                      <v-col cols="6" class="pr-0 pl-4">
+                        <div class="overline">
                           Tareas de Calibracion
                         </div>
+                      </v-col>
+                      <v-spacer></v-spacer>
+                      <v-col cols="6" class="d-flex justify-start pt-2 px-0">
                         <agregar-calibracion :instrumento="item" @click="getEquipo"/>
                       </v-col>
                     </v-row>
@@ -450,7 +453,7 @@
                             </v-data-table> 
                         </v-card>     
                   </v-col>
-                  <v-col cols="12" sm="6" class="pt-4">  
+                  <v-col cols="12" sm="6">  
                     <div class="overline">
                       Tareas de Calibración Realizadas
                     </div>
