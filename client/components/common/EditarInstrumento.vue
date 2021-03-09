@@ -53,7 +53,8 @@
                       <v-autocomplete
                       v-model="instrumento.tipo_id"
                       label="Tipo"
-                      :items="Object.keys(instrumentoTipo)"
+                      :items="instrumentoTipo"
+                      item-text="nombre"
                       :rules="rules"
                       >
                       </v-autocomplete>
@@ -85,7 +86,8 @@
                       <v-autocomplete
                       v-model="instrumento.unidad_id"
                       label="Unidad"
-                      :items="Object.keys(instrumentoUnidad)"
+                      :items="instrumentoUnidad"
+                      item-text="nombre"
                       :rules="rules"
                       >
                       </v-autocomplete>
@@ -94,7 +96,8 @@
                       <v-autocomplete
                       v-model="instrumento.magnitud_id"
                       label="Magnitud"
-                      :items="Object.keys(instrumentoMagnitud)"
+                      :items="instrumentoMagnitud"
+                      item-text="nombre"
                       :rules="rules"
                       >
                       </v-autocomplete>
@@ -210,10 +213,10 @@ export default {
   },
   methods:{
     show(){
+      this.getInstrumento();
       this.getUnidad();
       this.getMagnitud();
       this.getInstrumentoTipo();
-      this.getInstrumento();
       this.dialog = true;
     },
    async editarInstrumento(){
@@ -248,14 +251,7 @@ export default {
           })
           .then((res)=>{
             console.log('getIntrumento:',res.data.data);
-            this.instrumento = res.data.data;
-            for (const item in this.instrumentoTipo) {
-             /*  if(item == res.data.data.tipo_id){
-                console.log('lo encontre');
-              } */
-              console.log(item)
-            }
-            
+            this.instrumento = res.data.data;   
           })
           } catch (error) {
             console.log(error)
@@ -268,8 +264,10 @@ export default {
           })
           .then((res)=>{
             for (const item of res.data.data) {
-              this.instrumentoTipo[item.nombre] = item.id ;
+              this.instrumentoTipo.push({id:item.id, nombre:item.nombre});
             }
+            let index = this.instrumentoTipo.findIndex(p => p.id == this.instrumento.tipo_id );
+            this.instrumento.tipo_id = this.instrumentoTipo[index];
           })
           } catch (error) {
             console.log(error)
@@ -282,8 +280,10 @@ export default {
           })
           .then((res)=>{
             for (const item of res.data.data) {
-              this.instrumentoUnidad[item.nombre] = item.id ;
+              this.instrumentoUnidad.push({id:item.id, nombre:item.nombre});
             }
+            let index = this.instrumentoUnidad.findIndex(p => p.id == this.instrumento.unidad_id );
+            this.instrumento.unidad_id = this.instrumentoUnidad[index];
           })
 
           } catch (error) {
@@ -298,8 +298,10 @@ export default {
         })
         .then((res)=>{
           for (const item of res.data.data) {
-            this.instrumentoMagnitud[item.nombre] = item.id ;
+            this.instrumentoMagnitud.push({id:item.id, nombre:item.nombre});
           }
+            let index = this.instrumentoMagnitud.findIndex(p => p.id == this.instrumento.magnitud_id );
+            this.instrumento.magnitud_id = this.instrumentoMagnitud[index];
         })
 
         } catch (error) {

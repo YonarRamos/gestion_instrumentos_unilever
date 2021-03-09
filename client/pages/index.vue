@@ -83,9 +83,9 @@
 
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
-                  <v-icon small @click="downloadCert(item.instrumento_id)"> mdi-download </v-icon>
-                  <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
-                  <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
+                  <descargar-cetificado :idEquipo="item.id"/>
+                  <editar-equipo :id="item.id" class="ml-2" @click="getDataTable" />
+                  <eliminar-equipo :id="item.id" class="ml-2" :tag="item.tag" @click="getDataTable" />
                 </v-row>
               </template>
 
@@ -110,6 +110,7 @@ import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
+import DescargarCetificado from "~/components/common/DescargarCetificado.vue";
 
 export default {
   middleware: 'NOAUTH',
@@ -117,7 +118,8 @@ export default {
     Filtro,
     AgregarEquipo,
     EliminarEquipo,
-    EditarEquipo
+    EditarEquipo,
+    DescargarCetificado
   },
     data: () => ({
       token: Cookies.get("token"),
@@ -168,19 +170,6 @@ export default {
   },
   methods: {
     ...mapMutations(['toggleDialogPassword']),
-
-    async downloadCert(inId) {
-      try {
-        await axios
-        .get("download/lastcert", {
-        headers: { Authorization: `Bearer ${this.token}`}, params: {id: inId}
-      })
-      } catch (error) {
-        
-      }
-      
-    },
-
     async fillItems() {
 
       await axios

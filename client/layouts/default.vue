@@ -56,7 +56,7 @@
             </v-list-item-title>
           </v-list-item>
           <v-list-item class="menuUser poiter">
-            <v-list-item-title @click="Salir()">
+            <v-list-item-title @click="SET_DESLOGIN()">
               <v-icon left color="#295382" >west</v-icon>
               Salir
             </v-list-item-title>
@@ -103,9 +103,6 @@ export default {
   },
   methods: {
     ...mapMutations(["SET_DESLOGIN"]),
-    Salir(){
-      this.SET_DESLOGIN();
-    }
   },
 }
 </script>

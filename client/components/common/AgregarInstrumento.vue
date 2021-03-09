@@ -55,13 +55,13 @@
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
-                      <v-select
+                      <v-autocomplete
                       v-model="instrumento.tipo_id"
                       label="Tipo"
                       :items="Object.keys(instrumentoTipo)"
                       :rules="rules"
                       >
-                      </v-select>
+                      </v-autocomplete>
                     </v-col>
                   </v-row>
 
