@@ -2,9 +2,11 @@
 
 const { validate } = use('Validator');
 const User = use('App/Models/User');
+const CalibracionTarea = use('App/Models/CalibracionTarea');
 const CalibracionTareaRealizada = use('App/Models/CalibracionTareaRealizada');
 var moment = require('moment');
 const Database = use('Database')
+const Helpers = use('Helpers');
 class CalibracionTareaRealizadaController {
   
   async index ({ request, response, view , auth}) {
@@ -47,7 +49,72 @@ class CalibracionTareaRealizadaController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store ({ request, response }) {
+  async store ({ request, response, auth }) {
+
+    // Request
+    var {calibracion_tarea_id, fecha, certificado} = request.all();
+    var tarea = {calibracion_tarea_id, fecha, certificado};
+    // Variables
+    var user, tareaCalibracion;
+
+    // Validaciones
+    try {
+      user = await auth.getUser();
+
+      tareaCalibracion = await CalibracionTarea.query().with('instrumento').with('instrumento.equipo').where('id', tarea.calibracion_tarea_id).fetch();
+      tareaCalibracion = tareaCalibracion.toJSON();
+
+      if (tareaCalibracion.length == 0) {
+        return response.status(400).json('Tarea de calibración incorrecta.')
+      }
+      else
+      {
+        if (tareaCalibracion[0].instrumento.encargado_calibracion != user.id) {
+          return response.status(400).json('Acceso no autorizado.')
+        }
+      }
+    } catch (error) {
+      console.log(error)
+      return response.status(401).json('Acceso no autorizado.');
+    }
+
+    // Carga de certificado
+    try {
+      var newItem = {
+        calibracion_tarea_id: tarea.calibracion_tarea_id,
+        fecha: tarea.fecha,
+        realizo: user.id,
+        certificado: tarea.certificado,
+        equipo_id: tareaCalibracion[0].instrumento.equipo.id
+      }
+
+      const pdfSubido = request.file('certificado', {
+        types: ['pdf'],
+        size: '10mb'
+      })
+    
+      console.log(tarea.certificado);
+
+      await pdfSubido.move(Helpers.appRoot(`storage/archivos/certificados/${tareaCalibracion[0].instrumento.id}/${pdfSubido}`), {
+        name: 'custom-name.jpg',
+        overwrite: true
+      })
+    
+      if (!profilePic.moved()) {
+        return profilePic.error()
+      }
+      return 'File moved'
+      
+      return newItem
+
+    } catch (error) {
+      
+    }
+    /* const isExist = await Drive.exists(`archivos/certificados/${req.id}/${cert[0].certificado}`);
+        
+        if (isExist) {
+            return response.download(Helpers.appRoot(`storage/archivos/certificados/${req.id}/${cert[0].certificado}`));
+        } */
   }
 
   /**

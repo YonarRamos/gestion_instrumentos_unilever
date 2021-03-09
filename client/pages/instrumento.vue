@@ -5,7 +5,7 @@
         <v-col>
           <v-card>
             <v-card-title style="box-shadow: 1px 2px 4px #888888">
-              Instrumento
+              Instrumentos
             </v-card-title>
 
             <v-divider></v-divider>
@@ -119,15 +119,15 @@ export default {
     editedIndex: -1,
    
     headers: [
-      { text: 'estado', align: 'start', value: 'estado' },
+      { text: 'Estado', align: 'start', value: 'estado' },
       { text: 'Marca', value: 'marca' },
       { text: 'Modelo', value: 'modelo' },
       { text: 'Serie', value: 'serie' },
-      { text: 'Rango_de', value: 'rango_de' },
-      { text: 'Rango_a', value: 'rango_a' },
-      { text: 'Rango_normal_de', value: 'rango_normal_de' },
-      { text: 'Rango_normal_a', value: 'rango_mormal_a' },
-      { text: 'Resolucíon', value: 'resolucion' },
+      { text: 'Rango de', value: 'rango_de' },
+      { text: 'Rango a', value: 'rango_a' },
+      { text: 'Rango normal de', value: 'rango_normal_de' },
+      { text: 'Rango normal a', value: 'rango_mormal_a' },
+      { text: 'Resolución', value: 'resolucion' },
       { text: 'Tolerancia', value: 'tolerancia' },
       { text: 'Tipo', value: 'tipo' },
       { text: 'Unidad', value: 'unidad' },

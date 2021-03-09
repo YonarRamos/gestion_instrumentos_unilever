@@ -27,22 +27,14 @@
               <v-form ref="form" lazy-validation v-model="valid">
                 <v-container>
                   <v-row>
-<<<<<<< HEAD
-              <v-col cols="12">
-                <v-autocomplete
-                  v-model="item"
-                  :items="sectores"
-                  label="Intrumento Disponible"
-                  auto-select-first
-                  :rules="rules"
-                >
-                </v-autocomplete>
-=======
+
+              
+
                 <v-col cols="12" class="px-0">
                   <v-card flat style="border: 2px solid lightgray;" color="#F9F9F9">
                     <v-autocomplete
                       v-model="seleccionado"
-                      :items="Object.keys(instrumentosDisponibles)"
+                      :items="instrumentosDisponibles"
                       label="Seleccione un Instrumento:"
                       auto-select-first
                       :rules="rules"
@@ -51,9 +43,7 @@
                     >
                     </v-autocomplete>
                   </v-card>
->>>>>>> e827ef006abf36bc397f89dd10fda66d4c9f937f
-                
-              </v-col>
+                </v-col>
                   </v-row>
                   <v-row>
                     <v-col cols="6">
@@ -258,12 +248,13 @@ export default {
   methods:{
    getInstrumentList(){
     try {
+      this.instrumentosDisponibles = [];
        axios.get('instrumentoslist', {
               headers: { Authorization: `Bearer ${this.token}` },
             })
             .then((res)=>{
               for (const item of res.data.data) {
-                this.instrumentosDisponibles[item.serie] = item.id;
+                this.instrumentosDisponibles.push({ text: item.serie , value: item.id});
               }
             })
     } catch (error) {
@@ -292,7 +283,7 @@ export default {
       }
     },
   async mostrarInstrumento(){
-    let id = this.instrumentosDisponibles[this.seleccionado];
+    let id = this.seleccionado;
       await axios.get(`instrumento/${id}`,{
               headers: { Authorization: `Bearer ${this.token}` },
             })
@@ -337,7 +328,6 @@ export default {
       this.$refs.form.reset();
       this.dialog = false;
       this.alertShow = false;
-      this.getInstrumentList();
     },
     show(){
       this.getInstrumentList();
@@ -394,7 +384,6 @@ export default {
   }
 },
 mounted(){
-  this.getInstrumentList();
 }
 }
 </script>

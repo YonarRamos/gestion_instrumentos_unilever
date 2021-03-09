@@ -127,7 +127,6 @@ export default {
       this.dialog = true;
       this.getSectores();
       this.getEquipo();
-      
     },
     getEquipo(){
       try {

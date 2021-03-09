@@ -454,8 +454,8 @@
                             hide-default-footer
                             height="420"
                             >
-                            <template v-slot:[`item.aprobar`]>
-                                <aprobar-tarea-calibracion/>
+                            <template v-slot:[`item.cargar`]>
+                                <cargar-tarea-calibracion-realizada :calibracion_tarea_id="item.num_tarea"/>
                             </template>
                             </v-data-table> 
                         </v-card>     
@@ -517,14 +517,14 @@ import Cookies from 'js-cookie';
 import AgregarCertificado from "~/components/common/AgregarCertificado.vue";
 import AsignarInstrumento from "~/components/common/AsignarInstrumento.vue";
 import AgregarCalibracion from "~/components/common/AgregarCalibracion.vue";
-import AprobarTareaCalibracion from "~/components/common/AprobarTareaCalibracion.vue";
+import CargarTareaCalibracionRealizada from "~/components/common/CargarTareaCalibracionRealizada.vue";
 
 export default {
   components:{
     BtnPDF,
     AgregarCertificado,
     AgregarCalibracion,
-    AprobarTareaCalibracion,
+    CargarTareaCalibracionRealizada,
     AsignarInstrumento
   },
   layout: 'equipo',
@@ -586,7 +586,7 @@ export default {
           { text: 'Frecuencia', value: 'calibracion_tarea_frecuencia' },
           { text: 'Ultima Efectuada', value: 'calibracion_tarea_proxima' },
           {text: 'Proxima Calibracion',align: 'center', value: 'calibracion_tarea_proxima' },
-          {text: 'Aprobar',align: 'center', value: 'aprobar' }
+          {text: 'Cargar',align: 'center', value: 'cargar' }
         ],
         tareasCalibracion: [],
         tareasRealizadas: [],
@@ -635,7 +635,9 @@ export default {
           this.item.sector_name = 'Error en ruta';
         }
         //Tareas de calibracion pendientes
+        console.log('DALEEEEEEE ' , res.data.data[0].calibracion)
         this.tareasCalibracion = res.data.data[0].calibracion;
+        
       })
       } catch (error) {
         console.log(error)

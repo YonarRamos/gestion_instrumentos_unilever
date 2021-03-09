@@ -121,6 +121,10 @@ export default {
         this.getInstrumentos();
         this.getSectores();
       }
+      else
+      {
+        this.hideModal() 
+      }
     }
   },
 

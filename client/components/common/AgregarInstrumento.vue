@@ -105,17 +105,17 @@
 
                   <v-row>
                     <v-col cols="6">
-                      <v-text-field 
-                      v-model="instrumento.rango_a"
-                      label="Rango A"
+                      <v-text-field
+                      v-model="instrumento.rango_de" 
+                      label="Rango de"
                       :rules="rules"
                       >
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
-                      <v-text-field
-                      v-model="instrumento.rango_de" 
-                      label="Rango DE"
+                      <v-text-field 
+                      v-model="instrumento.rango_a"
+                      label="Rango a"
                       :rules="rules"
                       >
                       </v-text-field>
@@ -125,16 +125,16 @@
                   <v-row>
                     <v-col cols="6">
                       <v-text-field 
-                      v-model="instrumento.rango_normal_a"
-                      label="Rango Normal A"
+                      v-model="instrumento.rango_normal_de"
+                      label="Rango normal de"
                       :rules="rules"
                       >
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
                       <v-text-field 
-                      v-model="instrumento.rango_normal_de"
-                      label="Rango Normal DE"
+                      v-model="instrumento.rango_normal_a"
+                      label="Rango normal a"
                       :rules="rules"
                       >
                       </v-text-field>
