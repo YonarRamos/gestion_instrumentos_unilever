@@ -386,6 +386,7 @@
 
 <script>
 export default {
+  middleware: 'NOAUTH',
   layout: 'equipo',
 }
 </script>

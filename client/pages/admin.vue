@@ -30,7 +30,7 @@
                   ></v-text-field>
 
                   <v-spacer></v-spacer>
-                  <agregar-usuario @click="AgregarUsuario"/>
+                  <agregar-usuario @click="getUser"/>
                 </v-toolbar>
               </template>
 
@@ -61,11 +61,11 @@
                   <editar-usuario
                     :id="item.id"
                     class="mr-2"
-                    @click="EditarUsuario"
+                    @click="getUser"
                   />
                   <eliminar-usuario
                     :id="item.id"
-                    @click="EliminarUsuario"
+                    @click="getUser"
                   />
                 </v-row>
               </template>
@@ -93,7 +93,6 @@ export default {
     
   },
   data: () => ({
-    instrumento_id:null,
     token: Cookies.get('token'),
     benched: 0,
     items: [],

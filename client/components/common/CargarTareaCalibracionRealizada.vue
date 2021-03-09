@@ -1,5 +1,5 @@
 <template>
-  <h1>asda</h1>
+  <v-icon> vertical_align_top </v-icon>
 </template>
 
 <script>

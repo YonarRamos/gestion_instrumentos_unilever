@@ -83,7 +83,7 @@
 
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
-                  <v-icon small @click="downloadCert(item.instrumento_id)"> mdi-download </v-icon>
+                  <ultima-tarea-realizada/>
                   <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
                   <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
                 </v-row>
@@ -108,6 +108,7 @@ import { mapMutations, mapState } from 'vuex';
 import Cookies from 'js-cookie';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
+import UltimaTareaRealizada from "~/components/common/UltimaTareaRealizada.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
 
@@ -117,7 +118,8 @@ export default {
     Filtro,
     AgregarEquipo,
     EliminarEquipo,
-    EditarEquipo
+    EditarEquipo,
+    UltimaTareaRealizada
   },
     data: () => ({
       token: Cookies.get("token"),

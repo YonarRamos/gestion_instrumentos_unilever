@@ -382,6 +382,7 @@ import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 
 export default {
+  middleware: 'NOAUTH',
   components:{
     BtnPDF
   },
