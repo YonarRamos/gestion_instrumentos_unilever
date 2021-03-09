@@ -476,9 +476,6 @@ class EquipoController {
           var auxInstrumentoFueraServicio = await Instrumento.query().where('id', data.instrumento_id).where('estado', 3).fetch();
           auxInstrumentoFueraServicio = auxInstrumentoFueraServicio.toJSON();
 
-          console.log(auxInstrumentoOcup)
-          console.log(auxInstrumentoFueraServicio)
-
           if (auxInstrumentoOcup.length == 0 && auxInstrumentoFueraServicio.length == 0)
           {
             equipo.instrumento_id = data.instrumento_id;

@@ -67,7 +67,7 @@
                       <v-select
                       v-model="instrumento.tipo_id"
                       label="Rol"
-                      :items="Object.keys(instrumentoTipo)"
+                      :items="listRol"
                       :rules="rules"
                       >
                       </v-select>
@@ -135,6 +135,11 @@ export default {
         magnitud_id: null,
         encargado_calibracion: Cookies.get('user_id')
       },
+      listRol: [
+                  {text: "Administrador", value: 1},
+                  {text: "Operador", value: 2},
+                  {text: "Contratista", value: 3}
+        ],
       rules:[ v => !!v || 'Requerido' ],
     }
   },

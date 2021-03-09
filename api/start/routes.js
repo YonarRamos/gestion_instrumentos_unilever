@@ -63,6 +63,8 @@ Route.get('/api/v1/Magnitud' , 'MagnitudController.index');
 
 //Rutas users
 Route.get('/api/v1/user' , 'UserController.index');
+Route.put('/api/v1/user/:id' , 'UserController.update');
+Route.delete('/api/v1/user/:id' , 'UserController.destroy');
 Route.get("api/v1/loginUsersAutomatico", "UserController.loginToken");
 //Rutas users
 Route.get('/api/v1/calibracionTipo' , 'calibracionTipoController.index');
@@ -71,6 +73,8 @@ Route.post('/api/v1/calibracion' , 'CalibracionTareaController.store');
 Route.put('/api/v1/calibracion/:id' , 'CalibracionTareaController.update');
 //Rutas Tarea Realizada 
 Route.get('/api/v1/TareaRealizada' , 'CalibracionTareaRealizadaController.index');
+Route.post('/api/v1/cargacertificado' , 'CalibracionTareaRealizadaController.store');
+
 
 //rutas pruebas img & pdf
 Route.post('/api/v1/pruebas' , 'EquipoController.prueba');

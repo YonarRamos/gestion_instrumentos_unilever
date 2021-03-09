@@ -144,7 +144,7 @@ export default {
         if(this.$refs.form.validate()){
           this.tarea.instrumento_id = this.instrumento.intrumento_id;
           this.tarea.calibracion_tipo_id = this.calibracionTipo[this.tarea.calibracion_tipo_id];
-          console.log('Nueva Tarea', this.tarea);
+          
          await axios.post('calibracion', this.tarea ,{
               headers: { Authorization: `Bearer ${this.token}` },
             })

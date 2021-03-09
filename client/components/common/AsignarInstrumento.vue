@@ -1,5 +1,5 @@
 <template>
-  <div class="d-flex justify-end">
+  <div class="d-flex justify-start">
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -11,7 +11,7 @@
               v-on="on"
               @click="show"
             >
-              <v-icon>mdi-plus</v-icon>
+              <v-icon>add_task</v-icon>
             </v-btn>
           </template>
           <span>Asignar Instrumento</span>
@@ -27,6 +27,9 @@
               <v-form ref="form" lazy-validation v-model="valid">
                 <v-container>
                   <v-row>
+
+              
+
                 <v-col cols="12" class="px-0">
                   <v-card flat style="border: 2px solid lightgray;" color="#F9F9F9">
                     <v-autocomplete
@@ -283,6 +286,8 @@ export default {
                 this.alertType = 'success';
                 this.alertShow = true;
                 this.$emit('click');
+                this.$refs.form.reset();
+                setTimeout(()=>{this.alertShow = false} ,3000) 
            })
 
       } catch (error) {
@@ -361,7 +366,6 @@ export default {
       this.$refs.form.reset();
       this.dialog = false;
       this.alertShow = false;
-      this.getInstrumentList();
     },
     show(){
       this.getUnidad();
