@@ -31,7 +31,7 @@ Route.group(() => {
 }).prefix('api/v1');
 
 //Rutas Equipos Asignados
-Route.get('/api/v1/EquipoAsignado' , 'EquipoAsignacionController.index');
+Route.get('/api/v1/EquipoAsignado/:id' , 'EquipoAsignacionController.show');
 
 //Rutas formulario 
 Route.get('/api/v1/formulario' , 'EquipoController.index');

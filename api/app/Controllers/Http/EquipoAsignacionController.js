@@ -75,7 +75,34 @@ class EquipoAsignacionController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show ({ params, request, response, view }) {
+  async show ({ params, request, response, auth }) {
+    try {
+      const user = await auth.getUser();
+      var equipo_id = params.id
+      let equipoAsignado = await EquipoAsignacion.query().with('equipo').with('instrumento').where('equipo_id' , equipo_id).fetch();
+      equipoAsignado = equipoAsignado.toJSON();
+      //console.log(equipoAsignado)
+      var arrayEquipoASignado = equipoAsignado.map(e=>{
+        return{
+            "equipo": e.equipo.tag,
+            "instrumento": e.instrumento.serie,
+            "desde": e.desde , 
+            "hasta": e.hasta
+        }
+      })
+      let resp = await Promise.all(arrayEquipoASignado)
+      return response.status(200).json({ menssage: 'Equipo Asignado', data: resp });
+    } catch (error) {
+      console.log(error)
+      if (error.name == 'InvalidJwtToken') {
+        return response.status(400).json({ menssage: 'Usuario no Valido' })
+      }
+      return response.status(400).json({
+        menssage: 'Equipo Asignado no encontrado',
+        equipo_id
+      })
+    }
+
   }
 
   /**

@@ -614,7 +614,7 @@ export default {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
-        console.log('res:',res.data.data[0].detalleEquipos )
+        //console.log('res:',res.data.data[0].detalleEquipos )
         this.item = res.data.data[0].detalleEquipos;
 
         var auxRuta = this.listRutas.find(el => el.i == this.item.sector_id);
@@ -628,7 +628,7 @@ export default {
           this.item.sector_name = 'Error en ruta';
         }
         //Tareas de calibracion pendientes
-        console.log('DALEEEEEEE ' , res.data.data[0].calibracion)
+        //console.log('DALEEEEEEE ' , res.data.data[0].calibracion)
         this.tareasCalibracion = res.data.data[0].calibracion;
         
       })
@@ -639,12 +639,12 @@ export default {
      async getEquipoAsignado(){
       try {
         const token = Cookies.get('token');
-        await axios.get(`EquipoAsignado`,{
+        await axios.get(`EquipoAsignado/${this.paramsId}`,{
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res)=>{
         console.log('resEquipoAsignado:',res.data.data.data);
-        this.equipoAsignado = res.data.data.data;
+        this.equipoAsignado = res.data.data;
       })
       } catch (error) {
         console.log(error)
