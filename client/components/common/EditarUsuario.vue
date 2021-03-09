@@ -24,7 +24,7 @@
                  <v-row>
                     <v-col cols="6">
                       <v-text-field 
-                      v-model="instrumento.marca"
+                      v-model="usuario.nombre"
                       label="Nombre"
                       :rules="rules"
                       >
@@ -32,7 +32,7 @@
                     </v-col>
                     <v-col cols="6">
                       <v-text-field 
-                      v-model="instrumento.modelo"
+                      v-model="usuario.apellido"
                       label="Apellido"
                       :rules="rules"
                       >
@@ -43,31 +43,41 @@
                   <v-row>
                     <v-col cols="6">
                       <v-text-field 
-                      v-model="instrumento.serie"
+                      v-model="usuario.email"
                       label="Email"
                       :rules="rules"
                       >
                       </v-text-field>
                     </v-col>
                     <v-col cols="6">
-                         <v-text-field 
-                      v-model="instrumento.serie"
-                      label="Empresa"
-                      :rules="rules"
-                      >
-                         </v-text-field>
-                    </v-col>
+                  <v-text-field
+                    :append-icon="show3 ? 'mdi-eye' : 'mdi-eye-off'"
+                    :rules="rules"
+                    v-model="usuario.password"
+                    :type="show3 ? 'text' : 'password'"
+                    label="Constraseña"
+                    @click:append="show3 = !show3"
+                  ></v-text-field>
+                </v-col>
                   </v-row>
                    <v-row>
                     <v-col cols="6">
                       <v-select
-                      v-model="instrumento.tipo_id"
+                      v-model="usuario.rol"
                       label="Rol"
                       :items="listRol"
                       :rules="rules"
                       >
                       </v-select>
                       
+                    </v-col>
+                    <v-col cols="6">
+                         <v-text-field 
+                      v-model="usuario.empresa"
+                      label="Empresa"
+                      :rules="rules"
+                      >
+                         </v-text-field>
                     </v-col>
                    </v-row>
                   <!-- Modal status http request -->
@@ -92,7 +102,7 @@
               <v-btn color="error" text @click="hide">
                 Cancelar
               </v-btn>
-              <v-btn color="primary" text @click="editarInstrumento">
+              <v-btn color="primary" text @click="editarUsuario">
                 Ok
               </v-btn>
             </v-card-actions>
@@ -106,34 +116,25 @@ import axios from '~/plugins/axios';
 import Cookies from 'js-cookie';
 export default {
   props:{
-    id: String,
+    id: Number,
     required: true
   },
   data() {
     return {
+      show3: false,
       valid:false,
       token: Cookies.get('token'),
       dialog: false,
       alertShow: false,
       alertMsg:'',
       alertType:'success',
-      instrumentoTipo:[],
-      instrumentoUnidad:[],
-      instrumentoMagnitud:[],
-      instrumento:{
-        marca: "",
-        modelo: "",
-        serie: "",
-        rango_de: null,
-        rango_a: null,
-        rango_normal_de: null,
-        rango_normal_a: null,
-        resolucion: null,
-        tolerancia: null, 
-        tipo_id: null,
-        unidad_id: null,
-        magnitud_id: '',
-        encargado_calibracion: Cookies.get('user_id')
+      usuario:{
+        nombre: "",
+        apellido: "",
+        email: "",
+        password: "",
+        empresa: "",
+        rol: ""
       },
       listRol: [
                   {text: "Administrador", value: 1},
@@ -145,24 +146,17 @@ export default {
   },
   methods:{
     show(){
-      this.getUnidad();
-      this.getMagnitud();
-      this.getInstrumento();
-      this.getInstrumentoTipo();
+      this.getUsuario()
       this.dialog = true;
     },
-   async editarInstrumento(){
+   async editarUsuario(){
       try {
         if(this.$refs.form.validate()){
-          this.instrumento.tipo_id = this.instrumentoTipo[this.instrumento.tipo_id];
-          this.instrumento.unidad_id = this.instrumentoUnidad[this.instrumento.unidad_id];
-          this.instrumento.magnitud_id = this.instrumentoUnidad[this.instrumento.magnitud_id];
-          console.log('InstrumentoEnviado:', this.instrumento);
-          await axios.post('instrumento', this.instrumento ,{
+          await axios.put(`user/${this.id}`, this.usuario ,{
               headers: { Authorization: `Bearer ${this.token}` },
             })
             .then(()=>{
-              this.alertMsg = "Instrumento actualizado correctamente"
+              this.alertMsg = "Usuario actualizado correctamente"
               this.alertType = "success"
               this.alertShow = true;
               this.$refs.form.reset();
@@ -176,65 +170,17 @@ export default {
         this.alertShow = true;
       }
     },
-   async getInstrumento(){
-        try {
-         await axios.put(`instrumento/${this.id}`,this.item, {
-            headers: { Authorization: `Bearer ${this.token}` },
-          })
-          .then((res)=>{
-            console.log('EditarInst:',res.data.data);
-            this.instrumento = res.data.data;
-            this.instrumento.magnitud_id ='Dato de prueba'
-          })
-          } catch (error) {
-            console.log(error)
-          }
-        },
-    getInstrumentoTipo(){
-        try {
-          axios.get('instrumentoTipo', {
-            headers: { Authorization: `Bearer ${this.token}` },
-          })
-          .then((res)=>{
-            for (const item of res.data.data) {
-              this.instrumentoTipo[item.nombre] = item.id ;
-            }
-          })
-          } catch (error) {
-            console.log(error)
-          }
-        },
-      getUnidad(){
-        try {
-          axios.get('unidad', {
-            headers: { Authorization: `Bearer ${this.token}` },
-          })
-          .then((res)=>{
-            for (const item of res.data.data) {
-              this.instrumentoUnidad[item.nombre] = item.id ;
-            }
-          })
-
-          } catch (error) {
-            console.log(error)
-          }
-
-      },
-      getMagnitud(){
+    async getUsuario(){
       try {
-        axios.get('magnitud', {
-          headers: { Authorization: `Bearer ${this.token}` },
-        })
-        .then((res)=>{
-          for (const item of res.data.data) {
-            this.instrumentoMagnitud[item.nombre] = item.id ;
-          }
-        })
-
-        } catch (error) {
-          console.log(error)
-        }
-      },
+      await axios.get(`user/${this.id}`,{
+        headers: { Authorization: `Bearer ${this.token}` },
+      }).then(resp=>{
+        this.usuario = resp.data.data
+      })  
+      } catch (error) {
+        
+      }
+    },
       hide(){
         this.$refs.form.reset();
         this.dialog = false;

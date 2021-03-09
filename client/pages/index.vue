@@ -83,9 +83,9 @@
 
               <template v-slot:[`item.acciones`]="{ item }">
                 <v-row class="d-flex justify-center">
-                  <descargar-cetificado :idEquipo="item.id"/>
-                  <editar-equipo :id="item.id" class="ml-2" @click="getDataTable" />
-                  <eliminar-equipo :id="item.id" class="ml-2" :tag="item.tag" @click="getDataTable" />
+                  <ultima-tarea-realizada/>
+                  <editar-equipo :id="item.id" class="mr-2" @click="getDataTable" />
+                  <eliminar-equipo :id="item.id" :tag="item.tag" @click="getDataTable" />
                 </v-row>
               </template>
 
@@ -108,6 +108,7 @@ import { mapMutations, mapState } from 'vuex';
 import Cookies from 'js-cookie';
 import 'material-design-icons-iconfont/dist/material-design-icons.css';
 import AgregarEquipo from "~/components/common/AgregarEquipo.vue";
+import UltimaTareaRealizada from "~/components/common/UltimaTareaRealizada.vue";
 import EditarEquipo from "~/components/common/EditarEquipo.vue";
 import EliminarEquipo from "~/components/common/EliminarEquipo.vue";
 import DescargarCetificado from "~/components/common/DescargarCetificado.vue";

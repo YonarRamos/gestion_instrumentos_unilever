@@ -16,7 +16,7 @@
           <v-btn color="error" text @click="dialog=false">
             Cancelar
           </v-btn>
-          <v-btn color="blue darken-1" text @click="deleteItem">
+          <v-btn color="blue darken-1" text @click="deleteUSers">
             OK
           </v-btn>
         </v-card-actions>
@@ -46,7 +46,7 @@
       </v-card>
     </v-dialog>
 
-    <loading :tag="'Borrando Instrumento'"/>
+    <loading :tag="'Borrando Usuario'"/>
 
   </div>
 </template>
@@ -62,7 +62,7 @@ export default {
   },
   props:{
     id:{
-    type: String,
+    type: Number ,
     required:true
     },
   },
@@ -76,12 +76,12 @@ export default {
   },
   methods:{
    ...mapMutations(['toggleLoading']),
-   async deleteItem() {
+   async deleteUSers() {
       const token = Cookies.get('token');
       this.toggleLoading(true);
       try {
         await axios
-          .delete(`instrumento/${this.id}`, {
+          .delete(`user/${this.id}`, {
               headers: { 
                 Authorization: `Bearer ${token}`,
                 params:{id:this.id} 
@@ -90,17 +90,13 @@ export default {
         .then(()=>{
           this.dialog = false;
           this.toggleLoading(false);
-          this.alertMsg = "Se ha eliminado el instrumento correctamente";
+          this.alertMsg = "Se ha eliminado el Usuario correctamente!";
           this.alertType = 'success'
           this.dialogEliminado = true;
           this.$emit('click');
         });
       } catch (error) {
         this.toggleLoading(false);
-        this.dialog = false;
-        this.alertMsg = `No es posible eliminar este Instrumento ya que está asociado a un equipo`;
-        this.alertType = 'error'
-        this.dialogEliminado = true;
         console.log('Error Eliminar instrumento:',error);
       }
     },
